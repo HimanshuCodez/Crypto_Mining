@@ -4,7 +4,7 @@ import User from '../models/User.js';
 import { verifyTurnstile } from '../utils/verifyTurnstile.js';
 
 export const signup = async (req, res) => {
-    const { name, country, mobile, email, password, referralCode, turnstileToken } = req.body;
+    const { name, country, mobile, email, password, referralCode, turnstileToken, rememberMe } = req.body;
 
     try {
         // Verify Turnstile token
@@ -27,10 +27,11 @@ export const signup = async (req, res) => {
         await newUser.save();
 
         // Generate JWT token
-        const token = jwt.sign({ email: newUser.email, id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const expiresIn = rememberMe ? '7d' : '1h';
+        const token = jwt.sign({ email: newUser.email, id: newUser._id }, process.env.JWT_SECRET, { expiresIn });
 
         // Set cookie
-        res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' }).status(201).json({ result: newUser });
+        res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', maxAge: rememberMe ? 7 * 24 * 60 * 60 * 1000 : undefined }).status(201).json({ result: newUser });
 
     } catch (error) {
         console.error(error);
@@ -39,7 +40,7 @@ export const signup = async (req, res) => {
 };
 
 export const login = async (req, res) => {
-    const { email, password, turnstileToken } = req.body;
+    const { email, password, turnstileToken, rememberMe } = req.body;
 
     try {
         // Verify Turnstile token
@@ -61,13 +62,18 @@ export const login = async (req, res) => {
         }
 
         // Generate JWT token
-        const token = jwt.sign({ email: existingUser.email, id: existingUser._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const expiresIn = rememberMe ? '7d' : '1h';
+        const token = jwt.sign({ email: existingUser.email, id: existingUser._id }, process.env.JWT_SECRET, { expiresIn });
 
         // Set cookie
-        res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' }).status(200).json({ result: existingUser });
+        res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', maxAge: rememberMe ? 7 * 24 * 60 * 60 * 1000 : undefined }).status(200).json({ result: existingUser });
 
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Something went wrong' });
     }
+};
+
+export const logout = (req, res) => {
+    res.cookie('token', '', { httpOnly: true, expires: new Date(0) }).send();
 };

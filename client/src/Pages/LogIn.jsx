@@ -10,10 +10,12 @@ const Login = () => {
         email: '',
         password: '',
         turnstileToken: '',
+        rememberMe: false,
     });
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+        setFormData({ ...formData, [e.target.name]: value });
     };
 
     const handleSubmit = (e) => {
@@ -49,12 +51,16 @@ const Login = () => {
                                     <input type="password" onChange={handleChange} value={formData.password} name="password" className='outline-none w-full border rounded-2xl placeholder:text-[#000000B2] placeholder:capitalize placeholder:text-sm p-2' placeholder='Enter Password' />
                                 </label>
                             </div>
+                            <div className="flex items-center gap-2">
+                                <input type="checkbox" name="rememberMe" id="rememberMe" checked={formData.rememberMe} onChange={handleChange} className="h-4 w-4" />
+                                <label htmlFor="rememberMe" className="text-sm">Remember me</label>
+                            </div>
                             <Turnstile
                                 sitekey="0x4AAAAAABs1naScd1VDLrsX" // Replace with your site key
                                 onVerify={(token) => setFormData({ ...formData, turnstileToken: token })}
                             />
                             <div className='w-full'><button type="submit" disabled={loading} className='bg-[#31B8A1] w-full rounded-3xl capitalize text-white font-medium text-lg px-3 py-3 scale-100 hover:scale-95 transition-all ease-out'>{loading ? 'Signing in...' : 'sign in'}</button></div>
-                            <span className="text-center"><span className='font-medium text-lg'>Don't Have Your Account yet? </span><Link to="/signup"> <span className='text-[#31B8A1] capitalize hover:underline'>sign up</span></Link></span>
+                            <span className="text-center"><span className='font-medium text-lg'>Don't Have Your Account yet? </span><Link to="/"> <span className='text-[#31B8A1] capitalize hover:underline'>sign up</span></Link></span>
                         </div>
                     </form>
                 </div>

@@ -4,7 +4,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import SignuP from "./Pages/SignuP.JSX";
-import Login from "./Pages/Login";
+
 import Profile from "./Pages/Main/Settings/Profile";
 import Wallet from "./Pages/Main/Settings/Wallet";
 import Account from "./Pages/Main/Account Activation/Account";
@@ -24,6 +24,7 @@ import AccountStatement from "./Pages/Components/Financal/AccountStatement";
 import WithdrawReport from "./Pages/Components/Financal/WithdrawReport";
 import Investment from "./Pages/Components/Financal/Investment";
 import Dashboard from "./Pages/Main/Dashboard/Dashboard";
+import Login from "./Pages/LogIn";
 
 const App = () => {
   return (

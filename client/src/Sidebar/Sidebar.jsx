@@ -1,7 +1,14 @@
-import React from 'react'
-import logo from '../assets/logo.png'
+import React from 'react';
+import logo from '../assets/logo.png';
+import useAuthStore from '../store/authStore.js';
 
 const Navbar = () => {
+    const { logout } = useAuthStore();
+
+    const handleLogout = () => {
+        logout();
+    };
+
     return (
         <div className='bg-[#FFFFFF] w-[22vw]  '>
             <div>
@@ -25,12 +32,12 @@ const Navbar = () => {
                         <li className='text-lg font-normal text-[#6D6D6D] underline'>Others</li>
                         <li className='text-xl text-black'>About</li>
                         <li className='text-xl text-black'>Support</li>
-                        <li className='text-xl text-black'>Logout</li>
+                        <li className='text-xl text-black cursor-pointer' onClick={handleLogout}>Logout</li>
                     </ul>
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default Navbar
+export default Navbar;

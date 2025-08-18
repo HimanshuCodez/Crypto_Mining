@@ -31,9 +31,14 @@ const useAuthStore = create((set) => ({
         }
     },
 
-    logout: () => {
-        set({ user: null, isAuthenticated: false });
-        toast.success('Logged out successfully!');
+    logout: async () => {
+        try {
+            await axios.post('/api/auth/logout');
+            set({ user: null, isAuthenticated: false });
+            toast.success('Logged out successfully!');
+        } catch (error) {
+            toast.error('Logout failed. Please try again.');
+        }
     },
 }));
 
