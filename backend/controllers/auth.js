@@ -33,6 +33,7 @@ export const signup = async (req, res) => {
         res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' }).status(201).json({ result: newUser });
 
     } catch (error) {
+        console.error(error);
         res.status(500).json({ message: 'Something went wrong' });
     }
 };
@@ -66,6 +67,7 @@ export const login = async (req, res) => {
         res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' }).status(200).json({ result: existingUser });
 
     } catch (error) {
+        console.error(error);
         res.status(500).json({ message: 'Something went wrong' });
     }
 };
