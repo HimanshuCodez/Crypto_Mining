@@ -40,6 +40,10 @@ const useAuthStore = create((set) => ({
             toast.error('Logout failed. Please try again.');
         }
     },
+
+    setUser: (userData) => {
+        set({ user: userData });
+    },
 }));
 
 export default useAuthStore;
