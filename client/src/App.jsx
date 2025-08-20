@@ -64,7 +64,9 @@ const App = () => {
             <Route path="/MiningPackage" element={<PackageWallet />} />
             <Route path="/account_activation" element={<Account />} />
             <Route path="/MiningIncome" element={<MiningIncome />} />
+            {/* done */}
             <Route path="/profile" element={<Profile />} />
+            {/* done */}
             <Route path="/wallet" element={<Wallet />} />
           </Route>
         </Routes>

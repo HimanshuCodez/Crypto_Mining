@@ -1,13 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import logo from "../assets/logo.png";
 import useAuthStore from "../store/authStore.js";
 import { Link } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Sidebar = () => {
   const { logout } = useAuthStore();
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
+  };
+
+  const toggleSettings = () => {
+    setIsSettingsOpen(!isSettingsOpen);
   };
 
   return (
@@ -22,8 +28,30 @@ const Sidebar = () => {
             <li className="text-lg font-normal text-[#6D6D6D] underline">
               Main
             </li>
-            <li className="text-xl text-black">Settings</li>
-            <Link  to="/account_activation">
+            <li
+              className="text-xl text-black cursor-pointer"
+              onClick={toggleSettings}
+            >
+              Settings
+            </li>
+            <AnimatePresence>
+              {isSettingsOpen && (
+                <motion.ul
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="flex flex-col gap-2 pl-4"
+                >
+                  <Link to="/profile">
+                    <li className="text-lg text-black">Profile</li>
+                  </Link>
+                  <Link to="/wallet">
+                    <li className="text-lg text-black">Wallet</li>
+                  </Link>
+                </motion.ul>
+              )}
+            </AnimatePresence>
+            <Link to="/account_activation">
               <li className="text-xl  cursor-pointer text-black">
                 Account Activation
               </li>
@@ -40,7 +68,7 @@ const Sidebar = () => {
               Components
             </li>
             <li className="text-xl text-black">Income</li>
-          
+
             <li className="text-xl text-black">Deposit</li>
             <li className="text-xl text-black">Transfer</li>
             <li className="text-xl text-black">Financial</li>
