@@ -5,7 +5,7 @@ const ToIncomeWallet = () => {
       <div className='w-full flex flex-col gap-6 p-10 font-[Inter]'>
 
           <div className='flex flex-col justify-start items-start gap-2'>
-              <h2 className='text-4xl font-medium capitalize font-[Inter]'>Transfer To Package Wallet</h2>
+              <h2 className='text-4xl font-medium capitalize font-[Inter]'>Transfer To Income Wallet</h2>
               <nav className='flex items-center gap-1 capitalize font-light text-sm font-[Inter]'>
                   <a href="/Transfer">Transfer</a><span>/</span><a href="/wallet" className='text-[#02AC8F]'>Transfer To Income Wallet <address></address></a>
               </nav>

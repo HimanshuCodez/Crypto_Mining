@@ -19,7 +19,7 @@ import {
   FaQuestionCircle,
   FaSignOutAlt,
   FaChevronDown,
-  FaChevronUp
+  FaChevronUp,
 } from "react-icons/fa";
 
 const Sidebar = () => {
@@ -27,6 +27,9 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isNetworkOpen, setIsNetworkOpen] = useState(false);
+  const [isIncomeOpen, setIsIncomeOpen] = useState(false);
+  const [isFinancialOpen, setIsFinancialOpen] = useState(false);
+  const [isTransferOpen, setIsTransferOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -36,7 +39,7 @@ const Sidebar = () => {
   return (
     <div className="fixed top-0 left-0 h-screen w-[22vw] bg-white shadow-2xl border-r border-gray-200 z-50 flex flex-col">
       {/* Logo */}
-      <div className="flex items-center justify-center py-6 border-b">
+      <div className="flex items-center justify-center py-2 border-b">
         <Link to={"/login"}>
           <img className="w-[10rem]" src={logo} alt="Logo" />
         </Link>
@@ -49,7 +52,10 @@ const Sidebar = () => {
           <li className="text-sm font-semibold text-gray-500 tracking-wide">
             Main
           </li>
-          <Link to="/Dashboard" className="hover:text-blue-600 transition flex items-center gap-2 text-lg">
+          <Link
+            to="/Dashboard"
+            className="hover:text-blue-600 transition flex items-center gap-2 text-lg"
+          >
             <FaNetworkWired /> Dashboard
           </Link>
 
@@ -71,17 +77,26 @@ const Sidebar = () => {
                 exit={{ opacity: 0, y: -10 }}
                 className="flex flex-col gap-2 pl-8 text-gray-700"
               >
-                <Link to="/profile" className="hover:text-blue-600 transition flex items-center gap-2">
+                <Link
+                  to="/profile"
+                  className="hover:text-blue-600 transition flex items-center gap-2"
+                >
                   <FaUser /> Profile
                 </Link>
-                <Link to="/wallet" className="hover:text-blue-600 transition flex items-center gap-2">
+                <Link
+                  to="/wallet"
+                  className="hover:text-blue-600 transition flex items-center gap-2"
+                >
                   <FaWallet /> Wallet
                 </Link>
               </motion.ul>
             )}
           </AnimatePresence>
 
-          <Link to="/account_activation" className="hover:text-blue-600 transition flex items-center gap-2 text-lg">
+          <Link
+            to="/account_activation"
+            className="hover:text-blue-600 transition flex items-center gap-2 text-lg"
+          >
             <FaUserCheck /> Account Activation
           </Link>
 
@@ -110,10 +125,16 @@ const Sidebar = () => {
                 exit={{ opacity: 0, y: -10 }}
                 className="flex flex-col gap-2 pl-8 text-gray-700"
               >
-                <Link to="/Network/Direct" className="hover:text-blue-600 transition flex items-center gap-2">
+                <Link
+                  to="/Network/Direct"
+                  className="hover:text-blue-600 transition flex items-center gap-2"
+                >
                   <FaUser /> Direct Referral
                 </Link>
-                <Link to="/Network/Indirect" className="hover:text-blue-600 transition flex items-center gap-2">
+                <Link
+                  to="/Network/Indirect"
+                  className="hover:text-blue-600 transition flex items-center gap-2"
+                >
                   <FaUser /> Indirect Referral
                 </Link>
               </motion.ul>
@@ -124,17 +145,150 @@ const Sidebar = () => {
           <li className="text-sm font-semibold text-gray-500 tracking-wide">
             Components
           </li>
-          <li className="flex items-center gap-2 text-lg hover:text-blue-600 transition"><FaDollarSign /> Income</li>
-          <li className="flex items-center gap-2 text-lg hover:text-blue-600 transition"><FaArrowDown /> Deposit</li>
-          <li className="flex items-center gap-2 text-lg hover:text-blue-600 transition"><FaExchangeAlt /> Transfer</li>
-          <li className="flex items-center gap-2 text-lg hover:text-blue-600 transition"><FaFileInvoiceDollar /> Financial</li>
+
+          <li
+            className="flex items-center justify-between text-lg cursor-pointer hover:text-blue-600 transition"
+            onClick={() => setIsIncomeOpen(!isIncomeOpen)}
+          >
+            <div className="flex items-center gap-2">
+              <FaNetworkWired /> Income
+            </div>
+            {isIncomeOpen ? <FaChevronUp /> : <FaChevronDown />}
+          </li>
+          <AnimatePresence>
+            {isIncomeOpen && (
+              <motion.ul
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="flex flex-col gap-2 pl-8 text-gray-700"
+              >
+                <Link
+                  to="/Income/Direct"
+                  className="hover:text-blue-600 transition flex items-center gap-2"
+                >
+                  <FaUser /> Direct Income
+                </Link>
+                <Link
+                  to="/Income/Indirect"
+                  className="hover:text-blue-600 transition flex items-center gap-2"
+                >
+                  <FaUser /> Indirect Income
+                </Link>
+              </motion.ul>
+            )}
+          </AnimatePresence>
+          <li className="flex items-center gap-2 text-lg hover:text-blue-600 transition">
+            <FaArrowDown /> Deposit
+          </li>
+
+
+
+
+     <li
+            className="flex items-center justify-between text-lg cursor-pointer hover:text-blue-600 transition"
+            onClick={() => setIsTransferOpen(!isTransferOpen)}
+          >
+            <div className="flex items-center gap-2">
+             <FaExchangeAlt /> Transfer
+            </div>
+            {isTransferOpen ? <FaChevronUp /> : <FaChevronDown />}
+          </li>
+          <AnimatePresence>
+            {isTransferOpen && (
+              <motion.ul
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="flex flex-col gap-2 pl-8 text-gray-700"
+              >
+                <Link
+                  to="/Transfer/Receive_Report"
+                  className="hover:text-blue-600 transition flex items-center gap-2"
+                >
+                  <FaUser /> Receive Report
+                </Link>
+                <Link
+                  to="/Transfer/Transport_Report"
+                  className="hover:text-blue-600 transition flex items-center gap-2"
+                >
+                  <FaUser /> Transfer Report
+                </Link>
+                <Link
+                  to="/Transfer/Package"
+                  className="hover:text-blue-600 transition flex items-center gap-2"
+                >
+                  <FaUser /> Transfer To Package Wallet
+                </Link>
+                <Link
+                  to="/Transfer/Income"
+                  className="hover:text-blue-600 transition flex items-center gap-2"
+                >
+                  <FaUser /> Transfer To Income Wallet
+                </Link>
+              </motion.ul>
+            )}
+          </AnimatePresence>
+
+
+
+
+
+          <li
+            className="flex items-center justify-between text-lg cursor-pointer hover:text-blue-600 transition"
+            onClick={() => setIsFinancialOpen(!isFinancialOpen)}
+          >
+            <div className="flex items-center gap-2">
+              <FaFileInvoiceDollar /> Financial
+            </div>
+            {isFinancialOpen ? <FaChevronUp /> : <FaChevronDown />}
+          </li>
+          <AnimatePresence>
+            {isFinancialOpen && (
+              <motion.ul
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="flex flex-col gap-2 pl-8 text-gray-700"
+              >
+                <Link
+                  to="/Financial/Acc_Statement"
+                  className="hover:text-blue-600 transition flex items-center gap-2"
+                >
+                  <FaUser /> Account Statement
+                </Link>
+                <Link
+                  to="/Financial/Withdraw_Report"
+                  className="hover:text-blue-600 transition flex items-center gap-2"
+                >
+                  <FaUser /> Withdraw Report
+                </Link>
+                <Link
+                  to="/Financial/Withdraw_Investment"
+                  className="hover:text-blue-600 transition flex items-center gap-2"
+                >
+                  <FaUser /> Withdraw Investment
+                </Link>
+                <Link
+                  to="/Financial/Income"
+                  className="hover:text-blue-600 transition flex items-center gap-2"
+                >
+                  <FaUser /> Withdraw Income Wallet
+                </Link>
+              </motion.ul>
+            )}
+          </AnimatePresence>
 
           {/* OTHERS */}
           <li className="text-sm font-semibold text-gray-500 tracking-wide">
             Others
           </li>
-          <li className="flex items-center gap-2 text-lg hover:text-blue-600 transition"><FaInfoCircle /> About</li>
-          <li className="flex items-center gap-2 text-lg hover:text-blue-600 transition"><FaQuestionCircle /> Support</li>
+          <li className="flex items-center gap-2 text-lg hover:text-blue-600 transition">
+            <FaInfoCircle /> About
+          </li>
+          <li className="flex items-center gap-2 text-lg hover:text-blue-600 transition">
+            <FaQuestionCircle /> Support
+          </li>
 
           {/* Logout */}
           <li

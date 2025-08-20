@@ -4,13 +4,13 @@ const Direct = () => {
   return (
       <div className='w-full flex flex-col gap-6 p-10 font-[Montserrat] '>
           <div className='flex flex-col justify-start items-start gap-2 font-[Inter]'>
-              <h2 className='text-4xl font-medium capitalize font-[Inter]'>Direct Refral</h2>
+              <h2 className='text-4xl font-medium capitalize font-[Inter]'>Direct Referral</h2>
               <nav className='flex items-center gap-1 capitalize font-light text-sm font-[Inter]'>
-                  <a href="/Network">Network</a><span>/</span><a href="/Direct Refral" className='text-[#02AC8F]'>Direct Refral <address></address></a>
+                  <a href="/Network">Network</a><span>/</span><a href="/Direct Refral" className='text-[#02AC8F]'>Direct Referral<address></address></a>
               </nav>
           </div>
           <div className='bg-[#FFFFFF] w-full rounded-3xl px-5 py-10 flex flex-col gap-5 '>
-              <h2 className='text-xl font-medium font-[Inter]'>Direct Refral </h2>
+              <h2 className='text-xl font-medium font-[Inter]'>Direct Referral </h2>
               <div className='flex justify-between items-center w-full'>
                 <span className='flex items-center gap-2'>
                       <h5 className='text-[#000000B2] capitalize text-lg font-medium '>show:</h5>

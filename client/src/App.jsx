@@ -37,32 +37,44 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route element={<Layout />}>
             <Route path="/Dashboard" element={<Dashboard />} />
+
+             {/* done */}
             <Route
               path="/Financial/Withdraw_Investment"
               element={<Investment />}
             />
+             {/* done */}
             <Route
               path="/Financial/Withdraw_Report"
               element={<WithdrawReport />}
             />
+            {/* done */}
             <Route
               path="/Financial/Acc_Statement"
               element={<AccountStatement />}
             />
+             {/* done */}
             <Route path="/Transfer/Receive_Report" element={<Receive />} />
+             {/* done */}
             <Route path="/Transfer/Transport_Report" element={<Transfer />} />
+            {/* done */}
             <Route path="/Income/Direct" element={<Direct_Inc />} />
+            {/* done */}
             <Route path="/Income/Indirect" element={<Indirect_Inc />} />
                 {/* done */}
             <Route path="/Network/Indirect" element={<Indirect_Net />} />
                 {/* done */}
             <Route path="/Network/Direct" element={<Direct_Net />} />
+             {/* done */}
             <Route
               path="/Financial/Income"
               element={<WithdrawIncomeWallet />}
             />
+              {/* done */}
             <Route path="/Transfer/Income" element={<ToIncomeWallet />} />
+              {/* done */}
             <Route path="/Transfer/Package" element={<ToPackageWallet />} />
+
             <Route path="/MiningPackage" element={<PackageWallet />} />
             {/* done */}
             <Route path="/account_activation" element={<Account />} />
