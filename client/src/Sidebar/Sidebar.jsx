@@ -99,13 +99,18 @@ const Sidebar = () => {
           >
             <FaUserCheck /> Account Activation
           </Link>
-
-          <li className="flex items-center gap-2 text-lg hover:text-blue-600 transition">
-            <FaMoneyBillWave /> Mining Investment Using Income
-          </li>
-          <li className="flex items-center gap-2 text-lg hover:text-blue-600 transition">
-            <FaBoxOpen /> Mining Investment Package Wallet
-          </li>
+          <Link  
+ to="/MiningIncome"
+           className="flex items-center gap-2 text-lg hover:text-blue-600 transition">
+            <FaMoneyBillWave /> Mining Investment Using Income 
+          
+           </Link>
+           <Link 
+            to="/MiningPackage"
+           className="flex items-center gap-2 text-lg hover:text-blue-600 transition">
+            <FaBoxOpen /> Mining Investment Package Wallet 
+          
+          </Link>
 
           {/* Network Dropdown */}
           <li

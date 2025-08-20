@@ -12,7 +12,7 @@ const PackageWallet = () => {
                   (Amount Should be In Multiples of $20). </h2></span>
               <div className='grid grid-cols-2 justify-start items-center gap-10 w-[60%] pt-8'>
                   <div className='font-[Inter] font-medium text-2xl flex flex-col gap-3 border rounded-lg p-3'>
-                      <h2>Income Wallet</h2>
+                      <h2>Package Wallet</h2>
                       <span className='text-[#2EB9A2]'>$0</span>
                   </div>
 
