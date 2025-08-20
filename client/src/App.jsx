@@ -53,7 +53,9 @@ const App = () => {
             <Route path="/Transfer/Transport_Report" element={<Transfer />} />
             <Route path="/Income/Direct" element={<Direct_Inc />} />
             <Route path="/Income/Indirect" element={<Indirect_Inc />} />
+                {/* done */}
             <Route path="/Network/Indirect" element={<Indirect_Net />} />
+                {/* done */}
             <Route path="/Network/Direct" element={<Direct_Net />} />
             <Route
               path="/Financial/Income"
