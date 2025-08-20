@@ -26,6 +26,7 @@ import Investment from "./Pages/Components/Financal/Investment";
 import Dashboard from "./Pages/Main/Dashboard/Dashboard";
 import Login from "./Pages/LogIn";
 import SignUp from "./Pages/SignUp";
+import DepositUsdtForm from "./Pages/Main/Deposit/Deposit";
 
 const App = () => {
   return (
@@ -74,7 +75,7 @@ const App = () => {
             <Route path="/Transfer/Income" element={<ToIncomeWallet />} />
               {/* done */}
             <Route path="/Transfer/Package" element={<ToPackageWallet />} />
-
+ {/* done */}
             <Route path="/MiningPackage" element={<PackageWallet />} />
             {/* done */}
             <Route path="/account_activation" element={<Account />} />
@@ -82,6 +83,7 @@ const App = () => {
             <Route path="/MiningIncome" element={<MiningIncome />} />
             {/* done */}
             <Route path="/profile" element={<Profile />} />
+            <Route path="/DepositUsdt" element={<DepositUsdtForm />} />
             {/* done */}
             <Route path="/wallet" element={<Wallet />} />
           </Route>

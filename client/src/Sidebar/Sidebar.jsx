@@ -99,17 +99,17 @@ const Sidebar = () => {
           >
             <FaUserCheck /> Account Activation
           </Link>
-          <Link  
- to="/MiningIncome"
-           className="flex items-center gap-2 text-lg hover:text-blue-600 transition">
-            <FaMoneyBillWave /> Mining Investment Using Income 
-          
-           </Link>
-           <Link 
+          <Link
+            to="/MiningIncome"
+            className="flex items-center gap-2 text-lg hover:text-blue-600 transition"
+          >
+            <FaMoneyBillWave /> Mining Investment Using Income
+          </Link>
+          <Link
             to="/MiningPackage"
-           className="flex items-center gap-2 text-lg hover:text-blue-600 transition">
-            <FaBoxOpen /> Mining Investment Package Wallet 
-          
+            className="flex items-center gap-2 text-lg hover:text-blue-600 transition"
+          >
+            <FaBoxOpen /> Mining Investment Package Wallet
           </Link>
 
           {/* Network Dropdown */}
@@ -183,19 +183,19 @@ const Sidebar = () => {
               </motion.ul>
             )}
           </AnimatePresence>
-          <li className="flex items-center gap-2 text-lg hover:text-blue-600 transition">
+          <Link
+            to="/DepositUsdt"
+            className="flex items-center gap-2 text-lg hover:text-blue-600 transition"
+          >
             <FaArrowDown /> Deposit
-          </li>
+          </Link>
 
-
-
-
-     <li
+          <li
             className="flex items-center justify-between text-lg cursor-pointer hover:text-blue-600 transition"
             onClick={() => setIsTransferOpen(!isTransferOpen)}
           >
             <div className="flex items-center gap-2">
-             <FaExchangeAlt /> Transfer
+              <FaExchangeAlt /> Transfer
             </div>
             {isTransferOpen ? <FaChevronUp /> : <FaChevronDown />}
           </li>
@@ -234,10 +234,6 @@ const Sidebar = () => {
               </motion.ul>
             )}
           </AnimatePresence>
-
-
-
-
 
           <li
             className="flex items-center justify-between text-lg cursor-pointer hover:text-blue-600 transition"
