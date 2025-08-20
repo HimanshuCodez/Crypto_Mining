@@ -62,7 +62,9 @@ const App = () => {
             <Route path="/Transfer/Income" element={<ToIncomeWallet />} />
             <Route path="/Transfer/Package" element={<ToPackageWallet />} />
             <Route path="/MiningPackage" element={<PackageWallet />} />
+            {/* done */}
             <Route path="/account_activation" element={<Account />} />
+            
             <Route path="/MiningIncome" element={<MiningIncome />} />
             {/* done */}
             <Route path="/profile" element={<Profile />} />
