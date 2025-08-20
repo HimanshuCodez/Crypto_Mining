@@ -25,6 +25,7 @@ import WithdrawReport from "./Pages/Components/Financal/WithdrawReport";
 import Investment from "./Pages/Components/Financal/Investment";
 import Dashboard from "./Pages/Main/Dashboard/Dashboard";
 import Login from "./Pages/LogIn";
+import SignUp from "./Pages/SignUp";
 
 const App = () => {
   return (
@@ -32,7 +33,7 @@ const App = () => {
       <BrowserRouter>
         <ToastContainer />
         <Routes>
-          <Route path="/" element={<SignuP />} />
+          <Route path="/" element={<SignUp />} />
           <Route path="/login" element={<Login />} />
           <Route element={<Layout />}>
             <Route path="/Dashboard" element={<Dashboard />} />
