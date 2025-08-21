@@ -75,7 +75,7 @@ const App = () => {
             <Route path="/Transfer/Income" element={<ToIncomeWallet />} />
               {/* done */}
             <Route path="/Transfer/Package" element={<ToPackageWallet />} />
- {/* done */}
+             {/* done */}
             <Route path="/MiningPackage" element={<PackageWallet />} />
             {/* done */}
             <Route path="/account_activation" element={<Account />} />
