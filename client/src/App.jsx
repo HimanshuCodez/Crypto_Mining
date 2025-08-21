@@ -27,6 +27,8 @@ import Dashboard from "./Pages/Main/Dashboard/Dashboard";
 import Login from "./Pages/LogIn";
 import SignUp from "./Pages/SignUp";
 import DepositUsdtForm from "./Pages/Main/Deposit/Deposit";
+import AdminDashboard from "./Admin/Dashboard";
+import AdminSystem from "./Admin/Dashboard";
 
 const App = () => {
   return (
@@ -87,6 +89,7 @@ const App = () => {
             {/* done */}
             <Route path="/wallet" element={<Wallet />} />
           </Route>
+            <Route path="/Admin/Dashboard" element={<AdminSystem />} />
         </Routes>
       </BrowserRouter>
     </div>

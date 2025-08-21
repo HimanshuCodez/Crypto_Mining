@@ -4,6 +4,16 @@ export const getProfile = async (req, res) => {
     res.status(200).json(req.user);
 };
 
+export const getUserCount = async (req, res) => {
+    try {
+        const userCount = await User.countDocuments();
+        res.status(200).json({ count: userCount });
+    } catch (error) {
+        console.error('Error getting user count:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
 export const updateProfile = async (req, res) => {
     try {
         const { name, country, mobile, email } = req.body;
