@@ -27,11 +27,13 @@ const Wallet = () => {
             <span className="text-lg capitalize text-black font-light">
               Select wallet
             </span>
-            <input
-              type="text"
-              placeholder="USDT.BEP20"
-              className="outline-none w-full border border-[#00000066] rounded-md placeholder:text-[#000000B2] placeholder:capitalize placeholder:text-sm placeholder:font-extralight p-2"
-            />
+            <select
+              className="outline-none w-full border border-[#00000066] rounded-md p-2"
+            >
+              <option>USDT.BEP20</option>
+              <option>USDT.TRC20</option>
+              
+            </select>
           </label>
 
           {/* Wallet Address */}

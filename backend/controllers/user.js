@@ -86,3 +86,27 @@ export const updateAvatar = async (req, res) => {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
+
+export const getDirectReferrals = async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id).populate('directReferrals');
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        res.status(200).json(user.directReferrals);
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error });
+    }
+};
+
+export const getIndirectReferrals = async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id).populate('indirectReferrals');
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        res.status(200).json(user.indirectReferrals);
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error });
+    }
+};
