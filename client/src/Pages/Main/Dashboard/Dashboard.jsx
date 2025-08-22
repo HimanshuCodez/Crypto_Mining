@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import bg from '../../../assets/dash-bg.png';
-import useAuthStore from '../../../store/authStore';
+
 import axios from '../../../api/axios';
+import useAuthStore from '../../../store/authStore';
 
 const Dashboard = () => {
   const [dashboardData, setDashboardData] = useState(null);
   const { user } = useAuthStore();
+console.log(user);
 
   useEffect(() => {
     const fetchDashboardData = async () => {
       if (!user) return;
       try {
-        const response = await axios.get(`/api/user/${user.id}/dashboard`);
+        const response = await axios.get(`/api/user/${user._id}/dashboard`);
+        console.log('Dashboard Data:', response.data);
         setDashboardData(response.data);
       } catch (error) {
         console.error('Failed to fetch dashboard data', error);
@@ -38,7 +41,7 @@ const Dashboard = () => {
                   backgroundSize: 'cover', 
                   backgroundRepeat: 'no-repeat' , width:'20vw', height:'13vh'}}>
                   <h1 className='text-2xl font-medium text-white text-start'>Income Wallet</h1>
-                  <p className='text-white'>{dashboardData ? `${dashboardData.incomeWallet}` : '...'}</p>
+                  <p className='text-white'>${dashboardData ? `${dashboardData.incomeWallet}` : '...'}</p>
             </div>
               <div className='w-full px-5  py-2 rounded-2xl' style={{
                   backgroundImage: `url(${bg})`,
@@ -47,22 +50,22 @@ const Dashboard = () => {
                   backgroundRepeat: 'no-repeat', width: '20vw', height: '13vh'
               }}>
                   <h1 className='text-2xl font-medium text-white text-start'>Package Wallet</h1>
-                  <p className='text-white'>{dashboardData ? `${dashboardData.packageWallet}` : '...'}</p>
+                  <p className='text-white'>${dashboardData ? `${dashboardData.packageWallet}` : '...'}</p>
               </div>
           </div>
           <div className='flex flex-col gap-10  justify-start font-[Inter]'>
               <div className='bg-[#69E3CE] text-2xl font-medium text-black px-5 pt-3 pb-16 rounded-2xl text-start font-[Inter]'>
-                  <h1>Total Income: {dashboardData ? `${dashboardData.totalIncome}` : '...'}</h1>
+                  <h1>Total Income: ${dashboardData ? `${dashboardData.totalIncome}` : '...'}</h1>
             </div>
               <div className='bg-[#69E3CE] text-2xl font-medium text-black px-5 pt-3 pb-16 rounded-2xl text-start font-[Inter]'>
-                  <h1>Total Withdraw: {dashboardData ? `${dashboardData.totalWithdraw}` : '...'}</h1>
+                  <h1>Total Withdraw: ${dashboardData ? `${dashboardData.totalWithdraw}` : '...'}</h1>
               </div>
           </div>
           <ul className='flex flex-col bg-white px-5 py-2 rounded-2xl'>
               <li className='font-[Montserrat] font-semibold text-xl'>Activation License - {dashboardData ? (dashboardData.activationLicense ? 'Active' : 'In Active') : '...'} </li>
               <li className='font-[Montserrat] font-semibold text-xl'>Date Of Joining - {dashboardData ? new Date(dashboardData.dateOfJoining).toLocaleDateString() : '...'} </li>
               <li className='font-[Montserrat] font-semibold text-xl'>Date Of Actiavtion - {dashboardData && dashboardData.dateOfActivation ? new Date(dashboardData.dateOfActivation).toLocaleDateString() : 'In Active'} </li>
-              <li className='font-[Montserrat] font-semibold text-xl'>Minning Investment - {dashboardData ? `${dashboardData.miningInvestment}` : '0'} </li>
+              <li className='font-[Montserrat] font-semibold text-xl'>Minning Investment - ${dashboardData ? `${dashboardData.miningInvestment}` : '0'} </li>
               <li className='font-[Montserrat] font-semibold text-xl'>Direct Refral - {dashboardData ? dashboardData.directReferral : '0'} </li>
               <li className='font-[Montserrat] font-semibold text-xl'>Indirect Refral - {dashboardData ? dashboardData.indirectReferral : '0'} </li>
           </ul>

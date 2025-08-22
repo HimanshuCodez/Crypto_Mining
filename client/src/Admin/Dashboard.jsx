@@ -463,7 +463,7 @@ const AdminSystem = () => {
                 </td>
                 <td className="px-6 py-4 text-gray-700">
                   {payment.screenshotUrl ? (
-                    <a href={`http://localhost:3000${payment.screenshotUrl}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                    <a href={`http://localhost:4000${payment.screenshotUrl}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
                       View Screenshot
                     </a>
                   ) : (

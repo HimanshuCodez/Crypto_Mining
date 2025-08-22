@@ -11,14 +11,14 @@ export const getDashboardData = async (req, res) => {
 
         const dashboardData = {
             referralLink: `http://cryptominning.in/auth/signup?referral=${user.referralCode}`,
-            incomeWallet: user.incomeWallet,
-            packageWallet: user.packageWallet,
+            incomeWallet: user.incomeWallet || 0,
+            packageWallet: user.packageWallet || 0,
             totalIncome: user.incomeWallet, // This might need a more complex calculation
             totalWithdraw: 0, // This would need to be calculated from transactions
             activationLicense: user.activationLicense,
             dateOfJoining: user.createdAt,
             dateOfActivation: user.dateOfActivation,
-            miningInvestment: user.miningInvestment,
+            miningInvestment: user.miningInvestment || 0,
             directReferral: user.directReferrals.length,
             indirectReferral: user.indirectReferrals.length,
         };
