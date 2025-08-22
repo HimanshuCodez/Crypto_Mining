@@ -56,6 +56,16 @@ const useAuthStore = create((set) => ({
     setUser: (userData) => {
         set({ user: userData });
     },
+
+    checkAuth: async () => {
+        set({ loading: true });
+        try {
+            const response = await axios.get('/api/user/profile');
+            set({ user: response.data, isAuthenticated: true, loading: false });
+        } catch (error) {
+            set({ user: null, isAuthenticated: false, loading: false });
+        }
+    },
 }));
 
 export default useAuthStore;

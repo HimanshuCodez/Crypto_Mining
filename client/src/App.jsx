@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import useAuthStore from "./store/authStore";
 
 import SignuP from "./Pages/SignuP.JSX";
 
@@ -31,6 +32,12 @@ import AdminDashboard from "./Admin/Dashboard";
 import AdminSystem from "./Admin/Dashboard";
 
 const App = () => {
+  const { checkAuth } = useAuthStore();
+
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
+
   return (
     <div className="font-[Montserrat] bg-[#F7F7F7] flex">
       <BrowserRouter>
