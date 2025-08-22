@@ -18,6 +18,7 @@ import {
   Download,
 } from "lucide-react";
 import axios from "../api/axios";
+import useAuthStore from "../store/authStore";
 
 const AdminSystem = () => {
   const [currentPage, setCurrentPage] = useState("dashboard");
@@ -27,8 +28,10 @@ const AdminSystem = () => {
   const [userCount, setUserCount] = useState(0);
         const [barcodeUrl, setBarcodeUrl] = useState('https://imgs.search.brave.com/0TrKgTjetNkLgx2lktMkwwI1Y0nqOZaiKFaWrzhti60/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly91cy4x/MjNyb2ludC5jb20vNDUw/d20vbWFjbWFja3lr/eS9tYWNtYWNreWt5/MTYwOS9tYWNtYWNreWt5MTYwOTAwMjM3LzYzMTQ1Njg4LWJh/cmNvZUtc2Nhbm5l/ci5qcGc_dmVyPTY');
   const [pendingPayments, setPendingPayments] = useState([]);
+  const { users, fetchAllUsers } = useAuthStore();
 
   const fetchPendingPayments = async () => {
+
     try {
       const response = await axios.get('/api/admin/payments/pending');
       setPendingPayments(response.data);
@@ -59,7 +62,8 @@ const AdminSystem = () => {
     fetchUserCount();
     fetchBarcode();
     fetchPendingPayments();
-  }, []);
+    fetchAllUsers();
+  }, [fetchAllUsers]);
   
 
 
@@ -75,51 +79,6 @@ const AdminSystem = () => {
     pendingWithdrawals: 23,
     usdtBalance: 12500,
   };
-
-  const users = [
-    {
-      id: 1,
-      username: "alex_crypto",
-      email: "alex@example.com",
-      balance: 1250.5,
-      status: "active",
-      kyc: "approved",
-      joinDate: "2024-01-15",
-      lastActive: "2 hours ago",
-    },
-    {
-      id: 2,
-      username: "sarah_miner",
-      email: "sarah@example.com",
-      balance: 890.25,
-      status: "active",
-      kyc: "pending",
-      joinDate: "2024-02-08",
-      lastActive: "5 minutes ago",
-    },
-    {
-      id: 3,
-      username: "mike_hash",
-      email: "mike@example.com",
-      balance: 2340.75,
-      status: "suspended",
-      kyc: "approved",
-      joinDate: "2024-01-22",
-      lastActive: "1 day ago",
-    },
-    {
-      id: 4,
-      username: "crypto_queen",
-      email: "lisa@example.com",
-      balance: 567.8,
-      status: "active",
-      kyc: "rejected",
-      joinDate: "2024-03-01",
-      lastActive: "30 minutes ago",
-    },
-  ];
-
-
 
   const usdtWithdrawals = [
     {
@@ -327,7 +286,7 @@ const AdminSystem = () => {
           />
           <input
             type="text"
-            placeholder="Search users by username or email..."
+            placeholder="Search users by name or email..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:border-cyan-500 focus:outline-none"
@@ -339,10 +298,9 @@ const AdminSystem = () => {
           onChange={(e) => setFilterStatus(e.target.value)}
           className="px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 focus:border-cyan-500 focus:outline-none"
         >
-          <option value="all">All Status</option>
-          <option value="active">Active</option>
-          <option value="suspended">Suspended</option>
-          <option value="pending">Pending Activation</option>
+          <option value="all">All Roles</option>
+          <option value="user">User</option>
+          <option value="admin">Admin</option>
         </select>
       </div>
 
@@ -354,16 +312,16 @@ const AdminSystem = () => {
                 User
               </th>
               <th className="px-6 py-4 text-left text-gray-500 font-semibold">
-                Balance
+                Country
               </th>
               <th className="px-6 py-4 text-left text-gray-500 font-semibold">
-                Status
+                Mobile
               </th>
               <th className="px-6 py-4 text-left text-gray-500 font-semibold">
-                Activation
+                Role
               </th>
               <th className="px-6 py-4 text-left text-gray-500 font-semibold">
-                Last Active
+                Income Wallet
               </th>
               <th className="px-6 py-4 text-left text-gray-500 font-semibold">
                 Actions
@@ -373,46 +331,34 @@ const AdminSystem = () => {
           <tbody>
             {users.map((user) => (
               <tr
-                key={user.id}
+                key={user._id}
                 className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
               >
                 <td className="px-6 py-4">
                   <div>
-                    <p className="text-gray-800 font-medium">{user.username}</p>
-                    <p className="text-gray-500 text-sm">{user.email}</p>
+                    <p className="text-gray-800 font-medium">{user.name || 'missing'}</p>
+                    <p className="text-gray-500 text-sm">{user.email || 'missing'}</p>
                   </div>
                 </td>
                 <td className="px-6 py-4 text-gray-700 font-medium">
-                  ${user.balance}
+                  {user.country || 'missing'}
+                </td>
+                <td className="px-6 py-4 text-gray-700 font-medium">
+                  {user.mobile || 'missing'}
                 </td>
                 <td className="px-6 py-4">
                   <span
                     className={`px-3 py-1 rounded-full text-xs font-medium ${
-                      user.status === "active"
+                      user.role === "admin"
                         ? "bg-green-100 text-green-800"
-                        : user.status === "suspended"
-                        ? "bg-red-100 text-red-800"
-                        : "bg-yellow-100 text-yellow-800"
+                        : "bg-blue-100 text-blue-800"
                     }`}
                   >
-                    {user.status}
-                  </span>
-                </td>
-                <td className="px-6 py-4">
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs font-medium ${
-                      user.kyc === "approved"
-                        ? "bg-green-100 text-green-800"
-                        : user.kyc === "rejected"
-                        ? "bg-red-100 text-red-800"
-                        : "bg-yellow-100 text-yellow-800"
-                    }`}
-                  >
-                    {user.kyc}
+                    {user.role || 'missing'}
                   </span>
                 </td>
                 <td className="px-6 py-4 text-gray-600 text-sm">
-                  {user.lastActive}
+                  ${user.incomeWallet !== undefined ? user.incomeWallet.toFixed(2) : 'missing'}
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex space-x-2">
@@ -423,11 +369,7 @@ const AdminSystem = () => {
                       <Edit3 size={16} className="text-yellow-600" />
                     </button>
                     <button className="p-2 bg-red-100 hover:bg-red-200 rounded-lg transition-colors">
-                      {user.status === "active" ? (
-                        <UserX size={16} className="text-red-600" />
-                      ) : (
-                        <UserCheck size={16} className="text-green-600" />
-                      )}
+                      <UserX size={16} className="text-red-600" />
                     </button>
                   </div>
                 </td>
@@ -510,17 +452,25 @@ const AdminSystem = () => {
           <tbody>
             {pendingPayments.map((payment) => (
               <tr
-                key={payment.id}
+                key={payment._id}
                 className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
               >
                 <td className="px-6 py-4 text-gray-800 font-medium">
-                  {payment.username}
+                  {payment.userId ? payment.userId.name : 'N/A'}
                 </td>
                 <td className="px-6 py-4 text-gray-700 font-bold">
                   ${payment.amount}
                 </td>
-                <td className="px-6 py-4 text-gray-700">{payment.method}</td>
-                <td className="px-6 py-4 text-gray-700">{payment.date}</td>
+                <td className="px-6 py-4 text-gray-700">
+                  {payment.screenshotUrl ? (
+                    <a href={`http://localhost:3000${payment.screenshotUrl}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                      View Screenshot
+                    </a>
+                  ) : (
+                    'No Screenshot'
+                  )}
+                </td>
+                <td className="px-6 py-4 text-gray-700">{new Date(payment.createdAt).toLocaleDateString()}</td>
                 <td className="px-6 py-4">
                   <span
                     className={`px-3 py-1 rounded-full text-xs font-medium ${
@@ -534,10 +484,10 @@ const AdminSystem = () => {
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex space-x-2">
-                    <button onClick={() => handleApprovePayment(payment.id)} className="px-3 py-1 bg-green-500 hover:bg-green-600 rounded text-white text-sm font-medium transition-colors">
+                    <button onClick={() => handleApprovePayment(payment._id)} className="px-3 py-1 bg-green-500 hover:bg-green-600 rounded text-white text-sm font-medium transition-colors">
                       Approve
                     </button>
-                    <button onClick={() => handleRejectPayment(payment.id)} className="px-3 py-1 bg-red-500 hover:bg-red-600 rounded text-white text-sm font-medium transition-colors">
+                    <button onClick={() => handleRejectPayment(payment._id)} className="px-3 py-1 bg-red-500 hover:bg-red-600 rounded text-white text-sm font-medium transition-colors">
                       Reject
                     </button>
                   </div>
@@ -641,9 +591,9 @@ const AdminSystem = () => {
             </tr>
           </thead>
           <tbody>
-            {usdtWithdrawals.map((withdrawal) => (
+            {usdtWithdrawals.map((withdrawal, index) => (
               <tr
-                key={withdrawal.id}
+                key={withdrawal.id || index}
                 className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
               >
                 <td className="px-6 py-4 text-gray-800 font-medium">

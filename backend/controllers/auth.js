@@ -47,7 +47,7 @@ export const signup = async (req, res) => {
         await newUser.save();
 
         // Generate JWT token
-        const expiresIn = rememberMe ? '7d' : '1h';
+        const expiresIn = rememberMe ? '7d' : '10h';
         const token = jwt.sign({ email: newUser.email, id: newUser._id }, process.env.JWT_SECRET, { expiresIn });
 
         // Set cookie
@@ -82,7 +82,7 @@ export const login = async (req, res) => {
         }
 
         // Generate JWT token
-        const expiresIn = rememberMe ? '7d' : '1h';
+        const expiresIn = rememberMe ? '7d' : '10h';
         const token = jwt.sign({ email: existingUser.email, id: existingUser._id }, process.env.JWT_SECRET, { expiresIn });
 
         // Set cookie

@@ -6,6 +6,18 @@ const useAuthStore = create((set) => ({
     user: null,
     isAuthenticated: false,
     loading: false,
+    users: [],
+
+    fetchAllUsers: async () => {
+        set({ loading: true });
+        try {
+            const response = await axios.get('/api/admin/users');
+            set({ users: response.data, loading: false });
+        } catch (error) {
+            set({ loading: false });
+            toast.error('Failed to fetch users.');
+        }
+    },
 
     signup: async (userData) => {
         set({ loading: true });
