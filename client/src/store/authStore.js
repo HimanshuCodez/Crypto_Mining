@@ -1,5 +1,5 @@
 import {create} from 'zustand';
-import axios from 'axios';
+import axios from '../api/axios';
 import { toast } from 'react-toastify';
 
 const useAuthStore = create((set) => ({

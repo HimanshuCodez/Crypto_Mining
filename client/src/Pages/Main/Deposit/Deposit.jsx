@@ -1,11 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "../../../api/axios";
+import useAuthStore from '../../../store/authStore';
 
 const DepositUsdt = () => {
+  const { user } = useAuthStore();
   const [usdtAddress, setUsdtAddress] = useState("");
   const [sendingAddress, setSendingAddress] = useState("");
   const [amount, setAmount] = useState("");
   const [password, setPassword] = useState("");
   const [verify, setVerify] = useState(false);
+  const [barcode, setBarcode] = useState('');
+  const [paymentScreenshot, setPaymentScreenshot] = useState(null);
+  const [paymentAmount, setPaymentAmount] = useState('');
+  const [submissionStatus, setSubmissionStatus] = useState('idle'); // 'idle', 'submitting', 'pending', 'approved', 'rejected'
+
+  useEffect(() => {
+    // Fetch barcode from backend
+    const fetchBarcode = async () => {
+      try {
+        const response = await axios.get('/api/admin/barcode');
+        console.log('Barcode response:', response.data);
+        setBarcode(response.data.barcodeUrl);
+      } catch (error) {
+        console.error('Failed to fetch barcode', error);
+      }
+    };
+    fetchBarcode();
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -16,6 +37,49 @@ const DepositUsdt = () => {
       password,
       verify,
     });
+  };
+
+  const handleFileChange = (e) => {
+    setPaymentScreenshot(e.target.files[0]);
+  };
+
+  const handlePaymentSubmission = async () => {
+    if (!paymentScreenshot || !paymentAmount) {
+      alert('Please enter amount and upload screenshot.');
+      return;
+    }
+
+    if (!user || !user._id) {
+      alert('User not logged in or user ID not available.');
+      return;
+    }
+
+    setSubmissionStatus('submitting');
+    const formData = new FormData();
+    formData.append('screenshot', paymentScreenshot);
+    formData.append('amount', paymentAmount);
+    formData.append('userId', user._id); // Use actual user ID from auth context
+
+    try {
+      const response = await axios.post('/api/admin/payments/submit', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      if (response.status === 200) {
+        setSubmissionStatus('pending');
+        alert('Payment submitted successfully! Waiting for admin approval.');
+      } else {
+        setSubmissionStatus('idle');
+        alert('Failed to submit payment.');
+      }
+      
+    } catch (error) {
+      console.error('Error submitting payment:', error);
+      setSubmissionStatus('idle');
+      alert('An error occurred while submitting payment.');
+    }
   };
 
   return (
@@ -59,19 +123,55 @@ const DepositUsdt = () => {
           />
         </div>
 
-        {/* Amount */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Amount (USDT)
-          </label>
-          <input
-            type="text"
-            placeholder="Enter Amount"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-cyan-500"
-          />
+        {/* Barcode */}
+        {barcode && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Scan Barcode
+            </label>
+            <img src={barcode} alt="USDT Deposit Barcode" className="w-48 h-48" />
+          </div>
+        )}
+
+        {/* Upload Payment Proof */}
+        <div className="space-y-4">
+          <h3 className="text-xl font-semibold text-gray-800">Upload Payment Proof</h3>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Amount Paid (USDT)
+            </label>
+            <input
+              type="number"
+              placeholder="Enter amount paid"
+              value={paymentAmount}
+              onChange={(e) => setPaymentAmount(e.target.value)}
+              className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-cyan-500"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Upload Screenshot
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-cyan-500"
+            />
+          </div>
+          <button
+            type="button"
+            onClick={handlePaymentSubmission}
+            disabled={submissionStatus === 'submitting' || submissionStatus === 'pending'}
+            className="bg-cyan-400 hover:bg-cyan-500 text-white px-6 py-2 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {submissionStatus === 'submitting' ? 'Submitting...' : 'I have completed payment'}
+          </button>
+          {submissionStatus === 'pending' && (
+            <p className="text-yellow-600 font-medium mt-2">Waiting for admin approval...</p>
+          )}
         </div>
+
 
         {/* Password */}
         <div>

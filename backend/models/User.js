@@ -35,6 +35,37 @@ const userSchema = new mongoose.Schema({
         enum: ['user', 'admin'],
         default: 'user',
     },
+    incomeWallet: {
+        type: Number,
+        default: 0,
+    },
+    packageWallet: {
+        type: Number,
+        default: 0,
+    },
+    activationLicense: {
+        type: Boolean,
+        default: false,
+    },
+    dateOfActivation: {
+        type: Date,
+    },
+    miningInvestment: {
+        type: Number,
+        default: 0,
+    },
+    directReferrals: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+    }],
+    indirectReferrals: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+    }],
+    referredBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+    },
 }, { timestamps: true });
 
 const User = mongoose.model('User', userSchema);

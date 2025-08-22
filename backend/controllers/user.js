@@ -1,4 +1,33 @@
-import User from '../models/User.js'; // Import User model
+import User from '../models/User.js';
+
+export const getDashboardData = async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const user = await User.findById(userId).populate('directReferrals').populate('indirectReferrals');
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const dashboardData = {
+            referralLink: `http://cryptominning.in/auth/signup?referral=${user.referralCode}`,
+            incomeWallet: user.incomeWallet,
+            packageWallet: user.packageWallet,
+            totalIncome: user.incomeWallet, // This might need a more complex calculation
+            totalWithdraw: 0, // This would need to be calculated from transactions
+            activationLicense: user.activationLicense,
+            dateOfJoining: user.createdAt,
+            dateOfActivation: user.dateOfActivation,
+            miningInvestment: user.miningInvestment,
+            directReferral: user.directReferrals.length,
+            indirectReferral: user.indirectReferrals.length,
+        };
+
+        res.status(200).json(dashboardData);
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error });
+    }
+};
 
 export const getProfile = async (req, res) => {
     res.status(200).json(req.user);

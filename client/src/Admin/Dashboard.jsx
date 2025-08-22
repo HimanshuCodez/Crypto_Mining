@@ -17,6 +17,7 @@ import {
   UserX,
   Download,
 } from "lucide-react";
+import axios from "../api/axios";
 
 const AdminSystem = () => {
   const [currentPage, setCurrentPage] = useState("dashboard");
@@ -24,38 +25,55 @@ const AdminSystem = () => {
   const [filterStatus, setFilterStatus] = useState("all");
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [userCount, setUserCount] = useState(0);
+        const [barcodeUrl, setBarcodeUrl] = useState('https://imgs.search.brave.com/0TrKgTjetNkLgx2lktMkwwI1Y0nqOZaiKFaWrzhti60/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly91cy4x/MjNyb2ludC5jb20vNDUw/d20vbWFjbWFja3lr/eS9tYWNtYWNreWt5/MTYwOS9tYWNtYWNreWt5MTYwOTAwMjM3LzYzMTQ1Njg4LWJh/cmNvZUtc2Nhbm5l/ci5qcGc_dmVyPTY');
+  const [pendingPayments, setPendingPayments] = useState([]);
+
+  const fetchPendingPayments = async () => {
+    try {
+      const response = await axios.get('/api/admin/payments/pending');
+      setPendingPayments(response.data);
+    } catch (error) {
+      console.error('Error fetching pending payments:', error);
+    }
+  };
 
   useEffect(() => {
     const fetchUserCount = async () => {
       try {
-        //Note: This assumes the API is running on the same host and port
-        const response = await fetch("/api/user/count");
-        const data = await response.json();
-        if (response.ok) {
-          setUserCount(data.count);
-        } else {
-          throw new Error(data.message || "Failed to fetch user count");
-        }
+        const response = await axios.get("/api/user/count");
+        setUserCount(response.data.count);
       } catch (error) {
         console.error("Error fetching user count:", error);
-        // Handle error, e.g., show a notification to the user
+      }
+    };
+
+    const fetchBarcode = async () => {
+      try {
+        const response = await axios.get('/api/admin/barcode');
+        setBarcodeUrl(response.data.barcodeUrl);
+      } catch (error) {
+        console.error('Failed to fetch barcode', error);
       }
     };
 
     fetchUserCount();
+    fetchBarcode();
+    fetchPendingPayments();
   }, []);
+  
+
 
   // Mock data - replace with actual DB calls
   const dashboardStats = {
     totalUsers: 15847,
     activeUsers: 12453,
-    pendingKYC: 234,
+    pendingKYC: 25,
     blockedUsers: 160,
-    totalDeposits: 847650,
+    totalDeposits: 84,
     totalWithdrawals: 523480,
     pendingPayments: 45,
     pendingWithdrawals: 23,
-    usdtBalance: 125000,
+    usdtBalance: 12500,
   };
 
   const users = [
@@ -101,40 +119,7 @@ const AdminSystem = () => {
     },
   ];
 
-  const pendingPayments = [
-    {
-      id: 1,
-      username: "alex_crypto",
-      amount: 150.25,
-      method: "Bank Transfer",
-      date: "2024-08-20",
-      status: "pending",
-    },
-    {
-      id: 2,
-      username: "sarah_miner",
-      amount: 89.5,
-      method: "PayPal",
-      date: "2024-08-21",
-      status: "pending",
-    },
-    {
-      id: 3,
-      username: "crypto_master",
-      amount: 340.75,
-      method: "USDT",
-      date: "2024-08-19",
-      status: "processing",
-    },
-    {
-      id: 4,
-      username: "mine_pro",
-      amount: 75.3,
-      method: "Bank Transfer",
-      date: "2024-08-21",
-      status: "pending",
-    },
-  ];
+
 
   const usdtWithdrawals = [
     {
@@ -214,9 +199,9 @@ const AdminSystem = () => {
             trend="8.2"
           />
           <StatCard
-            title="Pending KYC"
+            title="Pending Activations"
             value={dashboardStats.pendingKYC}
-            subtitle="Awaiting verification"
+            subtitle="Awaiting Activations"
             icon={UserCheck}
           />
           <StatCard
@@ -348,6 +333,7 @@ const AdminSystem = () => {
             className="w-full pl-10 pr-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:border-cyan-500 focus:outline-none"
           />
         </div>
+        
         <select
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value)}
@@ -356,7 +342,7 @@ const AdminSystem = () => {
           <option value="all">All Status</option>
           <option value="active">Active</option>
           <option value="suspended">Suspended</option>
-          <option value="pending">Pending KYC</option>
+          <option value="pending">Pending Activation</option>
         </select>
       </div>
 
@@ -374,7 +360,7 @@ const AdminSystem = () => {
                 Status
               </th>
               <th className="px-6 py-4 text-left text-gray-500 font-semibold">
-                KYC
+                Activation
               </th>
               <th className="px-6 py-4 text-left text-gray-500 font-semibold">
                 Last Active
@@ -453,6 +439,36 @@ const AdminSystem = () => {
     </div>
   );
 
+  const handleApprovePayment = async (paymentId) => {
+    try {
+        const response = await axios.post(`/api/admin/payments/approve/${paymentId}`);
+        if (response.status === 200) {
+            alert('Payment approved!');
+            // Here you might want to refetch the payments list to update the UI
+        } else {
+            alert('Failed to approve payment.');
+        }
+    } catch (error) {
+        console.error('Failed to approve payment', error);
+        alert('An error occurred while approving the payment.');
+    }
+  };
+
+  const handleRejectPayment = async (paymentId) => {
+    try {
+        const response = await axios.post(`/api/admin/payments/reject/${paymentId}`);
+        if (response.status === 200) {
+            alert('Payment rejected!');
+            // Here you might want to refetch the payments list to update the UI
+        } else {
+            alert('Failed to reject payment.');
+        }
+    } catch (error) {
+        console.error('Failed to reject payment', error);
+        alert('An error occurred while rejecting the payment.');
+    }
+  };
+
   const renderPayments = () => (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -461,8 +477,8 @@ const AdminSystem = () => {
           <span className="text-gray-600">
             Pending: {pendingPayments.length}
           </span>
-          <button className="px-4 py-2 bg-green-500 hover:bg-green-600 rounded-lg text-white font-medium transition-colors">
-            Approve All
+          <button onClick={fetchPendingPayments} className="px-4 py-2 bg-green-500 hover:bg-green-600 rounded-lg text-white font-medium transition-colors">
+            Refresh Payments
           </button>
         </div>
       </div>
@@ -478,7 +494,7 @@ const AdminSystem = () => {
                 Amount
               </th>
               <th className="px-6 py-4 text-left text-gray-500 font-semibold">
-                Method
+                Screenshot
               </th>
               <th className="px-6 py-4 text-left text-gray-500 font-semibold">
                 Date
@@ -518,10 +534,10 @@ const AdminSystem = () => {
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex space-x-2">
-                    <button className="px-3 py-1 bg-green-500 hover:bg-green-600 rounded text-white text-sm font-medium transition-colors">
+                    <button onClick={() => handleApprovePayment(payment.id)} className="px-3 py-1 bg-green-500 hover:bg-green-600 rounded text-white text-sm font-medium transition-colors">
                       Approve
                     </button>
-                    <button className="px-3 py-1 bg-red-500 hover:bg-red-600 rounded text-white text-sm font-medium transition-colors">
+                    <button onClick={() => handleRejectPayment(payment.id)} className="px-3 py-1 bg-red-500 hover:bg-red-600 rounded text-white text-sm font-medium transition-colors">
                       Reject
                     </button>
                   </div>
@@ -530,6 +546,57 @@ const AdminSystem = () => {
             ))}
           </tbody>
         </table>
+      </div>
+    </div>
+  );
+
+  const handleUpdateBarcode = async () => {
+    try {
+      const response = await axios.post('/api/admin/barcode', { barcodeUrl });
+      if (response.status === 200) {
+        alert('Barcode updated successfully!');
+      } else {
+        alert('Failed to update barcode.');
+      }
+    } catch (error) {
+      console.error('Failed to update barcode', error);
+      alert('An error occurred while updating the barcode.');
+    }
+  };
+
+  const renderSettings = () => (
+    <div className="space-y-6">
+      <h2 className="text-2xl font-bold text-gray-800">BarCode Update</h2>
+      <div className="bg-white border border-gray-200 rounded-xl p-6">
+        <h3 className="text-xl font-semibold text-gray-700 mb-4">
+          Deposit Barcode
+        </h3>
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Barcode Image URL
+            </label>
+            <input
+              type="text"
+              placeholder="Enter barcode image URL"
+              value={barcodeUrl}
+              onChange={(e) => setBarcodeUrl(e.target.value)}
+              className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-cyan-500"
+            />
+          </div>
+          {barcodeUrl && (
+            <div>
+              <p className="block text-sm font-medium text-gray-700 mb-1">Current Barcode:</p>
+              <img src={barcodeUrl} alt="Current Deposit Barcode" className="w-48 h-48" />
+            </div>
+          )}
+          <button
+            onClick={handleUpdateBarcode}
+            className="px-4 py-2 bg-cyan-500 hover:bg-cyan-600 rounded-lg text-white font-medium transition-colors"
+          >
+            Update Barcode
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -641,7 +708,7 @@ const AdminSystem = () => {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="relative z-10 bg-white shadow-md">
-        <div className="max-w-7xl mx-auto px-6 py-4">
+        <div className="px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <div className="w-12 h-12 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-xl flex items-center justify-center">
@@ -671,13 +738,14 @@ const AdminSystem = () => {
 
       {/* Navigation */}
       <div className="relative z-10 bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="px-6">
           <nav className="flex space-x-8">
             {[
               { id: "dashboard", label: "Dashboard" },
               { id: "users", label: "User Management" },
               { id: "payments", label: "Payment Approvals" },
               { id: "withdrawals", label: "USDT Withdrawals" },
+              { id: "settings", label: "BarCode Update" },
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -696,11 +764,12 @@ const AdminSystem = () => {
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 py-8">
+      <div className="relative z-10 px-6 py-8">
         {currentPage === "dashboard" && renderDashboard()}
         {currentPage === "users" && renderUsers()}
         {currentPage === "payments" && renderPayments()}
         {currentPage === "withdrawals" && renderWithdrawals()}
+        {currentPage === "settings" && renderSettings()}
       </div>
     </div>
   );

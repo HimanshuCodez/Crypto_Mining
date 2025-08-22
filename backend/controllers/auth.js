@@ -24,6 +24,26 @@ export const signup = async (req, res) => {
 
         // Create a new user
         const newUser = new User({ name, country, mobile, email, password: hashedPassword, referralCode });
+
+        // Handle referral
+        if (referralCode) {
+            const referringUser = await User.findOne({ referralCode: referralCode });
+            if (referringUser) {
+                newUser.referredBy = referringUser._id;
+                referringUser.directReferrals.push(newUser._id);
+                await referringUser.save();
+
+                // Handle indirect referrals
+                if (referringUser.referredBy) {
+                    const grandParentReferrer = await User.findById(referringUser.referredBy);
+                    if (grandParentReferrer) {
+                        grandParentReferrer.indirectReferrals.push(newUser._id);
+                        await grandParentReferrer.save();
+                    }
+                }
+            }
+        }
+
         await newUser.save();
 
         // Generate JWT token
