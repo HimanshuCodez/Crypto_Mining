@@ -29,8 +29,11 @@ const Account = () => {
                             <input type="text" className='outline-none w-full border border-black rounded-lg placeholder:text-[#000000B2] placeholder:capitalize placeholder:text-sm placeholder:font-extralight p-2' placeholder='Enter User Id' name="" id="" />
                         </label>
                             <label htmlFor="mode" className='flex flex-col justify-start items-start gap-1'>
-                                <span className='text-lg capitalize text-black font-light'>mode</span>
-                                <input type="text" className='outline-none w-full border border-black rounded-lg placeholder:text-[#000000B2] placeholder:capitalize placeholder:text-sm placeholder:font-extralight p-2' placeholder='Account Activation &  AccountRenewal' name="" id="" />
+                                <span className='text-lg capitalize text-black font-light'>Mode</span>
+                                <select className='outline-none w-full border border-black rounded-lg p-2'>
+                                    <option value="activation">Account Activation</option>
+                                    <option value="renewal">Account Renewal</option>
+                                </select>
                             </label>
                         </span>
                         <span className='grid grid-cols-2 w-[45vw] justify-start gap-10'>
@@ -38,9 +41,12 @@ const Account = () => {
                                 <span className='text-lg capitalize text-black font-light'>Transaction Password</span>
                                 <input type="password" className='outline-none w-full border border-black rounded-lg placeholder:text-[#000000B2]  p-2' />
                             </label>
-                            <label htmlFor="mode" className='flex flex-col justify-start items-start gap-1'>
+                            <label htmlFor="paymentMode" className='flex flex-col justify-start items-start gap-1'>
                                 <span className='text-lg capitalize text-black font-light'>Payment Mode</span>
-                                <input type="text" className='outline-none w-full border border-black rounded-lg placeholder:text-[#000000B2] placeholder:capitalize placeholder:text-sm placeholder:font-extralight p-2' placeholder='Package wallet & Income Wallet' name="" id="" />
+                                <select className='outline-none w-full border border-black rounded-lg p-2'>
+                                    <option value="package">Package Wallet</option>
+                                    <option value="income">Income Wallet</option>
+                                </select>
                             </label>
                         </span>
                       

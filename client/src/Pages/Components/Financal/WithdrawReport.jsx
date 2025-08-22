@@ -4,7 +4,7 @@ const WithdrawReport = () => {
   return (
       <div className='w-[80vw] flex flex-col gap-6 p-10 font-[Montserrat]  '>
           <div className='flex flex-col justify-start items-start gap-2 font-[Inter]'>
-              <h2 className='text-4xl font-medium capitalize font-[Inter]'>Witdhraw Report</h2>
+              <h2 className='text-4xl font-medium capitalize font-[Inter]'>Withdraw Report</h2>
               <nav className='flex items-center gap-1 capitalize font-light text-sm font-[Inter]'>
                   <a href="/Financial">Financial</a><span>/</span><a href="/Witdhraw Report " className='text-[#02AC8F]'>Witdhraw Report<address></address></a>
               </nav>
