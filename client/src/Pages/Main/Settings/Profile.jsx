@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react'
-import Sidebar from '../../../Sidebar/Sidebar' // ✅ renamed to Sidebar for clarity
-import useAuthStore from '../../../store/authStore'
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import useAuthStore from '../../../store/authStore';
+import axios from '../../../api/axios'; // Corrected import
 import { FaUser, FaEnvelope, FaGlobe, FaMobileAlt, FaLock } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 
@@ -11,7 +10,7 @@ const Profile = () => {
     const [email, setEmail] = useState('');
     const [country, setCountry] = useState('');
     const [mobile, setMobile] = useState('');
-    const [transactionPassword, setTransactionPassword] = useState('Not Available');
+    const [transactionPassword] = useState('Not Available'); // It's read-only, so no setter needed
     const [selectedAvatar, setSelectedAvatar] = useState('');
 
     const avatars = [
@@ -30,25 +29,15 @@ const Profile = () => {
     ];
 
     useEffect(() => {
-        const fetchProfile = async () => {
-            try {
-                const response = await axios.get('/api/user/profile');
-                setUser(response.data);
-            } catch (error) {
-                console.error('Failed to fetch user profile:', error);
-            }
-        };
-
-        if (!user) {
-            fetchProfile();
-        } else {
+        // The user object is already in the store, no need to fetch again unless necessary
+        if (user) {
             setName(user.name || '');
             setEmail(user.email || '');
             setCountry(user.country || '');
             setMobile(user.mobile || '');
-            setSelectedAvatar(user.avatar || '');
+            setSelectedAvatar(user.avatar || avatars[0]); // Default to first avatar if none is set
         }
-    }, [user, setUser]);
+    }, [user]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -59,7 +48,7 @@ const Profile = () => {
             toast.success('Profile updated successfully!');
         } catch (error) {
             console.error('Error updating profile:', error);
-            toast.error('Failed to update profile. Please try again.');
+            toast.error(error.response?.data?.message || 'Failed to update profile.');
         }
     };
 
@@ -71,125 +60,113 @@ const Profile = () => {
             toast.success('Avatar updated successfully!');
         } catch (error) {
             console.error('Error updating avatar:', error);
-            toast.error('Failed to update avatar. Please try again.');
+            toast.error(error.response?.data?.message || 'Failed to update avatar.');
         }
     };
 
     return (
-        <div className="flex min-h-screen">
-            {/* Sidebar fixed on the left */}
-            <Sidebar />
+        <div className="w-full flex flex-col gap-6 p-4 md:p-10">
+            <div className="flex flex-col justify-start items-start gap-2">
+                <h2 className="text-3xl md:text-4xl font-medium capitalize font-[Inter]">Profile</h2>
+                <nav className="flex items-center gap-1 capitalize font-light text-sm font-[Inter]">
+                    <a href="/">home</a><span>/</span>
+                    <a href="/profile" className="text-[#02AC8F]">profile</a>
+                </nav>
+            </div>
 
-            {/* Main Content */}
-            <div className=" w-[78vw] flex flex-col gap-6 p-6 md:p-10  bg-[#F7F7F7]">
-                <div className="flex flex-col justify-start items-start gap-2">
-                    <h2 className="text-4xl font-medium capitalize font-[Inter]">Profile</h2>
-                    <nav className="flex items-center gap-1 capitalize font-light text-sm font-[Inter]">
-                        <a href="/">home</a><span>/</span>
-                        <a href="/settings">settings</a><span>/</span>
-                        <a href="/profile" className="text-[#02AC8F]">profile</a>
-                    </nav>
+            <div className="bg-white w-full rounded-3xl p-6 md:p-10 shadow-lg">
+                {/* Avatar Section */}
+                <div className="flex flex-col justify-center items-center gap-4">
+                    <div className="rounded-full w-28 h-28 md:w-40 md:h-40 border-2 border-[#31B8A1] overflow-hidden">
+                        {selectedAvatar && (
+                            <img src={selectedAvatar} alt="User Avatar" className="w-full h-full object-cover" />
+                        )}
+                    </div>
+                    <div className="text-center">
+                        <h2 className="font-semibold text-lg md:text-xl">{name}</h2>
+                        <h2 className="font-medium text-gray-600">{email}</h2>
+                    </div>
                 </div>
 
-                <div className="bg-white w-full rounded-3xl p-10 shadow">
-                    {/* Avatar Section */}
-                    <div className="flex flex-col justify-center items-center gap-5">
-                        <div className="rounded-full text-xl w-[10rem] h-[10rem] border border-[#31B8A1] overflow-hidden">
-                            {selectedAvatar && (
-                                <img src={selectedAvatar} alt="User Avatar" className="w-full h-full object-cover" />
-                            )}
-                        </div>
-                        <span className="flex flex-col justify-center items-center">
-                            <h2 className="font-semibold">{name}</h2>
-                            <h2 className="font-medium">{email}</h2>
-                        </span>
+                {/* Avatar Selection */}
+                <div className="flex flex-col items-center gap-4 mt-8">
+                    <h3 className="text-lg font-medium">Choose your avatar:</h3>
+                    <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-12 gap-3">
+                        {avatars.map((avatarUrl, index) => (
+                            <img
+                                key={index}
+                                src={avatarUrl}
+                                alt={`Avatar ${index + 1}`}
+                                className={`w-14 h-14 md:w-16 md:h-16 rounded-full cursor-pointer border-2 transition-all ${selectedAvatar === avatarUrl ? 'border-[#31B8A1] scale-110' : 'border-transparent'}`}
+                                onClick={() => handleAvatarSelect(avatarUrl)}
+                            />
+                        ))}
                     </div>
+                </div>
 
-                    {/* Avatar Selection */}
-                    <div className="flex flex-col items-center gap-4 mt-5">
-                        <h3 className="text-lg font-medium">Choose your avatar:</h3>
-                        <div className="grid grid-cols-3 sm:grid-cols-6 gap-4">
-                            {avatars.map((avatarUrl, index) => (
-                                <img
-                                    key={index}
-                                    src={avatarUrl}
-                                    alt={`Avatar ${index + 1}`}
-                                    className={`w-16 h-16 rounded-full cursor-pointer border-2 ${selectedAvatar === avatarUrl ? 'border-[#31B8A1]' : 'border-transparent'}`}
-                                    onClick={() => handleAvatarSelect(avatarUrl)}
-                                />
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Profile Form */}
-                    <form onSubmit={handleSubmit} className="mt-6">
-                        <div className="flex flex-col gap-6">
-                            <label htmlFor="name" className="flex flex-col justify-start items-start gap-2">
-                                <span className="text-sm capitalize text-black font-medium">Name</span>
-                                <span className="flex w-full">
-                                    <div className="w-20 p-2 border border-r-[#F4F4F4] bg-[#F4F4F4] rounded-l-full flex items-center justify-center">
-                                        <FaUser className="text-[#31B8A1]" />
-                                    </div>
-                                    <input type="text" className="outline-none w-full border rounded-r-full p-2"
-                                        name="name" id="name" value={name} onChange={(e) => setName(e.target.value)} />
-                                </span>
-                            </label>
-
-                            <span className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <label htmlFor="email" className="flex flex-col justify-start items-start gap-2">
-                                    <span className="text-sm capitalize text-black font-medium">Email</span>
-                                    <span className="flex w-full">
-                                        <div className="w-20 p-2 border border-r-[#F4F4F4] bg-[#F4F4F4] rounded-l-full flex items-center justify-center">
-                                            <FaEnvelope className="text-[#31B8A1]" />
-                                        </div>
-                                        <input type="email" className="outline-none w-full border rounded-r-full p-2"
-                                            name="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                                    </span>
-                                </label>
-                                <label htmlFor="country" className="flex flex-col justify-start items-start gap-2">
-                                    <span className="text-sm capitalize text-black font-medium">Country</span>
-                                    <span className="flex w-full">
-                                        <div className="w-20 p-2 border border-r-[#F4F4F4] bg-[#F4F4F4] rounded-l-full flex items-center justify-center">
-                                            <FaGlobe className="text-[#31B8A1]" />
-                                        </div>
-                                        <input type="text" className="outline-none w-full border rounded-r-full p-2"
-                                            name="country" id="country" value={country} onChange={(e) => setCountry(e.target.value)} />
-                                    </span>
-                                </label>
-                            </span>
-
-                            <span className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <label htmlFor="mobile" className="flex flex-col justify-start items-start gap-2">
-                                    <span className="text-sm capitalize text-black font-medium">Mobile</span>
-                                    <span className="flex w-full">
-                                        <div className="w-20 p-2 border border-r-[#F4F4F4] bg-[#F4F4F4] rounded-l-full flex items-center justify-center">
-                                            <FaMobileAlt className="text-[#31B8A1]" />
-                                        </div>
-                                        <input type="tel" className="outline-none w-full border rounded-r-full p-2"
-                                            name="mobile" id="mobile" value={mobile} onChange={(e) => setMobile(e.target.value)} />
-                                    </span>
-                                </label>
-                                <label htmlFor="transactionPassword" className="flex flex-col justify-start items-start gap-2">
-                                    <span className="text-sm capitalize text-black font-medium">Transaction password</span>
-                                    <span className="flex w-full">
-                                        <div className="w-20 p-2 border border-r-[#F4F4F4] bg-[#F4F4F4] rounded-l-full flex items-center justify-center">
-                                            <FaLock className="text-[#31B8A1]" />
-                                        </div>
-                                        <input type="password" className="outline-none w-full border rounded-r-full p-2"
-                                            name="transactionPassword" id="transactionPassword" value={transactionPassword} readOnly />
-                                    </span>
-                                </label>
-                            </span>
-
-                            <div className="flex justify-end">
-                                <button type="submit"
-                                    className="bg-[#31B8A1] rounded-3xl capitalize text-black font-medium text-lg px-8 py-2 hover:scale-105 transition-all ease-in">
-                                    Update
-                                </button>
+                {/* Profile Form */}
+                <form onSubmit={handleSubmit} className="mt-10">
+                    <div className="flex flex-col gap-6">
+                        <label htmlFor="name" className="flex flex-col justify-start items-start gap-2">
+                            <span className="text-sm capitalize text-black font-medium">Name</span>
+                            <div className="flex w-full">
+                                <div className="w-16 p-2 border border-r-0 bg-gray-100 rounded-l-full flex items-center justify-center">
+                                    <FaUser className="text-[#31B8A1]" />
+                                </div>
+                                <input type="text" className="outline-none w-full border rounded-r-full p-2" name="name" id="name" value={name} onChange={(e) => setName(e.target.value)} />
                             </div>
+                        </label>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <label htmlFor="email" className="flex flex-col justify-start items-start gap-2">
+                                <span className="text-sm capitalize text-black font-medium">Email</span>
+                                <div className="flex w-full">
+                                    <div className="w-16 p-2 border border-r-0 bg-gray-100 rounded-l-full flex items-center justify-center">
+                                        <FaEnvelope className="text-[#31B8A1]" />
+                                    </div>
+                                    <input type="email" className="outline-none w-full border rounded-r-full p-2" name="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                                </div>
+                            </label>
+                            <label htmlFor="country" className="flex flex-col justify-start items-start gap-2">
+                                <span className="text-sm capitalize text-black font-medium">Country</span>
+                                <div className="flex w-full">
+                                    <div className="w-16 p-2 border border-r-0 bg-gray-100 rounded-l-full flex items-center justify-center">
+                                        <FaGlobe className="text-[#31B8A1]" />
+                                    </div>
+                                    <input type="text" className="outline-none w-full border rounded-r-full p-2" name="country" id="country" value={country} onChange={(e) => setCountry(e.target.value)} />
+                                </div>
+                            </label>
                         </div>
-                    </form>
-                </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <label htmlFor="mobile" className="flex flex-col justify-start items-start gap-2">
+                                <span className="text-sm capitalize text-black font-medium">Mobile</span>
+                                <div className="flex w-full">
+                                    <div className="w-16 p-2 border border-r-0 bg-gray-100 rounded-l-full flex items-center justify-center">
+                                        <FaMobileAlt className="text-[#31B8A1]" />
+                                    </div>
+                                    <input type="tel" className="outline-none w-full border rounded-r-full p-2" name="mobile" id="mobile" value={mobile} onChange={(e) => setMobile(e.target.value)} />
+                                </div>
+                            </label>
+                            <label htmlFor="transactionPassword" className="flex flex-col justify-start items-start gap-2">
+                                <span className="text-sm capitalize text-black font-medium">Transaction password</span>
+                                <div className="flex w-full">
+                                    <div className="w-16 p-2 border border-r-0 bg-gray-100 rounded-l-full flex items-center justify-center">
+                                        <FaLock className="text-[#31B8A1]" />
+                                    </div>
+                                    <input type="password" className="outline-none w-full border rounded-r-full p-2 bg-gray-50" name="transactionPassword" id="transactionPassword" value={transactionPassword} readOnly />
+                                </div>
+                            </label>
+                        </div>
+
+                        <div className="flex justify-end mt-4">
+                            <button type="submit"
+                                className="bg-[#31B8A1] rounded-full capitalize text-white font-medium text-base md:text-lg px-8 py-2 hover:bg-[#2aa894] transition-all ease-in">
+                                Update Profile
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     );
