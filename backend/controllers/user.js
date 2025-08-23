@@ -1,4 +1,131 @@
 import User from '../models/User.js';
+import Transaction from '../models/Transaction.js';
+import bcrypt from 'bcryptjs';
+import nodemailer from 'nodemailer';
+
+// Create a transporter object using the default SMTP transport
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+    },
+});
+
+
+export const sendOtp = async (req, res) => {
+    const { email, password } = req.body;
+    const userId = req.user._id;
+
+    try {
+        const user = await User.findById(userId);
+        if (!user || user.email !== email) {
+            return res.status(404).json({ message: 'User not found or email does not match' });
+        }
+
+        const isPasswordCorrect = await bcrypt.compare(password, user.password);
+        if (!isPasswordCorrect) {
+            return res.status(400).json({ message: 'Invalid transaction password' });
+        }
+
+        const otp = Math.floor(100000 + Math.random() * 900000); // Generate a 6-digit OTP
+        user.otp = otp.toString();
+        user.otpExpires = Date.now() + 3600000; // 1 hour
+        await user.save();
+
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: 'Your OTP for Account Activation',
+            text: `Your OTP is ${otp}`,
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.log(error);
+                return res.status(500).json({ message: 'Error sending OTP' });
+            }
+            res.status(200).json({ message: 'OTP sent successfully' });
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error });
+    }
+};
+
+
+export const activateAccount = async (req, res) => {
+    const { userId, paymentMode, password, otp } = req.body;
+    const activatingUserId = req.user._id;
+
+    try {
+        const activatingUser = await User.findById(activatingUserId);
+        if (!activatingUser) {
+            return res.status(404).json({ message: "Activating user not found" });
+        }
+
+        // 1. Verify password
+        const isPasswordCorrect = await bcrypt.compare(password, activatingUser.password);
+        if (!isPasswordCorrect) {
+            return res.status(400).json({ message: "Invalid transaction password" });
+        }
+
+        // 2. Verify OTP
+        if (activatingUser.otp !== otp || activatingUser.otpExpires < Date.now()) {
+            return res.status(400).json({ message: 'Invalid or expired OTP' });
+        }
+
+        // 3. Check wallet balance
+        const activationCost = 111;
+        if (paymentMode === 'package' && activatingUser.packageWallet < activationCost) {
+            return res.status(400).json({ message: "Insufficient balance in Package Wallet. Deposit more to activate account." });
+        } else if (paymentMode === 'income' && activatingUser.incomeWallet < activationCost) {
+            return res.status(400).json({ message: "Insufficient balance in Income Wallet. Deposit more to activate account." });
+        }
+
+        // 4. Find user to activate
+        const userToActivate = await User.findOne({ referralCode: userId });
+        if (!userToActivate) {
+            return res.status(404).json({ message: "User to activate not found" });
+        }
+
+        if (userToActivate.activationLicense) {
+            return res.status(400).json({ message: "User is already activated" });
+        }
+
+        // 5. Update user to activate
+        userToActivate.activationLicense = true;
+        userToActivate.dateOfActivation = new Date();
+        await userToActivate.save();
+
+        // 6. Deduct from activating user's wallet
+        if (paymentMode === 'package') {
+            activatingUser.packageWallet -= activationCost;
+        } else {
+            activatingUser.incomeWallet -= activationCost;
+        }
+        
+        // Clear OTP
+        activatingUser.otp = undefined;
+        activatingUser.otpExpires = undefined;
+
+        await activatingUser.save();
+
+        // 7. Create transaction record
+        const transaction = new Transaction({
+            userId: activatingUserId,
+            amount: activationCost,
+            type: 'activation',
+            status: 'completed',
+        });
+        await transaction.save();
+
+        res.status(200).json({ message: "Account activated successfully" });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
 
 export const getDashboardData = async (req, res) => {
     try {

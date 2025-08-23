@@ -1,6 +1,26 @@
-import React from 'react'
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import useAuthStore from '../../../store/authStore';
 
 const PackageWallet = () => {
+    const { user } = useAuthStore();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const toastId = 'activation-error';
+        if (user && user.activationLicense === false) {
+            if (!toast.isActive(toastId)) {
+                toast.error('Activate your account first', { toastId });
+            }
+            navigate('/account_activation');
+        }
+    }, [user, navigate]);
+
+    if (!user || user.activationLicense === false) {
+        return null; // Or a loading spinner
+    }
+
   return (
       <div className='w-full flex flex-col gap-6 p-10 '>
 
