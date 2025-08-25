@@ -1,16 +1,9 @@
 import User from '../models/User.js';
 import Transaction from '../models/Transaction.js';
 import bcrypt from 'bcryptjs';
-import nodemailer from 'nodemailer';
+import { sendMail } from '../utils/mailer.js';
 
-// Create a transporter object using the default SMTP transport
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-    },
-});
+
 
 
 export const sendOtp = async (req, res) => {
@@ -33,22 +26,11 @@ export const sendOtp = async (req, res) => {
         user.otpExpires = Date.now() + 3600000; // 1 hour
         await user.save();
 
-        const mailOptions = {
-            from: process.env.EMAIL_USER,
-            to: email,
-            subject: 'Your OTP for Account Activation',
-            text: `Your OTP is ${otp}`,
-        };
-
-        transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-                console.log(error);
-                return res.status(500).json({ message: 'Error sending OTP' });
-            }
-            res.status(200).json({ message: 'OTP sent successfully' });
-        });
+        await sendMail(email, 'Your OTP for Account Activation', `Your OTP is ${otp}`);
+        res.status(200).json({ message: 'OTP sent successfully' });
     } catch (error) {
-        res.status(500).json({ message: 'Server error', error });
+        console.error("Error in sendOtp controller:", error);
+        res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
 
