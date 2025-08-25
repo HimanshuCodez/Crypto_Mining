@@ -43,6 +43,14 @@ const Account = () => {
             toast.error('Please enter your transaction password first');
             return;
         }
+        if (!walletData) {
+            toast.error('Wallet data not loaded yet.');
+            return;
+        }
+        if (walletData.incomeWallet < 111 && walletData.packageWallet < 111) {
+            toast.error('You do not have enough balance to activate account.');
+            return;
+        }
         try {
             setLoading(true);
             const response = await axios.post('/api/user/send-otp', { email: user.email, password: formData.password });
