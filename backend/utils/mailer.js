@@ -1,8 +1,7 @@
 import nodemailer from "nodemailer";
 import dotenv from 'dotenv';
 dotenv.config();
-console.log('EMAIL_USER:', process.env.EMAIL_USER);
-console.log('EMAIL_PASS:', process.env.EMAIL_PASS);
+
 
 // transporter for Gmail (use App Password if Gmail)
 const transporter = nodemailer.createTransport({
@@ -26,12 +25,12 @@ export const sendMail = async (to, subject, text) => {
         <p>If you did not request this OTP, please ignore this email.</p>
         <br>
         <p>Best regards,</p>
-        <p><strong>The MyApp Team</strong></p>
+        <p><strong>Crypto Minning</strong></p>
       </div>
     `;
 
     await transporter.sendMail({
-      from: `"MyApp" <${process.env.EMAIL_USER}>`,
+      from: `"Crypto Minning" <${process.env.EMAIL_USER}>`,
       to,
       subject,
       text: `Your OTP is: ${text}`,
