@@ -32,8 +32,8 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
   const [isFinancialOpen, setIsFinancialOpen] = useState(false);
   const [isTransferOpen, setIsTransferOpen] = useState(false);
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     navigate("/login");
   };
 

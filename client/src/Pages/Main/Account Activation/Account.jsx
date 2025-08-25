@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 
 const Account = () => {
     const [walletData, setWalletData] = useState(null);
-    const { user } = useAuthStore();
+    const { user, checkAuth } = useAuthStore();
     const [formData, setFormData] = useState({
         userId: '',
         mode: 'activation',
@@ -47,10 +47,17 @@ const Account = () => {
             toast.error('Wallet data not loaded yet.');
             return;
         }
-        if (walletData.incomeWallet < 111 && walletData.packageWallet < 111) {
-            toast.error('You do not have enough balance to activate account.');
+
+        const selectedWallet = formData.paymentMode;
+        if (selectedWallet === 'income' && walletData.incomeWallet < 111) {
+            toast.error('You do not have enough balance in your Income Wallet.');
             return;
         }
+        if (selectedWallet === 'package' && walletData.packageWallet < 111) {
+            toast.error('You do not have enough balance in your Package Wallet.');
+            return;
+        }
+
         try {
             setLoading(true);
             const response = await axios.post('/api/user/send-otp', { email: user.email, password: formData.password });
@@ -74,6 +81,7 @@ const Account = () => {
             // Optionally, refresh wallet data
             const updatedWalletData = await axios.get(`/api/user/${user._id}/dashboard`);
             setWalletData(updatedWalletData.data);
+            await checkAuth(); // Refresh global user state
         } catch (error) {
             toast.error(error.response?.data?.message || 'Error activating account');
         } finally {
