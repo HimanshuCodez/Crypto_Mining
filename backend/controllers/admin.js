@@ -139,6 +139,120 @@ export const getPendingPayments = async (req, res) => {
   }
 };
 
+export const getPendingMiningInvestments = async (req, res) => {
+  try {
+    const pendingInvestments = await Transaction.find({ status: 'pending', type: 'investment' }).populate('userId');
+    res.status(200).json(pendingInvestments);
+  } catch (error) {
+    console.error('Error fetching pending mining investments:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+export const getMiningInvestments = async (req, res) => {
+  try {
+    const investments = await Transaction.find({ type: 'investment' }).populate('userId');
+    res.status(200).json(investments);
+  } catch (error) {
+    console.error('Error fetching mining investments:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+export const paySingleInvestmentProfit = async (req, res) => {
+  try {
+    const { transactionId } = req.params;
+    const investment = await Transaction.findById(transactionId).populate('userId');
+
+    if (!investment) {
+      return res.status(404).json({ message: 'Investment not found' });
+    }
+
+    if (investment.status !== 'completed') {
+      return res.status(400).json({ message: 'Investment is not approved' });
+    }
+
+    const user = investment.userId;
+    if (!user) {
+      return res.status(404).json({ message: 'User not found for this investment' });
+    }
+
+    // Check if profit has already been distributed for today
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const lastDistribution = new Date(investment.lastProfitDistributionDate);
+    lastDistribution.setHours(0, 0, 0, 0);
+
+    if (lastDistribution.getTime() === today.getTime()) {
+      return res.status(400).json({ message: 'Profit already distributed for today.' });
+    }
+
+    const dailyProfit = investment.amount * investment.dailyProfitRate;
+
+    user.incomeWallet += dailyProfit;
+    investment.lastProfitDistributionDate = new Date();
+
+    const incomeTransaction = new Transaction({
+      userId: user._id,
+      amount: dailyProfit,
+      type: 'income',
+      description: `Daily mining profit for investment ${investment._id}`,
+      status: 'completed',
+    });
+
+    await user.save();
+    await investment.save();
+    await incomeTransaction.save();
+
+    res.status(200).json({ message: 'Daily profit paid successfully', dailyProfit });
+  } catch (error) {
+    console.error('Error paying single investment profit:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+export const payAllInvestmentsProfit = async (req, res) => {
+  try {
+    const approvedInvestments = await Transaction.find({ status: 'completed', type: 'investment' }).populate('userId');
+    let paidCount = 0;
+
+    for (const investment of approvedInvestments) {
+      const user = investment.userId;
+      if (!user) continue; // Skip if user not found
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const lastDistribution = new Date(investment.lastProfitDistributionDate);
+      lastDistribution.setHours(0, 0, 0, 0);
+
+      if (lastDistribution.getTime() < today.getTime()) {
+        const dailyProfit = investment.amount * investment.dailyProfitRate;
+
+        user.incomeWallet += dailyProfit;
+        investment.lastProfitDistributionDate = new Date();
+
+        const incomeTransaction = new Transaction({
+          userId: user._id,
+          amount: dailyProfit,
+          type: 'income',
+          description: `Daily mining profit for investment ${investment._id}`,
+          status: 'completed',
+        });
+
+        await user.save();
+        await investment.save();
+        await incomeTransaction.save();
+        paidCount++;
+      }
+    }
+
+    res.status(200).json({ message: `Daily profit paid for ${paidCount} investments.`, paidCount });
+  } catch (error) {
+    console.error('Error paying all investments profit:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
 export const getAllUsers = async (req, res) => {
     try {
         const users = await User.find({}, '-password');
@@ -147,4 +261,39 @@ export const getAllUsers = async (req, res) => {
         console.error('Error fetching all users:', error);
         res.status(500).json({ message: 'Server error', error: error.message });
     }
+};
+
+export const approveMiningInvestment = async (req, res) => {
+  try {
+    const { transactionId } = req.params;
+    const transaction = await Transaction.findById(transactionId);
+
+    if (!transaction) {
+      return res.status(404).json({ message: 'Transaction not found' });
+    }
+
+    if (transaction.type !== 'investment' || transaction.status !== 'pending') {
+      return res.status(400).json({ message: 'Transaction is not a pending investment' });
+    }
+
+    transaction.status = 'completed';
+    transaction.startDate = new Date();
+    transaction.dailyProfitRate = 0.165;
+    transaction.investmentDuration = 365; // Assuming 365 days for now
+    transaction.lastProfitDistributionDate = new Date();
+
+    await transaction.save();
+
+    // Update user's mining investment
+    const user = await User.findById(transaction.userId);
+    if (user) {
+      user.miningInvestment += transaction.amount;
+      await user.save();
+    }
+
+    res.status(200).json({ message: 'Mining investment approved successfully' });
+  } catch (error) {
+    console.error('Error approving mining investment:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
 };

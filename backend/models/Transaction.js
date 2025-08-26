@@ -23,6 +23,18 @@ const transactionSchema = new mongoose.Schema({
   screenshotUrl: {
     type: String,
   },
+  startDate: {
+    type: Date,
+  },
+  dailyProfitRate: {
+    type: Number,
+  },
+  investmentDuration: {
+    type: Number, // in days
+  },
+  lastProfitDistributionDate: {
+    type: Date,
+  },
 }, { timestamps: true });
 
 const Transaction = mongoose.model('Transaction', transactionSchema);
