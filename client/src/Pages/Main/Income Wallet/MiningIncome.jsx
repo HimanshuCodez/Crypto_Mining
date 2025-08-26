@@ -44,7 +44,8 @@ const MiningIncome = () => {
             await axios.post('/api/investment/send-otp', { 
                 userId: formData.userId, 
                 transactionPassword: formData.transactionPassword,
-                amount: formData.amount 
+                amount: formData.amount,
+                walletType: 'income' // Specify the wallet type
             });
             toast.success('OTP sent to your registered email/phone.');
             setIsOtpSent(true);
