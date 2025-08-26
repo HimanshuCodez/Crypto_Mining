@@ -1,11 +1,21 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import useAuthStore from '../../../store/authStore';
+import axios from '../../../api/axios';
 
 const PackageWallet = () => {
-    const { user } = useAuthStore();
+    const { user, fetchUser } = useAuthStore();
     const navigate = useNavigate();
+
+    const [formData, setFormData] = useState({
+        userId: '',
+        amount: '',
+        transactionPassword: '',
+        otp: ''
+    });
+    const [isOtpSent, setIsOtpSent] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const toastId = 'activation-error';
@@ -17,8 +27,58 @@ const PackageWallet = () => {
         }
     }, [user, navigate]);
 
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleSendOtp = async () => {
+        if (!formData.userId || !formData.amount || !formData.transactionPassword) {
+            return toast.error('Please fill all fields before sending OTP.');
+        }
+        if (parseFloat(formData.amount) > (user?.packageWallet ?? 0)) {
+            return toast.error('Insufficient package wallet balance.');
+        }
+
+        setIsLoading(true);
+        try {
+            await axios.post('/api/investment/send-otp', { 
+                userId: formData.userId, 
+                transactionPassword: formData.transactionPassword,
+                amount: formData.amount 
+            });
+            toast.success('OTP sent to your registered email/phone.');
+            setIsOtpSent(true);
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Failed to send OTP. Please check details.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!formData.otp) {
+            return toast.error('Please enter the OTP.');
+        }
+        setIsLoading(true);
+        try {
+            const response = await axios.post('/api/investment/invest-from-package', {
+                userId: formData.userId,
+                amount: formData.amount,
+                otp: formData.otp
+            });
+            toast.success(response.data.message || 'Investment successful!');
+            fetchUser();
+            navigate('/dashboard');
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Investment failed.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     if (!user || user.activationLicense === false) {
-        return null; // Or a loading spinner
+        return null;
     }
 
   return (
@@ -32,40 +92,52 @@ const PackageWallet = () => {
                   (Amount Should be In Multiples of $20). </h2></span>
               <div className='grid grid-cols-2 justify-start items-center gap-10 w-[60%] pt-8'>
                   <div className='font-[Inter] font-medium text-2xl flex flex-col gap-3 border rounded-lg p-3'>
-                      <h2>Package Wallet</h2>
-                      <span className='text-[#2EB9A2]'>$0</span>
+                      <h2>Package Wallet Balance</h2>
+                      <span className='text-[#2EB9A2]'>${user?.packageWallet?.toFixed(2) ?? '0.00'}</span>
                   </div>
 
               </div>
               <h2 className='text-3xl font-[Inter] font-medium py-3'>Fill Investment Details</h2>
-              <form action="get">
+              <form onSubmit={handleSubmit}>
                   <div className='flex flex-col gap-6 font-[Inter]'>
                       <span className='grid grid-cols-2 w-[45vw] justify-start gap-10'>
-                          <label htmlFor="userid" className='flex flex-col justify-start items-start gap-1'>
+                          <label htmlFor="userId" className='flex flex-col justify-start items-start gap-1'>
                               <span className='text-lg capitalize text-black font-light'>User Id</span>
-                              <input type="text" className='outline-none w-full border border-black rounded-lg placeholder:text-[#000000B2] placeholder:capitalize placeholder:text-sm placeholder:font-extralight p-2' placeholder='Enter User Id' name="" id="" />
+                              <input type="text" name="userId" value={formData.userId} onChange={handleChange} className='outline-none w-full border border-black rounded-lg placeholder:text-[#000000B2] placeholder:capitalize placeholder:text-sm placeholder:font-extralight p-2' placeholder='Enter User Id' id="userId" />
                           </label>
 
                       </span>
                       <span className='grid grid-cols-2 w-[45vw] justify-start gap-10'>
 
-                          <label htmlFor="mode" className='flex flex-col justify-start items-start gap-1'>
+                          <label htmlFor="amount" className='flex flex-col justify-start items-start gap-1'>
                               <span className='text-lg capitalize text-black font-light'>Investment Amount</span>
-                              <input type="text" className='outline-none w-full border border-black rounded-lg placeholder:text-[#000000B2] placeholder:capitalize placeholder:text-sm placeholder:font-extralight p-2' placeholder='Enter Amount' name="" id="" />
+                              <input type="text" name="amount" value={formData.amount} onChange={handleChange} className='outline-none w-full border border-black rounded-lg placeholder:text-[#000000B2] placeholder:capitalize placeholder:text-sm placeholder:font-extralight p-2' placeholder='Enter Amount' id="amount" />
                           </label>
                       </span>
-                      <label htmlFor="password" className='flex flex-col justify-start items-start gap-1 w-[20vw]'>
+                      <label htmlFor="transactionPassword" className='flex flex-col justify-start items-start gap-1 w-[20vw]'>
                           <span className='text-lg capitalize text-black font-light'>Transaction Password</span>
-                          <input type="password" className='outline-none w-full border border-[#00000066] rounded-sm placeholder:text-[#000000B2]  p-2' />
+                          <input type="password" name="transactionPassword" value={formData.transactionPassword} onChange={handleChange} className='outline-none w-full border border-[#00000066] rounded-sm placeholder:text-[#000000B2]  p-2' id="transactionPassword" />
                       </label>
-                      <label htmlFor="password" className='flex flex-col justify-start items-start gap-1'>
-                          <span className='text-lg capitalize text-black font-light'>one time password</span>
-                          <span className='text-sm font-light flex w-[20vw]'><input type="password" className='outline-none w-full border border-[#00000066] rounded-l-sm placeholder:text-[#000000B2]  p-2' /><div className='border rounded-r-sm border-l-[#00000066] w-[10vw] flex items-center  justify-center'>Send OTP</div></span>
-                      </label>
-                      <label htmlFor="verify" className='flex justify-start items-center gap-1'>
-                          <input type="checkbox" name="" id="" /><span className='text-[#31B8A1] font-semibold  font-[Montserrat] text-sm'>Verify</span>
-                      </label>
-                      <div className='flex justify-start'><button className='border-[#31B8A1]  rounded-lg capitalize border text-[#31B8A1] font-semibold  font-[Montserrat] text-lg px-6 py-2 scale-100 hover:scale-105 transition-all ease-in'>submit</button></div>
+
+                      {!isOtpSent ? (
+                        <div className='flex justify-start'>
+                            <button type="button" onClick={handleSendOtp} disabled={isLoading} className='border-[#31B8A1] rounded-lg capitalize border text-[#31B8A1] font-semibold font-[Montserrat] text-lg px-6 py-2 scale-100 hover:scale-105 transition-all ease-in disabled:opacity-50'>
+                                {isLoading ? 'Validating...' : 'Validate & Send OTP'}
+                            </button>
+                        </div>
+                      ) : (
+                        <>
+                            <label htmlFor="otp" className='flex flex-col justify-start items-start gap-1'>
+                                <span className='text-lg capitalize text-black font-light'>One Time Password</span>
+                                <input type="password" name="otp" value={formData.otp} onChange={handleChange} className='outline-none w-[20vw] border border-[#00000066] rounded-sm placeholder:text-[#000000B2] p-2' id="otp" />
+                            </label>
+                            <div className='flex justify-start'>
+                                <button type="submit" disabled={isLoading} className='border-[#31B8A1] rounded-lg capitalize border text-[#31B8A1] font-semibold font-[Montserrat] text-lg px-6 py-2 scale-100 hover:scale-105 transition-all ease-in disabled:opacity-50'>
+                                    {isLoading ? 'Submitting...' : 'Submit'}
+                                </button>
+                            </div>
+                        </>
+                      )}
                   </div>
               </form>
           </div>
@@ -73,4 +145,4 @@ const PackageWallet = () => {
   )
 }
 
-export default PackageWallet
+export default PackageWallet;

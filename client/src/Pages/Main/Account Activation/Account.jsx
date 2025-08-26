@@ -14,6 +14,7 @@ const Account = () => {
         otp: ''
     });
     const [loading, setLoading] = useState(false);
+    const [isActivating, setIsActivating] = useState(false);
 
     useEffect(() => {
         const fetchWalletData = async () => {
@@ -75,19 +76,24 @@ const Account = () => {
             return toast.error('You do not have enough balance to activate account.');
         }
         try {
-            setLoading(true);
+            setIsActivating(true);
             const response = await axios.post('/api/user/activate', formData);
             toast.success(response.data.message);
-            // Optionally, refresh wallet data
-            const updatedWalletData = await axios.get(`/api/user/${user._id}/dashboard`);
-            setWalletData(updatedWalletData.data);
-            await checkAuth(); // Refresh global user state
+            await checkAuth();
         } catch (error) {
             toast.error(error.response?.data?.message || 'Error activating account');
         } finally {
-            setLoading(false);
+            setIsActivating(false);
         }
     };
+
+    if (isActivating) {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <div className="text-2xl font-medium">Activating your account, please wait...</div>
+            </div>
+        );
+    }
 
     return (
         <div className='w-full flex flex-col gap-6 p-4 md:p-10'>

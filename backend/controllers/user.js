@@ -16,7 +16,7 @@ export const sendOtp = async (req, res) => {
             return res.status(404).json({ message: 'User not found or email does not match' });
         }
 
-        const isPasswordCorrect = await bcrypt.compare(password, user.password);
+        const isPasswordCorrect = await bcrypt.compare(password, user.transactionPassword);
         if (!isPasswordCorrect) {
             return res.status(400).json({ message: 'Invalid transaction password' });
         }
@@ -72,6 +72,12 @@ export const activateAccount = async (req, res) => {
 
         if (userToActivate.activationLicense) {
             return res.status(400).json({ message: "User is already activated" });
+        }
+
+        // Handle referral if not already set
+        if (!userToActivate.referredBy) {
+            userToActivate.referredBy = activatingUser._id;
+            activatingUser.directReferrals.push(userToActivate._id);
         }
 
         // 5. Update user to activate

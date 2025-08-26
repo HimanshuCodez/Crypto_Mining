@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -22,6 +23,9 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
+    },
+    transactionPassword: {
+        type: String,
     },
     referralCode: {
         type: String,
@@ -73,6 +77,19 @@ const userSchema = new mongoose.Schema({
         type: Date,
     },
 }, { timestamps: true });
+
+// Hash password before saving
+userSchema.pre('save', async function(next) {
+    if (this.isModified('password')) {
+        const salt = await bcrypt.genSalt(10);
+        this.password = await bcrypt.hash(this.password, salt);
+    }
+    if (this.isModified('transactionPassword') && this.transactionPassword) {
+        const salt = await bcrypt.genSalt(10);
+        this.transactionPassword = await bcrypt.hash(this.transactionPassword, salt);
+    }
+    next();
+});
 
 const User = mongoose.model('User', userSchema);
 

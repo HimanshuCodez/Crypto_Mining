@@ -37,7 +37,7 @@ const Dashboard = () => {
         <h1 className='text-lg md:text-xl font-medium'>Referral Link</h1>
         <div className='flex flex-col sm:flex-row items-start sm:items-center gap-3'>
           <h6 className='font-normal text-sm break-all'>{dashboardData ? dashboardData.referralLink : 'Loading...'}</h6>
-          <button onClick={handleCopy} className='border border-dashed px-3 py-1 font-semibold text-[#31B8A1] border-[#31B8A1] whitespace-nowrap'>copy</button>
+          <button onClick={handleCopy} className='border border-dashed px-3 py-1 font-semibold text-[#31B8A1] cursor-pointer border-[#31B8A1] whitespace-nowrap'>copy</button>
         </div>
       </div>
 

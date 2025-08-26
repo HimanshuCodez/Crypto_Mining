@@ -1,6 +1,6 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import logo from "../assets/logo.png";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useSearchParams } from "react-router-dom";
 import useAuthStore from "../store/authStore.js";
 import { getNames } from "country-list";
 import Turnstile from "react-turnstile";
@@ -18,6 +18,15 @@ const SignUp = () => {
     turnstileToken: "",
     rememberMe: false,
   });
+
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const referralCodeFromUrl = searchParams.get('referral');
+    if (referralCodeFromUrl) {
+      setFormData(prevData => ({ ...prevData, referralCode: referralCodeFromUrl }));
+    }
+  }, [searchParams]);
 
   const countries = useMemo(() => getNames(), []);
 
