@@ -1,61 +1,78 @@
-import React from 'react'
+import React, { useState, useEffect } from "react";
+import api from "../../../api/axios";
+import { toast } from "react-toastify";
 
 const WithdrawReport = () => {
+  const [withdrawals, setWithdrawals] = useState([]);
+
+  const fetchWithdrawals = async () => {
+    try {
+      const response = await api.get("/api/withdrawals/all");
+      setWithdrawals(response.data);
+    } catch (error) {
+      toast.error("Failed to fetch withdrawals");
+    }
+  };
+
+  useEffect(() => {
+    fetchWithdrawals();
+  }, []);
+
   return (
-      <div className='w-[80vw] flex flex-col gap-6 p-10 font-[Montserrat]  '>
-          <div className='flex flex-col justify-start items-start gap-2 font-[Inter]'>
-              <h2 className='text-4xl font-medium capitalize font-[Inter]'>Withdraw Report</h2>
-              <nav className='flex items-center gap-1 capitalize font-light text-sm font-[Inter]'>
-                  <a href="/Financial">Financial</a><span>/</span><a href="/Witdhraw Report " className='text-[#02AC8F]'>Witdhraw Report<address></address></a>
-              </nav>
-          </div>
-          <div className='font-[Inter] font-medium text-white bg-[#2EB9A2BF] flex justify-between items-center px-5 rounded-xl py-2'><h1 className='text-sm capitalize'>total amount</h1>
-              <button className='border border-white  text-xs p-2 rounded-sm '>Filter</button></div>
-          <div className='w-full bg-white p-5 rounded-xl flex justify-between items-center '>
-              <div className='flex  gap-10 font-[Inter]'>
-                  <span className='px-20 py-1 border rounded-lg font-normal text-lg '>3/08/25</span>
-                  <span className='px-20 py-1 border rounded-lg font-normal text-lg '>3/08/25</span></div>
-              <div className='flex justify-end'><button className='border-[#31B8A1]  rounded-lg capitalize border text-[#31B8A1] font-semibold  font-[Montserrat] text-lg px-4 py-1 scale-100 hover:scale-105 transition-all ease-in'>submit</button></div>
-          </div>
-          <div className='bg-[#FFFFFF] w-full rounded-3xl px-5 py-10 flex flex-col gap-5 '>
-              <h2 className='text-xl font-medium font-[Inter]'>Witdhraw Report</h2>
-              <div className='flex justify-between items-center w-full'>
-                  <span className='flex items-center gap-2'>
-                      <h5 className='text-[#000000B2] capitalize text-lg font-medium '>entries:</h5>
-                      <input type="text" className='outline-none border capitalize bg-white rounded-sm w-[6vw] px-2' />
-                  </span>
-     
-              </div>
-              <div className='bg-[#F7F7F7]   py-3 px-8  pb-10 rounded-sm w-full'>
-                  <div className='grid grid-cols-5 gap-6 text-lg font-medium '>
-                      <div>#</div>
-                      <div>Amount</div>
-                      <div>Wallet
-                          Address</div>
-                      <div className="text-center">Status</div>
-                      <div className="text-center">Withdraw Date</div>
-               
-                  </div>
-                  <div className='grid grid-cols-5 gap-4 py-3 text-gray-500'>
-                      <div>-</div>
-                      <div>-</div>
-                      <div>-</div>
-                      <div className="text-center">-</div>
-                      <div className="text-center">-</div>
-
-                  </div>
-
-              </div>
-          </div>
-          <div className='bg-[#FFFFFF] flex justify-between items-start rounded-b-3xl p-5'>
-              <h2 className='text-lg font-medium text-[#000000B2]'>Showing 0 to 0 of 0 entries</h2>
-              <span className='flex gap-4'>
-                  <button className='text-sm border border-dashed border-[#68EDFE] px-3 py-2 font-normal'>Previous</button>
-                  <button className='text-sm border border-dashed border-[#68EDFE] px-6 py-2 font-normal'>Next</button>
-              </span>
-          </div>
+    <div className="w-full lg:w-[80vw] flex flex-col gap-6 p-4 sm:p-6 lg:p-10 font-[Montserrat]">
+      {/* Header */}
+      <div className="flex flex-col justify-start items-start gap-2 font-[Inter]">
+        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-medium capitalize">
+          Withdraw Report
+        </h2>
+        <nav className="flex flex-wrap items-center gap-1 capitalize font-light text-xs sm:text-sm">
+          <a href="/Financial">Financial</a>
+          <span>/</span>
+          <a
+            href="/Withdraw Report"
+            className="text-[#02AC8F] truncate max-w-[150px] sm:max-w-none"
+          >
+            Withdraw Report
+          </a>
+        </nav>
       </div>
-  )
-}
 
-export default WithdrawReport
+      {/* Report Container */}
+      <div className="bg-white w-full rounded-2xl sm:rounded-3xl px-3 sm:px-5 py-6 sm:py-10 flex flex-col gap-5 shadow">
+        <h2 className="text-lg sm:text-xl font-medium">Withdraw Report</h2>
+
+        {/* Table wrapper for mobile scroll */}
+        <div className="overflow-x-auto">
+          <div className="min-w-[600px] bg-[#F7F7F7] rounded-md">
+            {/* Table Head */}
+            <div className="grid grid-cols-5 gap-4 sm:gap-6 text-sm sm:text-base font-semibold py-3 px-4 border-b">
+              <div>#</div>
+              <div>Amount</div>
+              <div>Wallet Address</div>
+              <div className="text-center">Status</div>
+              <div className="text-center">Withdraw Date</div>
+            </div>
+
+            {/* Table Body */}
+            {withdrawals.map((withdrawal, index) => (
+              <div
+                key={withdrawal._id}
+                className="grid grid-cols-5 gap-4 sm:gap-6 py-3 px-4 text-xs sm:text-sm text-gray-600 border-b last:border-none"
+              >
+                <div>{index + 1}</div>
+                <div>${withdrawal.amount}</div>
+                <div className="truncate">{withdrawal.walletAddress}</div>
+                <div className="text-center">{withdrawal.status}</div>
+                <div className="text-center">
+                  {new Date(withdrawal.createdAt).toLocaleDateString()}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default WithdrawReport;
