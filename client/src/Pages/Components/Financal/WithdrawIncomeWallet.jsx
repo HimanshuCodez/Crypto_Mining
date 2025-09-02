@@ -1,6 +1,13 @@
 import React from 'react'
+import useAuthStore from '../../../store/authStore';
 
 const WithdrawIncomeWallet = () => {
+  const { user } = useAuthStore();
+
+  if (!user) {
+    return <div>Loading user data...</div>;
+  }
+
   return (
       <div className='w-full flex flex-col gap-6 p-10 pr-20 font-[Inter]'>
 
@@ -11,23 +18,29 @@ const WithdrawIncomeWallet = () => {
               </nav>
           </div>
           <div className='bg-[#FFFFFF] w-full rounded-3xl px-5 py-10  flex flex-col gap-5'>
+              <div className='grid grid-cols-2 justify-start items-center gap-10 w-[60%] pt-8'>
+                  <div className='font-[Inter] font-medium text-2xl flex flex-col gap-3 border rounded-lg p-3'>
+                      <h2>Income Wallet Balance</h2>
+                      <span className='text-[#2EB9A2]'>${user?.incomeWallet?.toFixed(2) ?? '0.00'}</span>
+                  </div>
+              </div>
               <h2 className=' text-2xl px-2 py-3 rounded-xl  capitalize font-medium font-[Inter] bg-[#2EB9A2] text-white'>Add New USDT.BEP20 Address to Receive Profits</h2>
         
              
               <form action="get">
                   <div className='flex flex-col gap-6 font-[Inter]'>
                       <span className='grid grid-cols-2 w-[45vw] justify-start gap-10'>
-                          <label htmlFor="" className='flex flex-col justify-start items-start gap-1'>
+                          <label htmlFor="walletAddress" className='flex flex-col justify-start items-start gap-1'>
                               <span className='text-lg capitalize text-black font-light'>Select Wallet Address</span>
-                              <input type="text" className='outline-none w-full border border-black rounded-lg placeholder:text-[#000000B2] placeholder:capitalize placeholder:text-sm placeholder:font-extralight p-2' placeholder='Select Wallet Address' name="" id="" />
+                              <input type="text" className='outline-none w-full border border-black rounded-lg placeholder:text-[#000000B2] placeholder:capitalize placeholder:text-sm placeholder:font-extralight p-2' placeholder='Select Wallet Address' name="walletAddress" id="walletAddress" />
                           </label>
 
                       </span>
                       <span className='grid grid-cols-2 w-[45vw] justify-start gap-10'>
 
-                          <label htmlFor="mode" className='flex flex-col justify-start items-start gap-1'>
+                          <label htmlFor="amount" className='flex flex-col justify-start items-start gap-1'>
                               <span className='text-lg capitalize text-black font-light'>Enter Amount</span>
-                              <input type="text" className='outline-none w-full border border-black rounded-lg placeholder:text-[#000000B2] placeholder:capitalize placeholder:text-sm placeholder:font-extralight p-2' placeholder='Enter Amount' name="" id="" />
+                              <input type="text" className='outline-none w-full border border-black rounded-lg placeholder:text-[#000000B2] placeholder:capitalize placeholder:text-sm placeholder:font-extralight p-2' placeholder='Enter Amount' name="amount" id="amount" />
                           </label>
                       </span>
                       <label htmlFor="password" className='flex flex-col justify-start items-start gap-1 w-[20vw]'>

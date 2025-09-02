@@ -31,16 +31,6 @@ const MinningInvestmentApproval = () => {
     }
   };
 
-  const handlePaySingle = async (transactionId) => {
-    try {
-      await axios.post(`/api/admin/mining-investments/pay-single/${transactionId}`);
-      alert('Daily profit paid successfully!');
-      fetchInvestments(); // Refresh the list
-    } catch (err) {
-      alert(`Error paying daily profit: ${err.response?.data?.message || err.message}`);
-    }
-  };
-
   const handlePayAll = async () => {
     try {
       await axios.post('/api/admin/mining-investments/pay-all');
@@ -54,14 +44,13 @@ const MinningInvestmentApproval = () => {
   const pendingInvestments = allInvestments.filter(inv => inv.status === 'pending');
   const approvedInvestments = allInvestments.filter(inv => inv.status === 'completed');
 
-  const calculateDaysRemaining = (startDate, duration) => {
-    if (!startDate || !duration) return 'N/A';
+  const calculateDaysActive = (startDate) => {
+    if (!startDate) return 'N/A';
     const start = new Date(startDate);
     const now = new Date();
     const elapsedMilliseconds = now.getTime() - start.getTime();
-    const elapsedDays = elapsedMilliseconds / (1000 * 60 * 60 * 24);
-    const remainingDays = duration - elapsedDays;
-    return Math.max(0, Math.floor(remainingDays));
+    const daysActive = elapsedMilliseconds / (1000 * 60 * 60 * 24);
+    return Math.floor(daysActive);
   };
 
   if (loading) {
@@ -88,7 +77,7 @@ const MinningInvestmentApproval = () => {
         <p>No pending mining investments.</p>
       ) : (
         <div className="overflow-x-auto mb-8">
-          <table className="min-w-full bg-gray-800 border border-gray-200">
+          <table className="min-w-full bg-gray-800 border ">
             <thead>
               <tr>
                 <th className="py-2 px-4 border-b">User Name</th>
@@ -125,7 +114,7 @@ const MinningInvestmentApproval = () => {
         <p>No approved mining investments.</p>
       ) : (
         <div className="overflow-x-auto">
-          <table className="min-w-full bg-gray-800 border border-gray-200">
+          <table className="min-w-full bg-gray-800 border">
             <thead>
               <tr>
                 <th className="py-2 px-4 border-b">User Name</th>
@@ -134,8 +123,7 @@ const MinningInvestmentApproval = () => {
                 <th className="py-2 px-4 border-b">Start Date</th>
                 <th className="py-2 px-4 border-b">Daily Profit Rate</th>
                 <th className="py-2 px-4 border-b">Investment Duration (Days)</th>
-                <th className="py-2 px-4 border-b">Days Remaining</th>
-                <th className="py-2 px-4 border-b">Actions</th>
+                <th className="py-2 px-4 border-b">Days Active</th>
               </tr>
             </thead>
             <tbody>
@@ -148,15 +136,7 @@ const MinningInvestmentApproval = () => {
                   <td className="py-2 px-4 border-b">{investment.dailyProfitRate}</td>
                   <td className="py-2 px-4 border-b">{investment.investmentDuration}</td>
                   <td className="py-2 px-4 border-b">
-                    {calculateDaysRemaining(investment.startDate, investment.investmentDuration)}
-                  </td>
-                  <td className="py-2 px-4 border-b">
-                    <button
-                      onClick={() => handlePaySingle(investment._id)}
-                      className="bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600"
-                    >
-                      Pay Daily Profit
-                    </button>
+                    {calculateDaysActive(investment.startDate)}
                   </td>
                 </tr>
               ))}

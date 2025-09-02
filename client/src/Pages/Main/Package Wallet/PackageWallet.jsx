@@ -96,6 +96,10 @@ const PackageWallet = () => {
                       <h2>Package Wallet Balance</h2>
                       <span className='text-[#2EB9A2]'>${user?.packageWallet?.toFixed(2) ?? '0.00'}</span>
                   </div>
+                  <div className='font-[Inter] font-medium text-2xl flex flex-col gap-3 border rounded-lg p-3'>
+                      <h2>Your Invested Amount</h2>
+                      <span className='text-[#2EB9A2]'>${user?.miningInvestment?.toFixed(2) ?? '0.00'}</span>
+                  </div>
 
               </div>
               <h2 className='text-3xl font-[Inter] font-medium py-3'>Fill Investment Details</h2>

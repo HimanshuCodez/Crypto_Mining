@@ -159,94 +159,67 @@ export const getMiningInvestments = async (req, res) => {
   }
 };
 
-export const paySingleInvestmentProfit = async (req, res) => {
-  try {
-    const { transactionId } = req.params;
-    const investment = await Transaction.findById(transactionId).populate('userId');
-
-    if (!investment) {
-      return res.status(404).json({ message: 'Investment not found' });
-    }
-
-    if (investment.status !== 'completed') {
-      return res.status(400).json({ message: 'Investment is not approved' });
-    }
-
-    const user = investment.userId;
-    if (!user) {
-      return res.status(404).json({ message: 'User not found for this investment' });
-    }
-
-    // Check if profit has already been distributed for today
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const lastDistribution = new Date(investment.lastProfitDistributionDate);
-    lastDistribution.setHours(0, 0, 0, 0);
-
-    if (lastDistribution.getTime() === today.getTime()) {
-      return res.status(400).json({ message: 'Profit already distributed for today.' });
-    }
-
-    const dailyProfit = investment.amount * investment.dailyProfitRate;
-
-    user.incomeWallet += dailyProfit;
-    investment.lastProfitDistributionDate = new Date();
-
-    const incomeTransaction = new Transaction({
-      userId: user._id,
-      amount: dailyProfit,
-      type: 'income',
-      description: `Daily mining profit for investment ${investment._id}`,
-      status: 'completed',
-    });
-
-    await user.save();
-    await investment.save();
-    await incomeTransaction.save();
-
-    res.status(200).json({ message: 'Daily profit paid successfully', dailyProfit });
-  } catch (error) {
-    console.error('Error paying single investment profit:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
-  }
-};
-
 export const payAllInvestmentsProfit = async (req, res) => {
   try {
+    console.log('payAllInvestmentsProfit function called.');
     const approvedInvestments = await Transaction.find({ status: 'completed', type: 'investment' }).populate('userId');
-    let paidCount = 0;
+    console.log(`Found ${approvedInvestments.length} approved investments.`);
+    let totalPaidCount = 0;
+    let totalProfitDistributed = 0;
 
     for (const investment of approvedInvestments) {
+      console.log(`Processing investment: ${investment._id}`);
       const user = investment.userId;
-      if (!user) continue; // Skip if user not found
+      if (!user) {
+        console.log(`User not found for investment ${investment._id}. Skipping.`);
+        continue; // Skip if user not found
+      }
 
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      const lastDistribution = new Date(investment.lastProfitDistributionDate);
-      lastDistribution.setHours(0, 0, 0, 0);
+      const lastDistributionDate = new Date(investment.lastProfitDistributionDate);
+      lastDistributionDate.setHours(0, 0, 0, 0);
 
-      if (lastDistribution.getTime() < today.getTime()) {
+      console.log(`Investment ${investment._id}: lastDistributionDate = ${lastDistributionDate}, today = ${today}`);
+
+      // Calculate days to pay
+      const timeDiff = today.getTime() - lastDistributionDate.getTime();
+      const daysToPay = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+
+      console.log(`Investment ${investment._id}: daysToPay = ${daysToPay}`);
+
+      if (daysToPay > 0) {
         const dailyProfit = investment.amount * investment.dailyProfitRate;
+        const totalProfitForPeriod = dailyProfit * daysToPay;
 
-        user.incomeWallet += dailyProfit;
-        investment.lastProfitDistributionDate = new Date();
+        console.log(`Investment ${investment._id}: dailyProfit = ${dailyProfit}, totalProfitForPeriod = ${totalProfitForPeriod}`);
+        console.log(`User ${user._id}: incomeWallet before = ${user.incomeWallet}`);
+
+        user.incomeWallet += totalProfitForPeriod;
+        investment.lastProfitDistributionDate = new Date(); // Reset to today
+
+        console.log(`User ${user._id}: incomeWallet after = ${user.incomeWallet}`);
 
         const incomeTransaction = new Transaction({
           userId: user._id,
-          amount: dailyProfit,
+          amount: totalProfitForPeriod,
           type: 'income',
-          description: `Daily mining profit for investment ${investment._id}`,
+          description: `Mining profit for ${daysToPay} days for investment ${investment._id}`,
           status: 'completed',
         });
 
         await user.save();
         await investment.save();
         await incomeTransaction.save();
-        paidCount++;
+        console.log(`Investment ${investment._id}: User, Investment, and Income Transaction saved.`);
+        totalPaidCount++;
+        totalProfitDistributed += totalProfitForPeriod;
+      } else {
+        console.log(`Investment ${investment._id}: No days to pay (daysToPay <= 0).`);
       }
     }
 
-    res.status(200).json({ message: `Daily profit paid for ${paidCount} investments.`, paidCount });
+    res.status(200).json({ message: `Profit distributed for ${totalPaidCount} investments. Total profit: ${totalProfitDistributed.toFixed(2)}`, totalPaidCount, totalProfitDistributed });
   } catch (error) {
     console.error('Error paying all investments profit:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
