@@ -8,6 +8,9 @@ import userRoutes from './routes/user.js';
 import adminRoutes from './routes/admin.js';
 import investmentRoutes from './routes/investment.js';
 import withdrawalRoutes from './routes/withdrawal.js';
+import transferRoutes from './routes/transfer.js';
+import packageTransferRoutes from './routes/packageTransfer.js';
+import otpRoutes from './routes/otp.js';
 import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -36,6 +39,9 @@ app.use('/api/user', userRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/investment', investmentRoutes);
 app.use('/api/withdrawals', withdrawalRoutes);
+app.use('/api/transfer', transferRoutes);
+app.use('/api/package-transfer', packageTransferRoutes);
+app.use('/api/otp', otpRoutes);
 
 app.get('/', (req, res) => {
     res.send('Express server is running!');

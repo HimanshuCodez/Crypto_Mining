@@ -34,6 +34,28 @@ export const sendOtp = async (req, res) => {
     }
 };
 
+export const sendTransferOtp = async (req, res) => {
+    const userId = req.user._id;
+
+    try {
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const otp = Math.floor(100000 + Math.random() * 900000); // Generate a 6-digit OTP
+        user.otp = otp.toString();
+        user.otpExpires = Date.now() + 3600000; // 1 hour
+        await user.save();
+
+        await sendMail(user.email, 'Your OTP for Transfer', `Your OTP for transfer is ${otp}`);
+        res.status(200).json({ message: 'OTP sent successfully to your registered email' });
+    } catch (error) {
+        console.error("Error in sendTransferOtp controller:", error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
 
 export const activateAccount = async (req, res) => {
     const { userId, paymentMode, password, otp } = req.body;
@@ -229,6 +251,24 @@ export const getIndirectReferrals = async (req, res) => {
 export const getTransactions = async (req, res) => {
     try {
         const transactions = await Transaction.find({ userId: req.user._id }).sort({ createdAt: -1 });
+        res.status(200).json(transactions);
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error });
+    }
+};
+
+export const getAllTransactions = async (req, res) => {
+    try {
+        const transactions = await Transaction.find({ userId: req.user._id }).sort({ createdAt: -1 });
+        res.status(200).json(transactions);
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error });
+    }
+};
+
+export const getReceivedTransactions = async (req, res) => {
+    try {
+        const transactions = await Transaction.find({ userId: req.user._id, type: 'transfer_in' }).sort({ createdAt: -1 });
         res.status(200).json(transactions);
     } catch (error) {
         res.status(500).json({ message: "Server error", error });

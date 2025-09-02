@@ -1,3 +1,4 @@
+
 import mongoose from 'mongoose';
 
 const transactionSchema = new mongoose.Schema({
@@ -12,13 +13,19 @@ const transactionSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ['deposit', 'withdrawal', 'investment', 'income', 'activation'],
+    enum: ['deposit', 'withdrawal', 'investment', 'income', 'activation', 'transfer_in', 'transfer_out'],
     required: true,
   },
   status: {
     type: String,
     enum: ['pending', 'completed', 'rejected'],
     default: 'pending',
+  },
+  mode: {
+    type: String,
+  },
+  counterparty: {
+    type: String,
   },
   screenshotUrl: {
     type: String,

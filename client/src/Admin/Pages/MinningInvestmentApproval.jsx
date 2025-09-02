@@ -48,9 +48,14 @@ const MinningInvestmentApproval = () => {
     if (!startDate) return 'N/A';
     const start = new Date(startDate);
     const now = new Date();
+    
+    // Set both dates to the start of their respective days to avoid time component issues
+    start.setHours(0, 0, 0, 0);
+    now.setHours(0, 0, 0, 0);
+
     const elapsedMilliseconds = now.getTime() - start.getTime();
     const daysActive = elapsedMilliseconds / (1000 * 60 * 60 * 24);
-    return Math.floor(daysActive);
+    return Math.max(0, Math.floor(daysActive)); // Ensure it's not negative
   };
 
   if (loading) {
@@ -136,7 +141,7 @@ const MinningInvestmentApproval = () => {
                   <td className="py-2 px-4 border-b">{investment.dailyProfitRate}</td>
                   <td className="py-2 px-4 border-b">{investment.investmentDuration}</td>
                   <td className="py-2 px-4 border-b">
-                    {calculateDaysActive(investment.startDate)}
+                    {calculateDaysActive(investment.lastProfitDistributionDate)}
                   </td>
                 </tr>
               ))}

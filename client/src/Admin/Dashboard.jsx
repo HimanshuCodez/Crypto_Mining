@@ -17,7 +17,7 @@ import UserManagementPage from "./Pages/UserManagementPage";
 import PaymentApprovalsPage from "./Pages/PaymentApprovalsPage";
 import WithdrawalsPage from "./Pages/WithdrawalsPage";
 import SettingsPage from "./Pages/SettingsPage";
-import IncomeIncrementPage from "./Pages/IncomeIncrementPage";
+
 import MinningInvestmentApproval from "./Pages/MinningInvestmentApproval";
 
 const AdminSystem = () => {
@@ -26,7 +26,10 @@ const AdminSystem = () => {
   const [filterStatus, setFilterStatus] = useState("all");
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [userCount, setUserCount] = useState(0);
-  const [barcodeUrl, setBarcodeUrl] = useState('https://imgs.search.brave.com/0TrKgTjetNkLgx2lktMkwwI1Y0nqOZaiKFaWrzhti60/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly91cy4x/MjNyb2ludC5jb20vNDUw/d20vbWFjbWFja3lr/eS9tYWNtYWNreWt5/MTYwOS9tYWNtYWNreWt5MTYwOTAwMjM3LzYzMTQ1Njg4LWJh/cmNvZUtc2Nhbm5l/ci5qcGc_dmVyPTY');
+  const [barcodeUrls, setBarcodeUrls] = useState({
+    deposit: 'https://imgs.search.brave.com/0TrKgTjetNkLgx2lktMkwwI1Y0nqOZaiKFaWrzhti60/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly91cy4x/MjNyb2ludC5jb20vNDUw/d20vbWFjbWFja3lr/eS9tYWNtYWNreWt5/MTYwOS9tYWNtYWNreWt5MTYwOTAwMjM3LzYzMTQ1Njg4LWJh/cmNvZUtc2Nhbm5l/ci5qcGc_dmVyPTY',
+    tre20: ''
+  });
   const [pendingPayments, setPendingPayments] = useState([]);
   const { users, fetchAllUsers } = useAuthStore();
 
@@ -52,7 +55,10 @@ const AdminSystem = () => {
     const fetchBarcode = async () => {
       try {
         const response = await axios.get('/api/admin/barcode');
-        setBarcodeUrl(response.data.barcodeUrl);
+        setBarcodeUrls({
+          deposit: response.data.depositBarcodeUrl,
+          tre20: response.data.tre20BarcodeUrl || ''
+        });
       } catch (error) {
         console.error('Failed to fetch barcode', error);
       }
@@ -108,11 +114,12 @@ const AdminSystem = () => {
     }
   };
 
-  const handleUpdateBarcode = async () => {
+  const handleUpdateBarcode = async (updatedBarcodeUrls) => {
     try {
-      const response = await axios.post('/api/admin/barcode', { barcodeUrl });
+      const response = await axios.post('/api/admin/barcode', updatedBarcodeUrls);
       if (response.status === 200) {
         alert('Barcode updated successfully!');
+        setBarcodeUrls(updatedBarcodeUrls);
       } else {
         alert('Failed to update barcode.');
       }
@@ -122,20 +129,7 @@ const AdminSystem = () => {
     }
   };
 
-  const handleIncrementIncome = async (userId) => {
-    try {
-      const response = await axios.post(`/api/admin/user/${userId}/increment-income`, { percentage: 4.80 });
-      if (response.status === 200) {
-        alert('Income incremented successfully!');
-        fetchAllUsers();
-      } else {
-        alert('Failed to increment income.');
-      }
-    } catch (error) {
-      console.error('Failed to increment income', error);
-      alert('An error occurred while incrementing income.');
-    }
-  };
+ 
 
   const NavItem = ({ id, label, icon: Icon }) => (
     <button
@@ -158,9 +152,8 @@ const AdminSystem = () => {
       case 'withdrawals':
         return <WithdrawalsPage usdtWithdrawals={usdtWithdrawals} />;
       case 'settings':
-        return <SettingsPage barcodeUrl={barcodeUrl} setBarcodeUrl={setBarcodeUrl} handleUpdateBarcode={handleUpdateBarcode} />;
-      case 'incomeIncrement':
-        return <IncomeIncrementPage users={users} handleIncrementIncome={handleIncrementIncome} />;
+        return <SettingsPage barcodeUrls={barcodeUrls} setBarcodeUrls={setBarcodeUrls} handleUpdateBarcode={handleUpdateBarcode} />;
+     
       case 'MinningInvestmentApproval':
 
          return <MinningInvestmentApproval  />;
@@ -192,7 +185,6 @@ const AdminSystem = () => {
               { id: "payments", label: "Payments", icon: CreditCard },
               { id: "withdrawals", label: "Withdrawals", icon: Wallet },
               { id: "settings", label: "Settings", icon: Settings },
-              { id: "incomeIncrement", label: "Income Increment", icon: TrendingUp },
               { id: "MinningInvestmentApproval", label: "Minning Approval", icon:  Shield },
             ].map(item => <NavItem key={item.id} {...item} />)}
           </nav>

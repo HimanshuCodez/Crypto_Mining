@@ -4,9 +4,19 @@ import User from '../models/User.js';
 import { verifyTurnstile } from '../utils/verifyTurnstile.js';
 import crypto from 'crypto';
 
-const generateReferralCode = () => {
-    const randomString = crypto.randomBytes(4).toString('hex');
-    return `CM${randomString}`;
+
+const generateReferralCode = async () => {
+    let referralCode;
+    let isUnique = false;
+    while (!isUnique) {
+        const randomDigits = Math.floor(1000000 + Math.random() * 9000000).toString();
+        referralCode = `CM${randomDigits}`;
+        const existingUser = await User.findOne({ referralCode });
+        if (!existingUser) {
+            isUnique = true;
+        }
+    }
+    return referralCode;
 };
 
 export const signup = async (req, res) => {
@@ -26,7 +36,7 @@ export const signup = async (req, res) => {
         }
 
         // Create a new user (password and transactionPassword will be hashed by the pre-save hook in the model)
-        const newReferralCode = generateReferralCode();
+        const newReferralCode = await generateReferralCode();
         const newUser = new User({ name, country, mobile, email, password, transactionPassword: password, referralCode: newReferralCode });
 
         // Handle referral

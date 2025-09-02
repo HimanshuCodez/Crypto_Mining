@@ -27,12 +27,13 @@ export const upload = multer({ storage: storage });
 
 export const getBarcode = async (req, res) => {
   try {
-    const barcodeSetting = await Setting.findOne({ key: 'barcodeUrl' });
-    if (barcodeSetting) {
-      res.status(200).json({ barcodeUrl: barcodeSetting.value });
-    } else {
-      res.status(200).json({ barcodeUrl: '' });
-    }
+    const depositBarcodeSetting = await Setting.findOne({ key: 'depositBarcodeUrl' });
+    const tre20BarcodeSetting = await Setting.findOne({ key: 'tre20BarcodeUrl' });
+
+    res.status(200).json({
+      depositBarcodeUrl: depositBarcodeSetting ? depositBarcodeSetting.value : '',
+      tre20BarcodeUrl: tre20BarcodeSetting ? tre20BarcodeSetting.value : ''
+    });
   } catch (error) {
     console.error('Error getting barcode:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
@@ -41,9 +42,12 @@ export const getBarcode = async (req, res) => {
 
 export const updateBarcode = async (req, res) => {
   try {
-    const { barcodeUrl } = req.body;
-    await Setting.findOneAndUpdate({ key: 'barcodeUrl' }, { value: barcodeUrl }, { upsert: true });
-    res.status(200).json({ message: 'Barcode updated successfully' });
+    const { deposit, tre20 } = req.body;
+
+    await Setting.findOneAndUpdate({ key: 'depositBarcodeUrl' }, { value: deposit }, { upsert: true });
+    await Setting.findOneAndUpdate({ key: 'tre20BarcodeUrl' }, { value: tre20 }, { upsert: true });
+
+    res.status(200).json({ message: 'Barcodes updated successfully' });
   } catch (error) {
     console.error('Error updating barcode:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
@@ -189,14 +193,14 @@ export const payAllInvestmentsProfit = async (req, res) => {
       console.log(`Investment ${investment._id}: daysToPay = ${daysToPay}`);
 
       if (daysToPay > 0) {
-        const dailyProfit = investment.amount * investment.dailyProfitRate;
+        const dailyProfit = investment.amount * (investment.dailyProfitRate / 100);
         const totalProfitForPeriod = dailyProfit * daysToPay;
 
         console.log(`Investment ${investment._id}: dailyProfit = ${dailyProfit}, totalProfitForPeriod = ${totalProfitForPeriod}`);
         console.log(`User ${user._id}: incomeWallet before = ${user.incomeWallet}`);
 
         user.incomeWallet += totalProfitForPeriod;
-        investment.lastProfitDistributionDate = new Date(); // Reset to today
+        investment.lastProfitDistributionDate = today; // Reset to today (00:00:00)
 
         console.log(`User ${user._id}: incomeWallet after = ${user.incomeWallet}`);
 
