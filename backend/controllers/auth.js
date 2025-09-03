@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 import { verifyTurnstile } from '../utils/verifyTurnstile.js';
 import crypto from 'crypto';
+import { sendWelcomeEmail } from '../utils/mailer.js';
 
 
 const generateReferralCode = async () => {
@@ -29,6 +30,17 @@ export const signup = async (req, res) => {
             return res.status(400).json({ message: 'CAPTCHA verification failed' });
         }
 
+        // Check if referral code is provided
+        if (!referralCode) {
+            return res.status(400).json({ message: 'Referral code is required' });
+        }
+
+        // Check if referring user exists
+        const referringUser = await User.findOne({ referralCode: referralCode });
+        if (!referringUser) {
+            return res.status(400).json({ message: 'Invalid referral code' });
+        }
+
         // Check if user already exists
         const existingUser = await User.findOne({ email });
         if (existingUser) {
@@ -40,25 +52,23 @@ export const signup = async (req, res) => {
         const newUser = new User({ name, country, mobile, email, password, transactionPassword: password, referralCode: newReferralCode });
 
         // Handle referral
-        if (referralCode) {
-            const referringUser = await User.findOne({ referralCode: referralCode });
-            if (referringUser) {
-                newUser.referredBy = referringUser._id;
-                referringUser.directReferrals.push(newUser._id);
-                await referringUser.save();
+        newUser.referredBy = referringUser._id;
+        referringUser.directReferrals.push(newUser._id);
+        await referringUser.save();
 
-                // Handle indirect referrals
-                if (referringUser.referredBy) {
-                    const grandParentReferrer = await User.findById(referringUser.referredBy);
-                    if (grandParentReferrer) {
-                        grandParentReferrer.indirectReferrals.push(newUser._id);
-                        await grandParentReferrer.save();
-                    }
-                }
+        // Handle indirect referrals
+        if (referringUser.referredBy) {
+            const grandParentReferrer = await User.findById(referringUser.referredBy);
+            if (grandParentReferrer) {
+                grandParentReferrer.indirectReferrals.push(newUser._id);
+                await grandParentReferrer.save();
             }
         }
 
         await newUser.save();
+
+        // Send welcome email
+        await sendWelcomeEmail(email, name, email, password);
 
         // Generate JWT token
         const expiresIn = rememberMe ? '7d' : '10h';
