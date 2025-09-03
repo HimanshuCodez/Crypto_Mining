@@ -101,11 +101,11 @@ const WithdrawIncomeWallet = () => {
                   <option value="">ja3u48ouqc3ewefwqefer</option>
                   <option value="">qrq4rq445i58i6t32e2e2e</option>
 
-                  {/* {wallets.map((wallet) => (
+                  {wallets.map((wallet) => (
                     <option key={wallet._id} value={wallet.address}>
                       {wallet.walletType} - {wallet.address}
                     </option>
-                  ))} */}
+                  ))}
                 </select>
               </label>
             </span>

@@ -13,7 +13,7 @@ const Wallet = () => {
 
   const fetchWallets = async () => {
     try {
-      const response = await api.get('/user/wallets', {
+      const response = await api.get('api/user/wallets', {
         headers: { Authorization: `Bearer ${token}` },
       });
       setWallets(response.data);
