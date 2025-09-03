@@ -1,5 +1,5 @@
 import express from 'express';
-import { sendOtp, activateAccount, getDashboardData, getProfile, updateProfile, updateAvatar, getDirectReferrals, getIndirectReferrals, getTransactions, getAllTransactions, getReceivedTransactions, getUserCount, sendTransferOtp } from '../controllers/user.js'; 
+import { sendOtp, activateAccount, getDashboardData, getProfile, updateProfile, updateAvatar, getDirectReferrals, getIndirectReferrals, getTransactions, getAllTransactions, getReceivedTransactions, getUserCount, sendTransferOtp, updateWallet, getWallets } from '../controllers/user.js'; 
 import auth from '../middleware/auth.js';
 
 const router = express.Router();
@@ -17,5 +17,7 @@ router.put('/avatar', auth, updateAvatar);
 router.post('/send-otp', auth, sendOtp);
 router.post('/send-transfer-otp', auth, sendTransferOtp);
 router.post('/activate', auth, activateAccount);
+router.post('/wallet', auth, updateWallet);
+router.get('/wallets', auth, getWallets);
 
 export default router;

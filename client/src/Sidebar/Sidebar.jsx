@@ -272,6 +272,18 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
                   exit={{ opacity: 0, y: -10 }}
                   className="flex flex-col gap-2 pl-8 text-gray-700"
                 >
+                    <Link
+                    to="/Financial/Income"
+                    className="hover:text-blue-600 transition flex items-center gap-2"
+                  >
+                    <FaUser /> Withdraw Income Wallet
+                  </Link>
+                  <Link
+                    to="/Financial/Withdraw_Investment"
+                    className="hover:text-blue-600 transition flex items-center gap-2"
+                  >
+                    <FaUser /> Withdraw Minning Investment
+                  </Link>
                   <Link
                     to="/Financial/Acc_Statement"
                     className="hover:text-blue-600 transition flex items-center gap-2"
@@ -284,18 +296,8 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
                   >
                     <FaUser /> Withdraw Report
                   </Link>
-                  <Link
-                    to="/Financial/Withdraw_Investment"
-                    className="hover:text-blue-600 transition flex items-center gap-2"
-                  >
-                    <FaUser /> Withdraw Investment
-                  </Link>
-                  <Link
-                    to="/Financial/Income"
-                    className="hover:text-blue-600 transition flex items-center gap-2"
-                  >
-                    <FaUser /> Withdraw Income Wallet
-                  </Link>
+                 
+                 
                 </motion.ul>
               )}
             </AnimatePresence>

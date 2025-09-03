@@ -1,4 +1,5 @@
 import User from '../models/User.js';
+import Wallet from '../models/Wallet.js';
 import Transaction from '../models/Transaction.js';
 import bcrypt from 'bcryptjs';
 import { sendMail } from '../utils/mailer.js';
@@ -272,5 +273,56 @@ export const getReceivedTransactions = async (req, res) => {
         res.status(200).json(transactions);
     } catch (error) {
         res.status(500).json({ message: "Server error", error });
+    }
+};
+
+export const updateWallet = async (req, res) => {
+    const { walletType, address, transactionPassword, otp } = req.body;
+    const userId = req.user._id;
+
+    try {
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const isPasswordCorrect = await bcrypt.compare(transactionPassword, user.transactionPassword);
+        if (!isPasswordCorrect) {
+            return res.status(400).json({ message: 'Invalid transaction password' });
+        }
+
+        if (user.otp !== otp || user.otpExpires < Date.now()) {
+            return res.status(400).json({ message: 'Invalid or expired OTP' });
+        }
+
+        const newWallet = new Wallet({
+            userId,
+            walletType,
+            address,
+        });
+
+        await newWallet.save();
+        
+        user.otp = undefined;
+        user.otpExpires = undefined;
+
+        await user.save();
+
+        res.status(201).json({ message: 'Wallet address saved successfully' });
+    } catch (error) {
+        console.error("Error in updateWallet controller:", error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+export const getWallets = async (req, res) => {
+    const userId = req.user._id;
+
+    try {
+        const wallets = await Wallet.find({ userId });
+        res.status(200).json(wallets);
+    } catch (error) {
+        console.error("Error in getWallets controller:", error);
+        res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
