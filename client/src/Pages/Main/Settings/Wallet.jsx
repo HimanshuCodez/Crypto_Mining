@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../../api/axios';
 import useAuthStore from '../../../store/authStore';
+import { toast } from 'react-toastify';
 
 const Wallet = () => {
   const [walletType, setWalletType] = useState('USDT.BEP20');
@@ -32,10 +33,10 @@ const Wallet = () => {
       await api.post('api/user/send-otp', { email: user.email, password: transactionPassword }, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      alert('OTP sent to your email');
+      toast('OTP sent to your email');
     } catch (error) {
       console.error('Error sending OTP', error);
-      alert('Error sending OTP');
+      toast('Error sending OTP');
     }
   };
 
@@ -45,11 +46,11 @@ const Wallet = () => {
       await api.post('api/user/wallet', { walletType, address, transactionPassword, otp }, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      alert('Wallet address updated successfully');
+      toast('Wallet address updated successfully');
       fetchWallets(); // Refresh the list of wallets
     } catch (error) {
       console.error('Error updating wallet address', error);
-      alert('Error updating wallet address');
+      toast('Error updating wallet address');
     }
   };
 
