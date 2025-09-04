@@ -10,7 +10,7 @@ const AccountStatement = () => {
         const fetchTransactions = async () => {
             if (!user) return;
             try {
-                const response = await axios.get('/api/user/transactions');
+                const response = await axios.get('/user/transactions');
                 setTransactions(response.data);
             } catch (error) {
                 console.error('Failed to fetch transactions', error);

@@ -41,7 +41,7 @@ const PackageWallet = () => {
 
         setIsLoading(true);
         try {
-            await axios.post('/api/investment/send-otp', { 
+            await axios.post('/investment/send-otp', { 
                 userId: formData.userId, 
                 transactionPassword: formData.transactionPassword,
                 amount: formData.amount,
@@ -63,7 +63,7 @@ const PackageWallet = () => {
         }
         setIsLoading(true);
         try {
-            const response = await axios.post('/api/investment/invest-from-package', {
+            const response = await axios.post('/investment/invest-from-package', {
                 userId: formData.userId,
                 amount: formData.amount,
                 otp: formData.otp

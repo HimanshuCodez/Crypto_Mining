@@ -10,7 +10,7 @@ const Transfer = () => {
         const fetchTransactions = async () => {
             setLoading(true);
             try {
-                const response = await axios.get('/api/user/all-transactions');
+                const response = await axios.get('/user/all-transactions');
                 setTransactions(response.data);
             } catch (error) {
                 toast.error('Failed to fetch transactions.');

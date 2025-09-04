@@ -20,7 +20,7 @@ const Account = () => {
         const fetchWalletData = async () => {
             if (!user) return;
             try {
-                const response = await axios.get(`/api/user/${user._id}/dashboard`);
+                const response = await axios.get(`/user/${user._id}/dashboard`);
                 setWalletData(response.data);
             } catch (error) {
                 console.error('Failed to fetch wallet data', error);
@@ -61,7 +61,7 @@ const Account = () => {
 
         try {
             setLoading(true);
-            const response = await axios.post('/api/user/send-otp', { email: user.email, password: formData.password });
+            const response = await axios.post('/user/send-otp', { email: user.email, password: formData.password });
             toast.success(response.data.message);
         } catch (error) {
             toast.error(error.response?.data?.message || 'Error sending OTP');
@@ -77,7 +77,7 @@ const Account = () => {
         }
         try {
             setIsActivating(true);
-            const response = await axios.post('/api/user/activate', formData);
+            const response = await axios.post('/user/activate', formData);
             toast.success(response.data.message);
             await checkAuth();
         } catch (error) {

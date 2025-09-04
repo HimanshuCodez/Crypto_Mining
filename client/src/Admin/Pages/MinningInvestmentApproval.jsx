@@ -8,7 +8,7 @@ const MinningInvestmentApproval = () => {
 
   const fetchInvestments = async () => {
     try {
-      const response = await axios.get('/api/admin/mining-investments');
+      const response = await axios.get('/admin/mining-investments');
       setAllInvestments(response.data);
     } catch (err) {
       setError(err.message);
@@ -23,7 +23,7 @@ const MinningInvestmentApproval = () => {
 
   const handleApprove = async (transactionId) => {
     try {
-      await axios.post(`/api/admin/mining-investments/approve/${transactionId}`);
+      await axios.post(`/admin/mining-investments/approve/${transactionId}`);
       alert('Investment approved successfully!');
       fetchInvestments(); // Refresh the list
     } catch (err) {
@@ -33,7 +33,7 @@ const MinningInvestmentApproval = () => {
 
   const handlePayAll = async () => {
     try {
-      await axios.post('/api/admin/mining-investments/pay-all');
+      await axios.post('/admin/mining-investments/pay-all');
       alert('Daily profit paid for all eligible investments!');
       fetchInvestments(); // Refresh the list
     } catch (err) {

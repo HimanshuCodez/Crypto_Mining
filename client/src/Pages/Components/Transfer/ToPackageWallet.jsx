@@ -24,7 +24,7 @@ const ToPackageWallet = () => {
         }
         setLoading(true);
         try {
-            await axios.post('/api/package-transfer/send-otp', { recipientReferralId, amount });
+            await axios.post('/package-transfer/send-otp', { recipientReferralId, amount });
             setIsOtpSent(true);
             toast.success('OTP sent to your email.');
         } catch (error) {
@@ -40,7 +40,7 @@ const ToPackageWallet = () => {
         }
         setLoading(true);
         try {
-            await axios.post('/api/otp/verify-otp', { otp });
+            await axios.post('/otp/verify-otp', { otp });
             setIsOtpVerified(true);
             toast.success('OTP verified successfully.');
         } catch (error) {
@@ -57,7 +57,7 @@ const ToPackageWallet = () => {
         }
         setLoading(true);
         try {
-            const response = await axios.post('/api/package-transfer/to-package-wallet', {
+            const response = await axios.post('/package-transfer/to-package-wallet', {
                 recipientReferralId,
                 amount,
                 transactionPassword,

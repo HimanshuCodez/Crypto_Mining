@@ -35,7 +35,7 @@ const AdminSystem = () => {
 
   const fetchPendingPayments = async () => {
     try {
-      const response = await axios.get('/api/admin/payments/pending');
+      const response = await axios.get('/admin/payments/pending');
       setPendingPayments(response.data);
     } catch (error) {
       console.error('Error fetching pending payments:', error);
@@ -45,7 +45,7 @@ const AdminSystem = () => {
   useEffect(() => {
     const fetchUserCount = async () => {
       try {
-        const response = await axios.get("/api/user/count");
+        const response = await axios.get("/user/count");
         setUserCount(response.data.count);
       } catch (error) {
         console.error("Error fetching user count:", error);
@@ -54,7 +54,7 @@ const AdminSystem = () => {
 
     const fetchBarcode = async () => {
       try {
-        const response = await axios.get('/api/admin/barcode');
+        const response = await axios.get('/admin/barcode');
         setBarcodeUrls({
           deposit: response.data.depositBarcodeUrl,
           tre20: response.data.tre20BarcodeUrl || ''
@@ -86,7 +86,7 @@ const AdminSystem = () => {
 
   const handleApprovePayment = async (paymentId) => {
     try {
-      const response = await axios.post(`/api/admin/payments/approve/${paymentId}`);
+      const response = await axios.post(`/admin/payments/approve/${paymentId}`);
       if (response.status === 200) {
         alert('Payment approved!');
         fetchPendingPayments();
@@ -101,7 +101,7 @@ const AdminSystem = () => {
 
   const handleRejectPayment = async (paymentId) => {
     try {
-      const response = await axios.post(`/api/admin/payments/reject/${paymentId}`);
+      const response = await axios.post(`/admin/payments/reject/${paymentId}`);
       if (response.status === 200) {
         alert('Payment rejected!');
         fetchPendingPayments();
@@ -116,7 +116,7 @@ const AdminSystem = () => {
 
   const handleUpdateBarcode = async (updatedBarcodeUrls) => {
     try {
-      const response = await axios.post('/api/admin/barcode', updatedBarcodeUrls);
+      const response = await axios.post('/admin/barcode', updatedBarcodeUrls);
       if (response.status === 200) {
         alert('Barcode updated successfully!');
         setBarcodeUrls(updatedBarcodeUrls);

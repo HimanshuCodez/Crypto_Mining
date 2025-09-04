@@ -18,7 +18,7 @@ const DepositUsdt = () => {
     // Fetch barcode from backend
     const fetchBarcode = async () => {
       try {
-        const response = await axios.get('/api/admin/barcode');
+        const response = await axios.get('/admin/barcode');
         console.log('Barcode response:', response.data);
         setBarcode(response.data.barcodeUrl);
       } catch (error) {
@@ -61,7 +61,7 @@ const DepositUsdt = () => {
     formData.append('userId', user._id); // Use actual user ID from auth context
 
     try {
-      const response = await axios.post('/api/admin/payments/submit', formData, {
+      const response = await axios.post('/admin/payments/submit', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

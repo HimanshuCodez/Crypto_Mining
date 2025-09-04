@@ -11,7 +11,7 @@ const Receive = () => {
         const fetchTransactions = async () => {
             setLoading(true);
             try {
-                const response = await axios.get('/api/user/received-transactions');
+                const response = await axios.get('/user/received-transactions');
                 setTransactions(response.data);
             } catch (error) {
                 toast.error('Failed to fetch received transactions.');

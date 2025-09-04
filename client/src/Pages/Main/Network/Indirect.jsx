@@ -10,7 +10,7 @@ const Indirect = () => {
         const fetchIndirectReferrals = async () => {
             if (!user) return;
             try {
-                const response = await axios.get('/api/user/referrals/indirect');
+                const response = await axios.get('/user/referrals/indirect');
                 setIndirectReferrals(response.data);
             } catch (error) {
                 console.error('Failed to fetch indirect referrals', error);
