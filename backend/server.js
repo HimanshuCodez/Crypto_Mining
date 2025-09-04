@@ -28,7 +28,7 @@ const __dirname = path.dirname(__filename);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use(cors({
-  origin: 'https://cryptominning.in',
+    origin: ['http://localhost:5173', 'https://cryptomining.in'],
   credentials: true,
 }));
 app.use(express.json());
