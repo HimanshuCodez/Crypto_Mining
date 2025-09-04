@@ -29,7 +29,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use(cors({
   origin: [
-    'http://localhost:5173', 
+    process.env.CLIENT_URL, 
     'https://cryptominning.in'
   ],
   methods: ['GET','POST','PUT','DELETE','PATCH','OPTIONS'],
@@ -41,13 +41,13 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use('/api/auth', authRoutes);
-app.use('/api/user', userRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api/investment', investmentRoutes);
-app.use('/api/withdrawals', withdrawalRoutes);
-app.use('/api/transfer', transferRoutes);
-app.use('/api/package-transfer', packageTransferRoutes);
-app.use('/api/otp', otpRoutes);
+// app.use('/api/user', userRoutes);
+// app.use('/api/admin', adminRoutes);
+// app.use('/api/investment', investmentRoutes);
+// app.use('/api/withdrawals', withdrawalRoutes);
+// app.use('/api/transfer', transferRoutes);
+// app.use('/api/package-transfer', packageTransferRoutes);
+// app.use('/api/otp', otpRoutes);
 
 app.get('/', (req, res) => {
     res.send('Express server is running!');
