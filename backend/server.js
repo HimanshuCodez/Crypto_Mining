@@ -27,13 +27,8 @@ const __dirname = path.dirname(__filename);
 // Serve static files from the 'uploads' directory
 // app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-app.use(cors({
-  origin: [
-    process.env.CLIENT_URL, 
-    'https://cryptominning.in'
-  ],
-}));
-app.options('*', cors());
+app.use(cors()); // Simplest CORS
+// app.options('*', cors()); // This might not be needed with simple cors()
 app.use(express.json());
 app.use(cookieParser());
 
