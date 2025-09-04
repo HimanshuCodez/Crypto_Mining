@@ -32,6 +32,7 @@ app.use(cors({
     process.env.CLIENT_URL, 
     'https://cryptominning.in'
   ],
+  credentials: true,
 }));
 // app.options('*', cors()); // This might not be needed with simple cors()
 app.use(express.json());
