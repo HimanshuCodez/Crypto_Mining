@@ -7,6 +7,8 @@ import Turnstile from "react-turnstile";
 
 const SignUp = () => {
   const { signup, isAuthenticated, loading } = useAuthStore();
+  const [searchParams] = useSearchParams();
+
   const [formData, setFormData] = useState({
     name: "",
     country: "",
@@ -14,12 +16,10 @@ const SignUp = () => {
     email: "",
     password: "",
     passwordCheck: "",
-    referralCode: "",
+    referralCode: searchParams.get("referral") || "",
     turnstileToken: "",
     rememberMe: false,
   });
-
-  const [searchParams] = useSearchParams();
 
   useEffect(() => {
     const referralCodeFromUrl = searchParams.get('referral');
@@ -182,6 +182,7 @@ const SignUp = () => {
                   onChange={handleChange}
                   value={formData.referralCode}
                   name="referralCode"
+                  readOnly={!!searchParams.get("referral")}
                   className="outline-none w-full border rounded-2xl placeholder:text-[#000000B2] placeholder:capitalize placeholder:text-sm p-2"
                   placeholder=""
                 />
