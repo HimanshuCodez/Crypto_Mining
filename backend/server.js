@@ -24,22 +24,27 @@ const PORT = process.env.PORT || 3000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Serve static files from the 'uploads' directory
-// app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-app.use(cors()); // Simplest CORS
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+app.use(cors({
+  origin: [
+    process.env.CLIENT_URL, 
+    'https://cryptominning.in'
+  ],
+}));
 // app.options('*', cors()); // This might not be needed with simple cors()
 app.use(express.json());
 app.use(cookieParser());
 
-// app.use('/api/auth', authRoutes);
-// // app.use('/api/user', userRoutes);
-// // app.use('/api/admin', adminRoutes);
-// // app.use('/api/investment', investmentRoutes);
-// // app.use('/api/withdrawals', withdrawalRoutes);
-// // app.use('/api/transfer', transferRoutes);
-// // app.use('/api/package-transfer', packageTransferRoutes);
-// // app.use('/api/otp', otpRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/user', userRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/investment', investmentRoutes);
+app.use('/api/withdrawals', withdrawalRoutes);
+app.use('/api/transfer', transferRoutes);
+app.use('/api/package-transfer', packageTransferRoutes);
+app.use('/api/otp', otpRoutes);
 
 app.get('/', (req, res) => {
     res.send('Express server is running!');
