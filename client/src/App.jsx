@@ -3,9 +3,6 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import useAuthStore from "./store/authStore";
-
-import SignuP from "./Pages/SignuP.JSX";
-
 import Profile from "./Pages/Main/Settings/Profile";
 import Wallet from "./Pages/Main/Settings/Wallet";
 import Account from "./Pages/Main/Account Activation/Account";

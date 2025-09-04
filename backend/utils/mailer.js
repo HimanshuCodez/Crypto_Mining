@@ -52,7 +52,7 @@ export const sendWelcomeEmail = async (to, name, email, password, referralCode) 
       <p>Your account has been created successfully.</p>
       <p>We Welcome you to CRYPTO MINNING where we are all going to work together in building the complete Eco-System of CRYPTO-MINNING and earn huge benefits from cashbacks and beautifully designed working incomes </p>
       <p>For your reference, Here are your login details:</p>
-      <p><strong>User ID:</strong> ${referralCode}</p>
+
       <p><strong>Email:</strong> ${email}</p>
       <p><strong>Password:</strong> ${password}</p>
       <p>Please keep your password secure and do not share it with anyone.</p>
