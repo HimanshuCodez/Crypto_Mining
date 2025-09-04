@@ -11,7 +11,7 @@ const WithdrawalsPage = () => {
 
   const fetchWithdrawals = async () => {
     try {
-      const response = await api.get('/api/withdrawals');
+      const response = await api.get('/withdrawals');
       setWithdrawals(response.data);
     } catch (error) {
       toast.error('Failed to fetch withdrawals');
@@ -24,7 +24,7 @@ const WithdrawalsPage = () => {
 
   const handleProcess = async (id) => {
     try {
-      await api.put(`/api/withdrawals/${id}/status`, { status: 'completed' });
+      await api.put(`/withdrawals/${id}/status`, { status: 'completed' });
       toast.success('Withdrawal processed successfully');
       fetchWithdrawals();
     } catch (error) {
@@ -34,7 +34,7 @@ const WithdrawalsPage = () => {
 
   const handleCancel = async (id) => {
     try {
-      await api.put(`/api/withdrawals/${id}/status`, { status: 'rejected' });
+      await api.put(`/withdrawals/${id}/status`, { status: 'rejected' });
       toast.success('Withdrawal cancelled successfully');
       fetchWithdrawals();
     } catch (error) {
@@ -44,7 +44,7 @@ const WithdrawalsPage = () => {
 
   const handleDelete = async (id) => {
     try {
-      await api.delete(`/api/withdrawals/${id}`);
+      await api.delete(`/withdrawals/${id}`);
       toast.success('Withdrawal deleted successfully');
       fetchWithdrawals();
     } catch (error) {

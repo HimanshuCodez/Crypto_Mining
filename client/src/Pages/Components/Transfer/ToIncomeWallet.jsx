@@ -21,7 +21,7 @@ const ToIncomeWallet = () => {
     }
     setLoading(true);
     try {
-      await api.post('/api/transfer/send-otp', { recipientReferralId, amount });
+      await api.post('/transfer/send-otp', { recipientReferralId, amount });
       setIsOtpSent(true);
       toast.success('OTP sent to your email.');
     } catch (error) {
@@ -38,7 +38,7 @@ const ToIncomeWallet = () => {
     }
     setLoading(true);
     try {
-        await api.post('/api/otp/verify-otp', { otp });
+        await api.post('/otp/verify-otp', { otp });
         setIsOtpVerified(true);
         toast.success('OTP verified successfully.');
     } catch (error) {
