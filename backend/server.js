@@ -27,16 +27,16 @@ const __dirname = path.dirname(__filename);
 // Serve static files from the 'uploads' directory
 // app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// app.use(cors({
-//   origin: [
-//     process.env.CLIENT_URL, 
-//     'https://cryptominning.in'
-//   ],
-//   methods: ['GET','POST','PUT','DELETE','PATCH','OPTIONS'],
-//   allowedHeaders: ['Content-Type', 'Authorization'],
-//   credentials: true,
-// }));
-// app.options('*', cors());
+app.use(cors({
+  origin: [
+    process.env.CLIENT_URL, 
+    'https://cryptominning.in'
+  ],
+  methods: ['GET','POST','PUT','DELETE','PATCH','OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+}));
+app.options('*', cors());
 app.use(express.json());
 app.use(cookieParser());
 
