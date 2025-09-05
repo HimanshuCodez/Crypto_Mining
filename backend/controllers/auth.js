@@ -30,15 +30,12 @@ export const signup = async (req, res) => {
             return res.status(400).json({ message: 'CAPTCHA verification failed' });
         }
 
-        // Check if referral code is provided
-        if (!referralCode) {
-            return res.status(400).json({ message: 'Referral code is required' });
-        }
-
-        // Check if referring user exists
-        const referringUser = await User.findOne({ referralCode: referralCode });
-        if (!referringUser) {
-            return res.status(400).json({ message: 'Invalid referral code' });
+        let referringUser = null;
+        if (referralCode) {
+            referringUser = await User.findOne({ referralCode: referralCode });
+            if (!referringUser) {
+                return res.status(400).json({ message: 'Invalid referral code' });
+            }
         }
 
         // Check if user already exists
@@ -51,17 +48,19 @@ export const signup = async (req, res) => {
         const newReferralCode = await generateReferralCode();
         const newUser = new User({ name, country, mobile, email, password, transactionPassword: password, referralCode: newReferralCode });
 
-        // Handle referral
-        newUser.referredBy = referringUser._id;
-        referringUser.directReferrals.push(newUser._id);
-        await referringUser.save();
+        if (referringUser) {
+            // Handle referral
+            newUser.referredBy = referringUser._id;
+            referringUser.directReferrals.push(newUser._id);
+            await referringUser.save();
 
-        // Handle indirect referrals
-        if (referringUser.referredBy) {
-            const grandParentReferrer = await User.findById(referringUser.referredBy);
-            if (grandParentReferrer) {
-                grandParentReferrer.indirectReferrals.push(newUser._id);
-                await grandParentReferrer.save();
+            // Handle indirect referrals
+            if (referringUser.referredBy) {
+                const grandParentReferrer = await User.findById(referringUser.referredBy);
+                if (grandParentReferrer) {
+                    grandParentReferrer.indirectReferrals.push(newUser._id);
+                    await grandParentReferrer.save();
+                }
             }
         }
 

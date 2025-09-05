@@ -27,7 +27,10 @@ const Login = () => {
         login(formData);
     };
 
-    if (isAuthenticated) {
+    if (isAuthenticated && user) {
+        if (user.role === 'admin') {
+            return <Navigate to="/Admin/Dashboard" />;
+        }
         return <Navigate to="/dashboard" />;
     }
 
