@@ -43,7 +43,7 @@ const Profile = () => {
         e.preventDefault();
         try {
             const updatedData = { name, email, country, mobile };
-            const response = await axios.put('/api/user/profile', updatedData);
+            const response = await axios.put('/user/profile', updatedData);
             setUser(response.data);
             toast.success('Profile updated successfully!');
         } catch (error) {
@@ -55,7 +55,7 @@ const Profile = () => {
     const handleAvatarSelect = async (avatarUrl) => {
         setSelectedAvatar(avatarUrl);
         try {
-            const response = await axios.put('/api/user/avatar', { avatar: avatarUrl });
+            const response = await axios.put('/user/avatar', { avatar: avatarUrl });
             setUser(response.data);
             toast.success('Avatar updated successfully!');
         } catch (error) {
