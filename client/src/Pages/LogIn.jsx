@@ -5,7 +5,7 @@ import useAuthStore from '../store/authStore.js';
 import Turnstile from 'react-turnstile';
 
 const Login = () => {
-    const { login, isAuthenticated, loading } = useAuthStore();
+    const { login, isAuthenticated, loading, user } = useAuthStore();
     const [formData, setFormData] = useState({
         email: '',
         password: '',
