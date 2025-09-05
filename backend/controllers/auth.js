@@ -30,12 +30,15 @@ export const signup = async (req, res) => {
             return res.status(400).json({ message: 'CAPTCHA verification failed' });
         }
 
-        let referringUser = null;
-        if (referralCode) {
-            referringUser = await User.findOne({ referralCode: referralCode });
-            if (!referringUser) {
-                return res.status(400).json({ message: 'Invalid referral code' });
-            }
+        // Check if referral code is provided
+        if (!referralCode) {
+            return res.status(400).json({ message: 'Referral code is required' });
+        }
+
+        // Check if referring user exists
+        const referringUser = await User.findOne({ referralCode: referralCode });
+        if (!referringUser) {
+            return res.status(400).json({ message: 'Invalid referral code' });
         }
 
         // Check if user already exists
@@ -48,19 +51,17 @@ export const signup = async (req, res) => {
         const newReferralCode = await generateReferralCode();
         const newUser = new User({ name, country, mobile, email, password, transactionPassword: password, referralCode: newReferralCode });
 
-        if (referringUser) {
-            // Handle referral
-            newUser.referredBy = referringUser._id;
-            referringUser.directReferrals.push(newUser._id);
-            await referringUser.save();
+        // Handle referral
+        newUser.referredBy = referringUser._id;
+        referringUser.directReferrals.push(newUser._id);
+        await referringUser.save();
 
-            // Handle indirect referrals
-            if (referringUser.referredBy) {
-                const grandParentReferrer = await User.findById(referringUser.referredBy);
-                if (grandParentReferrer) {
-                    grandParentReferrer.indirectReferrals.push(newUser._id);
-                    await grandParentReferrer.save();
-                }
+        // Handle indirect referrals
+        if (referringUser.referredBy) {
+            const grandParentReferrer = await User.findById(referringUser.referredBy);
+            if (grandParentReferrer) {
+                grandParentReferrer.indirectReferrals.push(newUser._id);
+                await grandParentReferrer.save();
             }
         }
 
@@ -119,4 +120,18 @@ export const login = async (req, res) => {
 
 export const logout = (req, res) => {
     res.cookie('token', '', { httpOnly: true, expires: new Date(0) }).send();
+};
+
+export const getReferrerName = async (req, res) => {
+    const { referralCode } = req.params;
+    try {
+        const user = await User.findOne({ referralCode });
+        if (user) {
+            res.status(200).json({ name: user.name });
+        } else {
+            res.status(404).json({ message: 'Referrer not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Something went wrong' });
+    }
 };

@@ -4,10 +4,12 @@ import { Link, Navigate, useSearchParams } from "react-router-dom";
 import useAuthStore from "../store/authStore.js";
 import { getNames } from "country-list";
 import Turnstile from "react-turnstile";
+import axios from "../api/axios";
 
 const SignUp = () => {
   const { signup, isAuthenticated, loading } = useAuthStore();
   const [searchParams] = useSearchParams();
+  const [referrerName, setReferrerName] = useState("");
 
   const [formData, setFormData] = useState({
     name: "",
@@ -22,18 +24,45 @@ const SignUp = () => {
   });
 
   useEffect(() => {
+    const fetchReferrerName = async (referralCode) => {
+      if (referralCode.trim() !== "") {
+        try {
+          const response = await axios.get(`/auth/referrer/${referralCode}`);
+          setReferrerName(response.data.name);
+        } catch (error) {
+          setReferrerName("");
+        }
+      } else {
+        setReferrerName("");
+      }
+    };
+
     const referralCodeFromUrl = searchParams.get('referral');
     if (referralCodeFromUrl) {
       setFormData(prevData => ({ ...prevData, referralCode: referralCodeFromUrl }));
+      fetchReferrerName(referralCodeFromUrl);
     }
   }, [searchParams]);
 
   const countries = useMemo(() => getNames(), []);
 
-  const handleChange = (e) => {
-    const value =
-      e.target.type === "checkbox" ? e.target.checked : e.target.value;
-    setFormData({ ...formData, [e.target.name]: value });
+  const handleChange = async (e) => {
+    const { name, value, type, checked } = e.target;
+    const val = type === "checkbox" ? checked : value;
+    setFormData({ ...formData, [name]: val });
+
+    if (name === "referralCode") {
+      if (val.trim() !== "") {
+        try {
+          const response = await axios.get(`/auth/referrer/${val}`);
+          setReferrerName(response.data.name);
+        } catch (error) {
+          setReferrerName("");
+        }
+      } else {
+        setReferrerName("");
+      }
+    }
   };
 
   const handleSubmit = (e) => {
@@ -186,6 +215,7 @@ const SignUp = () => {
                   className="outline-none w-full border rounded-2xl placeholder:text-[#000000B2] placeholder:capitalize placeholder:text-sm p-2"
                   placeholder=""
                 />
+                {referrerName && <span className="text-sm text-green-500">Referred by: {referrerName}</span>}
               </label>
               <div className="flex items-center gap-2">
                 <input
