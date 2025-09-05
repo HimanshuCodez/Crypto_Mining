@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "../../../api/axios";
+import api from "../../../api/axios";
 import useAuthStore from '../../../store/authStore';
 
 const DepositUsdt = () => {
@@ -9,7 +9,7 @@ const DepositUsdt = () => {
   const [amount, setAmount] = useState("");
   const [password, setPassword] = useState("");
   const [verify, setVerify] = useState(false);
-  const [barcode, setBarcode] = useState('');
+  const [barcodes, setBarcodes] = useState({ deposit: '', tre20: '' });
   const [paymentScreenshot, setPaymentScreenshot] = useState(null);
   const [paymentAmount, setPaymentAmount] = useState('');
   const [submissionStatus, setSubmissionStatus] = useState('idle'); // 'idle', 'submitting', 'pending', 'approved', 'rejected'
@@ -18,9 +18,12 @@ const DepositUsdt = () => {
     // Fetch barcode from backend
     const fetchBarcode = async () => {
       try {
-        const response = await axios.get('/admin/barcode');
+        const response = await api.get('/admin/barcode');
         console.log('Barcode response:', response.data);
-        setBarcode(response.data.barcodeUrl);
+        setBarcodes({
+          deposit: response.data.depositBarcodeUrl,
+          tre20: response.data.tre20BarcodeUrl
+        });
       } catch (error) {
         console.error('Failed to fetch barcode', error);
       }
@@ -61,7 +64,7 @@ const DepositUsdt = () => {
     formData.append('userId', user._id); // Use actual user ID from auth context
 
     try {
-      const response = await axios.post('/admin/payments/submit', formData, {
+      const response = await api.post('/admin/payments/submit', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -123,15 +126,25 @@ const DepositUsdt = () => {
           />
         </div>
 
-        {/* Barcode */}
-        {barcode && (
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Scan Barcode
-            </label>
-            <img src={barcode} alt="USDT Deposit Barcode" className="w-48 h-48" />
-          </div>
-        )}
+        {/* Barcodes */}
+        <div className="flex gap-4">
+            {barcodes.deposit && (
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Deposit Barcode
+                    </label>
+                    <img src={barcodes.deposit} alt="USDT Deposit Barcode" className="w-48 h-48" />
+                </div>
+            )}
+            {barcodes.tre20 && (
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                        TRE20 Barcode
+                    </label>
+                    <img src={barcodes.tre20} alt="TRE20 Deposit Barcode" className="w-48 h-48" />
+                </div>
+            )}
+        </div>
 
         {/* Upload Payment Proof */}
         <div className="space-y-4">
