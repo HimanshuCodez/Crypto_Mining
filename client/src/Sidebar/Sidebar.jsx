@@ -46,7 +46,7 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+            className="fixed inset-0 z-40 md:hidden"
             onClick={() => setIsSidebarOpen(false)}
           ></motion.div>
         )}
