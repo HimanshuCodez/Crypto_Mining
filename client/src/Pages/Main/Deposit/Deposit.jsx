@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import api from "../../../api/axios";
 import useAuthStore from '../../../store/authStore';
+import { toast } from 'react-toastify';
 
 const DepositUsdt = () => {
   const { user } = useAuthStore();
@@ -15,11 +16,9 @@ const DepositUsdt = () => {
   const [submissionStatus, setSubmissionStatus] = useState('idle'); // 'idle', 'submitting', 'pending', 'approved', 'rejected'
 
   useEffect(() => {
-    // Fetch barcode from backend
     const fetchBarcode = async () => {
       try {
         const response = await api.get('/admin/barcode');
-        console.log('Barcode response:', response.data);
         setBarcodes({
           deposit: response.data.depositBarcodeUrl,
           tre20: response.data.tre20BarcodeUrl
@@ -28,32 +27,46 @@ const DepositUsdt = () => {
         console.error('Failed to fetch barcode', error);
       }
     };
-    fetchBarcode();
-  }, []);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log({
-      usdtAddress,
-      sendingAddress,
-      amount,
-      password,
-      verify,
-    });
-  };
+    const fetchPaymentStatus = async () => {
+        if (user?._id) {
+            try {
+                const response = await api.get(`/admin/payments/status/${user._id}`);
+                setSubmissionStatus(response.data.status);
+            } catch (error) {
+                console.error('Failed to fetch payment status', error);
+            }
+        }
+    };
+
+    fetchBarcode();
+    fetchPaymentStatus();
+  }, [user]);
 
   const handleFileChange = (e) => {
     setPaymentScreenshot(e.target.files[0]);
   };
 
-  const handlePaymentSubmission = async () => {
-    if (!paymentScreenshot || !paymentAmount) {
-      alert('Please enter amount and upload screenshot.');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!verify) {
+      toast.error('Please verify the transaction.');
       return;
     }
 
+    if (!paymentScreenshot || !paymentAmount) {
+      toast.error('Please enter amount and upload screenshot.');
+      return;
+    }
+
+    if (!password) {
+        toast.error('Please enter your transaction password.');
+        return;
+    }
+
     if (!user || !user._id) {
-      alert('User not logged in or user ID not available.');
+      toast.error('User not logged in or user ID not available.');
       return;
     }
 
@@ -61,7 +74,8 @@ const DepositUsdt = () => {
     const formData = new FormData();
     formData.append('screenshot', paymentScreenshot);
     formData.append('amount', paymentAmount);
-    formData.append('userId', user._id); // Use actual user ID from auth context
+    formData.append('userId', user._id);
+    formData.append('password', password);
 
     try {
       const response = await api.post('/admin/payments/submit', formData, {
@@ -72,16 +86,16 @@ const DepositUsdt = () => {
 
       if (response.status === 200) {
         setSubmissionStatus('pending');
-        alert('Payment submitted successfully! Waiting for admin approval.');
+        toast.success('Payment submitted successfully! Waiting for admin approval.');
       } else {
         setSubmissionStatus('idle');
-        alert('Failed to submit payment.');
+        toast.error('Failed to submit payment.');
       }
       
     } catch (error) {
       console.error('Error submitting payment:', error);
       setSubmissionStatus('idle');
-      alert('An error occurred while submitting payment.');
+      toast.error(error.response?.data?.message || 'An error occurred while submitting payment.');
     }
   };
 
@@ -131,7 +145,7 @@ const DepositUsdt = () => {
             {barcodes.deposit && (
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Deposit Barcode
+                        BEP20 Barcode
                     </label>
                     <img src={barcodes.deposit} alt="USDT Deposit Barcode" className="w-48 h-48" />
                 </div>
@@ -172,14 +186,6 @@ const DepositUsdt = () => {
               className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-cyan-500"
             />
           </div>
-          <button
-            type="button"
-            onClick={handlePaymentSubmission}
-            disabled={submissionStatus === 'submitting' || submissionStatus === 'pending'}
-            className="bg-cyan-400 hover:bg-cyan-500 text-white px-6 py-2 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {submissionStatus === 'submitting' ? 'Submitting...' : 'I have completed payment'}
-          </button>
           {submissionStatus === 'pending' && (
             <p className="text-yellow-600 font-medium mt-2">Waiting for admin approval...</p>
           )}
@@ -217,9 +223,10 @@ const DepositUsdt = () => {
         {/* Submit */}
         <button
           type="submit"
-          className="bg-cyan-400 hover:bg-cyan-500 text-white px-6 py-2 rounded transition-colors"
+          disabled={submissionStatus === 'submitting' || submissionStatus === 'pending'}
+          className="bg-cyan-400 hover:bg-cyan-500 text-white px-6 py-2 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Submit
+          {submissionStatus === 'submitting' ? 'Submitting...' : 'Submit'}
         </button>
       </form>
     </div>

@@ -1,6 +1,7 @@
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import bcrypt from 'bcryptjs';
 import { fileURLToPath } from 'url';
 import Setting from '../models/Setting.js';
 import Transaction from '../models/Transaction.js';
@@ -56,12 +57,21 @@ export const updateBarcode = async (req, res) => {
 
 export const submitPayment = async (req, res) => {
   try {
-    console.log('req.body:', req.body);
-    const { amount, userId } = req.body;
+    const { amount, userId, password } = req.body;
     const screenshot = req.file ? `/uploads/${req.file.filename}` : null;
 
-    if (!amount || !userId || !screenshot) {
-      return res.status(400).json({ message: 'Amount, user ID, and screenshot are required.' });
+    if (!amount || !userId || !screenshot || !password) {
+      return res.status(400).json({ message: 'Amount, user ID, screenshot, and password are required.' });
+    }
+
+    const user = await User.findById(userId).select('+transactionPassword');
+    if (!user) {
+        return res.status(404).json({ message: "User not found" });
+    }
+
+    const isPasswordCorrect = await bcrypt.compare(password, user.transactionPassword);
+    if (!isPasswordCorrect) {
+        return res.status(400).json({ message: "Invalid transaction password" });
     }
 
     const newTransaction = new Transaction({
@@ -69,7 +79,7 @@ export const submitPayment = async (req, res) => {
       amount,
       type: 'deposit',
       status: 'pending',
-      screenshotUrl: screenshot, // Assuming you add screenshotUrl to your Transaction model
+      screenshotUrl: screenshot,
     });
 
     await newTransaction.save();
@@ -273,4 +283,19 @@ export const approveMiningInvestment = async (req, res) => {
     console.error('Error approving mining investment:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
+};
+
+export const getPaymentStatus = async (req, res) => {
+    const { userId } = req.params;
+    try {
+        const pendingDeposit = await Transaction.findOne({ userId, type: 'deposit', status: 'pending' }).sort({ createdAt: -1 });
+        if (pendingDeposit) {
+            res.status(200).json({ status: 'pending' });
+        } else {
+            res.status(200).json({ status: 'idle' });
+        }
+    } catch (error) {
+        console.error('Error fetching payment status:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
 };
