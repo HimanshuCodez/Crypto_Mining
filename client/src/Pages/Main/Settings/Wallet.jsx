@@ -8,14 +8,14 @@ const Wallet = () => {
   const [address, setAddress] = useState('');
   const [transactionPassword, setTransactionPassword] = useState('');
   const [otp, setOtp] = useState('');
-  const { user, token } = useAuthStore();
   const [wallets, setWallets] = useState([]);
+  const [isSendingOtp, setIsSendingOtp] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const fetchWallets = async () => {
     try {
-      const response = await api.get('/user/wallets', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await api.get('/user/wallets');
       setWallets(response.data);
     } catch (error) {
       console.error('Error fetching wallets', error);
@@ -23,35 +23,42 @@ const Wallet = () => {
   };
 
   useEffect(() => {
-    if (token) {
-      fetchWallets();
-    }
-  }, [token]);
+    fetchWallets();
+  }, []);
 
   const handleSendOtp = async () => {
+    if (!transactionPassword) {
+      toast.error("Please enter your transaction password");
+      return;
+    }
+    setIsSendingOtp(true);
     try {
-      await api.post('/user/send-otp', { email: user.email, password: transactionPassword }, {
-        headers: { Authorization: `Bearer ${token}` }
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      toast('OTP sent to your email');
+      await api.post('/otp/send-wallet-otp', { password: transactionPassword });
+      toast.success('OTP sent to your email');
+      setOtpSent(true);
     } catch (error) {
-      console.error('Error sending OTP', error);
-      toast('Error sending OTP');
+      toast.error(error.response?.data?.message || 'Error sending OTP');
+    } finally {
+      setIsSendingOtp(false);
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
-      await api.post('/user/wallet', { walletType, address, transactionPassword, otp }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      toast('Wallet address updated successfully');
+      await api.post('/user/wallet', { walletType, address, otp });
+      toast.success('Wallet address saved successfully');
+      setWalletType('USDT.BEP20');
+      setAddress('');
+      setTransactionPassword('');
+      setOtp('');
+      setOtpSent(false);
       fetchWallets(); // Refresh the list of wallets
     } catch (error) {
-      console.error('Error updating wallet address', error);
-      toast('Error updating wallet address');
+      toast.error(error.response?.data?.message || 'Error saving wallet address');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -59,10 +66,10 @@ const Wallet = () => {
     <div className=" flex w-[78vw] flex-col   gap-6 p-6 md:p-10">
       {/* Page Header */}
       <div className="flex flex-col gap-2">
-        <h2 className="text-4xl font-medium capitalize font-[Inter]">
+        <h2 className="text-4xl font-medium capitalize font-['Inter']">
           Wallet Address
         </h2>
-        <nav className="flex items-center gap-1 capitalize font-light text-sm font-[Inter]">
+        <nav className="flex items-center gap-1 capitalize font-light text-sm font-['Inter']">
           <a href="/setting">setting</a>
           <span>/</span>
           <a href="/wallet" className="text-[#02AC8F]">wallet address</a>
@@ -71,11 +78,11 @@ const Wallet = () => {
 
       {/* Wallet Form Card */}
       <div className="bg-white w-full rounded-3xl px-5 py-10 flex flex-col gap-6 shadow">
-        <h2 className="font-normal text-xl capitalize font-[Inter] text-[#494949]">
+        <h2 className="font-normal text-xl capitalize font-['Inter'] text-[#494949]">
           Add New USDT.BEP20 Address to Receive Profits
         </h2>
 
-        <form className="flex flex-col gap-6 font-[Inter]" onSubmit={handleSubmit}>
+        <form className="flex flex-col gap-6 font-['Inter']" onSubmit={handleSubmit}>
           {/* Wallet Selection */}
           <label className="flex flex-col gap-1">
             <span className="text-lg capitalize text-black font-light">
@@ -116,6 +123,7 @@ const Wallet = () => {
               className="outline-none w-full border border-[#00000066] rounded-md placeholder:text-[#000000B2] p-2"
               value={transactionPassword}
               onChange={(e) => setTransactionPassword(e.target.value)}
+              disabled={otpSent}
             />
           </label>
 
@@ -130,13 +138,15 @@ const Wallet = () => {
                 className="outline-none flex-1 border border-[#00000066] rounded-l-md placeholder:text-[#000000B2] p-2"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
+                disabled={!otpSent}
               />
               <button
                 type="button"
                 className="border border-[#00000066] border-l-0 rounded-r-md px-4 flex items-center justify-center text-sm"
                 onClick={handleSendOtp}
+                disabled={isSendingOtp || otpSent}
               >
-                Send OTP
+                {isSendingOtp ? 'Sending...' : 'Send OTP'}
               </button>
             </div>
           </label>
@@ -145,16 +155,17 @@ const Wallet = () => {
           <div>
             <button
               type="submit"
-              className="border-[#31B8A1] rounded-lg capitalize border text-[#31B8A1] font-semibold font-[Montserrat] text-lg px-6 py-2 hover:scale-105 transition-all ease-in"
+              className="border-[#31B8A1] rounded-lg capitalize border text-[#31B8A1] font-semibold font-['Montserrat'] text-lg px-6 py-2 hover:scale-105 transition-all ease-in"
+              disabled={loading || !otpSent}
             >
-              Submit
+              {loading ? 'Submitting...' : 'Submit'}
             </button>
           </div>
         </form>
       </div>
 
       <div className="bg-white w-full rounded-3xl px-5 py-10 flex flex-col gap-6 shadow">
-        <h2 className="font-normal text-xl capitalize font-[Inter] text-[#494949]">
+        <h2 className="font-normal text-xl capitalize font-['Inter'] text-[#494949]">
           Saved Wallet Addresses
         </h2>
         <div>
