@@ -4,7 +4,7 @@ import api from "../../../api/axios";
 import { toast } from "react-toastify";
 
 const Investment = () => {
-  const { user, token } = useAuthStore();
+  const { user } = useAuthStore();
   const [amount, setAmount] = useState("");
   const [walletAddress, setWalletAddress] = useState("");
   const [password, setPassword] = useState("");
@@ -26,9 +26,7 @@ const Investment = () => {
 
   const fetchWallets = async () => {
     try {
-      const response = await api.get("/user/wallets", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await api.get("/user/wallets");
       setWallets(response.data);
     } catch (error) {
       console.error("Error fetching wallets", error);
@@ -37,10 +35,10 @@ const Investment = () => {
 
   useEffect(() => {
     fetchWithdrawals();
-    if (token) {
+    if (user) {
       fetchWallets();
     }
-  }, [token]);
+  }, [user]);
 
   const handleSendOtp = async () => {
     if (!password) {

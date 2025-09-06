@@ -21,7 +21,7 @@ const AccountStatement = () => {
     }, [user]);
 
     const isCredit = (type) => {
-        return ['deposit', 'income'].includes(type);
+        return ['deposit', 'income', 'transfer_in'].includes(type);
     };
 
     return (

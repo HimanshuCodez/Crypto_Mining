@@ -7,7 +7,7 @@ const WithdrawReport = () => {
 
   const fetchWithdrawals = async () => {
     try {
-      const response = await api.get("/api/withdrawals/all");
+      const response = await api.get("/withdrawals/all");
       setWithdrawals(response.data);
     } catch (error) {
       toast.error("Failed to fetch withdrawals");

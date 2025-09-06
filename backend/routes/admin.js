@@ -5,7 +5,7 @@ import express from 'express';
 const router = express.Router();
 
 router.get('/users', auth, isAdmin, getAllUsers);
-router.get('/barcode', auth, isAdmin, getBarcode);
+router.get('/barcode', auth, getBarcode);
 router.post('/barcode', auth, isAdmin, updateBarcode);
 router.post('/payments/submit', auth, upload.single('screenshot'), submitPayment);
 router.get('/payments/pending', auth, isAdmin,  getPendingPayments);

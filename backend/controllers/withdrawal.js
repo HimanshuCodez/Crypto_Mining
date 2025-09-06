@@ -3,7 +3,7 @@ import User from '../models/User.js';
 import bcrypt from 'bcrypt';
 
 export const createWithdrawal = async (req, res) => {
-  const { amount, walletAddress, password, otp } = req.body;
+  const { amount, walletAddress, otp } = req.body;
   const userId = req.user.id;
 
   try {
@@ -11,11 +11,6 @@ export const createWithdrawal = async (req, res) => {
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
-    }
-
-    const isMatch = await bcrypt.compare(password, user.transactionPassword);
-    if (!isMatch) {
-      return res.status(400).json({ message: 'Invalid transaction password' });
     }
 
     if (user.otp !== otp || user.otpExpires < Date.now()) {
