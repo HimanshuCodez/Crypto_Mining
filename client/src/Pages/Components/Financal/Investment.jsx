@@ -10,6 +10,8 @@ const Investment = () => {
   const [password, setPassword] = useState("");
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
+  const [isSendingOtp, setIsSendingOtp] = useState(false);
   const [withdrawals, setWithdrawals] = useState([]);
   const [wallets, setWallets] = useState([]);
 
@@ -40,6 +42,23 @@ const Investment = () => {
     }
   }, [token]);
 
+  const handleSendOtp = async () => {
+    if (!password) {
+      toast.error("Please enter your transaction password");
+      return;
+    }
+    setIsSendingOtp(true);
+    try {
+      await api.post("/otp/send-withdrawal-otp", { password });
+      toast.success("OTP sent to your email");
+      setOtpSent(true);
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to send OTP");
+    } finally {
+      setIsSendingOtp(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (parseFloat(amount) > user.miningInvestment) {
@@ -59,6 +78,7 @@ const Investment = () => {
       setWalletAddress("");
       setPassword("");
       setOtp("");
+      setOtpSent(false);
       fetchWithdrawals();
     } catch (error) {
       toast.error(error.response?.data?.message || "An error occurred");
@@ -68,12 +88,12 @@ const Investment = () => {
   };
 
   return (
-    <div className="w-full flex flex-col gap-6 p-10 pr-20 font-[Inter]">
+    <div className="w-full flex flex-col gap-6 p-10 pr-20 font-['Inter']">
       <div className="flex flex-col justify-start items-start gap-2">
-        <h2 className="text-4xl font-medium capitalize font-[Inter]">
+        <h2 className="text-4xl font-medium capitalize font-['Inter']">
           Withdraw Minning Investment{" "}
         </h2>
-        <nav className="flex items-center gap-1 capitalize font-light text-sm font-[Inter]">
+        <nav className="flex items-center gap-1 capitalize font-light text-sm font-['Inter']">
           <a href="/Transfer">Financial</a>
           <span>/</span>
           <a href="/wallet" className="text-[#02AC8F]">
@@ -82,25 +102,25 @@ const Investment = () => {
         </nav>
       </div>
       <div className="bg-[#FFFFFF] w-full rounded-3xl px-5 py-10  flex flex-col gap-5">
-        <div className="font-[Inter] font-medium text-2xl flex flex-col gap-3 border rounded-lg p-3 w-fit">
+        <div className="font-['Inter'] font-medium text-2xl flex flex-col gap-3 border rounded-lg p-3 w-fit">
           <h2>Mining Investment Balance</h2>
           <span className="text-[#2EB9A2]">
             ${user?.miningInvestment?.toFixed(2) ?? "0.00"}
           </span>
         </div>
-        <span className=" font-[Inter] flex justify-start items-start gap-2">
+        <span className=" font-['Inter'] flex justify-start items-start gap-2">
           <h2 className="text-[#2EB9A2] font-medium text-xl">
             {" "}
             Notification :
           </h2>
-          <h2 className="w-[36vw] font-normal text-xl text-wrap  font-[Inter] text-[#494949] ">
+          <h2 className="w-[36vw] font-normal text-xl text-wrap  font-['Inter'] text-[#494949] ">
             You may withdraw your trading investment at any time, subject to a
             20% transaction fee
           </h2>
         </span>
-        <h2 className="text-3xl font-[Inter] font-medium py-3">Fill Details</h2>
+        <h2 className="text-3xl font-['Inter'] font-medium py-3">Fill Details</h2>
         <form onSubmit={handleSubmit}>
-          <div className="flex flex-col gap-6 font-[Inter]">
+          <div className="flex flex-col gap-6 font-['Inter']">
             <span className="grid grid-cols-2 w-[45vw] justify-start gap-10">
               <label
                 htmlFor="amount"
@@ -154,6 +174,7 @@ const Investment = () => {
                 className="outline-none w-full border border-[#00000066] rounded-sm placeholder:text-[#000000B2]  p-2"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                disabled={otpSent}
               />
             </label>
             <label
@@ -169,28 +190,34 @@ const Investment = () => {
                   className="outline-none w-full border border-[#00000066] rounded-l-sm placeholder:text-[#000000B2]  p-2"
                   value={otp}
                   onChange={(e) => setOtp(e.target.value)}
+                  disabled={!otpSent}
                 />
-                <div className="border rounded-r-sm border-l-[#00000066] w-[10vw] flex items-center  justify-center">
-                  Send OTP
-                </div>
+                <button
+                  type="button"
+                  onClick={handleSendOtp}
+                  disabled={isSendingOtp || otpSent}
+                  className="border rounded-r-sm border-l-[#00000066] w-[10vw] flex items-center justify-center"
+                >
+                  {isSendingOtp ? "Sending..." : "Send OTP"}
+                </button>
               </span>
             </label>
             <div className="flex justify-start">
               <button
                 type="submit"
-                disabled={loading}
-                className="border-[#31B8A1]  rounded-lg capitalize border text-[#31B8A1] font-semibold  font-[Montserrat] text-lg px-6 py-2 scale-100 hover:scale-105 transition-all ease-in"
+                disabled={loading || !otpSent}
+                className="border-[#31B8A1]  rounded-lg capitalize border text-[#31B8A1] font-semibold  font-['Montserrat'] text-lg px-6 py-2 scale-100 hover:scale-105 transition-all ease-in"
               >
                 {loading ? "Submitting..." : "Submit"}
               </button>
             </div>
           </div>
         </form>
-        <h2 className=" text-2xl px-4 py-3 mt-6  capitalize font-medium font-[Montserrat] bg-[#2EB9A2] text-white">
+        <h2 className=" text-2xl px-4 py-3 mt-6  capitalize font-medium font-['Montserrat'] bg-[#2EB9A2] text-white">
           Submit Your Wallet Address in Profile Section for Withdraw Amount.{" "}
         </h2>
         <div className="bg-[#F7F7F7] w-full rounded-3xl px-5 py-10 flex flex-col gap-5 ">
-          <h2 className="text-xl font-medium font-[Inter]"> Report</h2>
+          <h2 className="text-xl font-medium font-['Inter']"> Report</h2>
           <div className="bg-[#Ffff]   py-3 px-8  pb-10 rounded-sm w-full">
             <div className="grid grid-cols-4 gap-6 text-lg font-medium ">
               <div>#</div>
