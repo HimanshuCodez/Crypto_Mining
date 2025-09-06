@@ -46,7 +46,7 @@ export const sendMail = async (to, subject, text) => {
 export const sendWelcomeEmail = async (to, name, email, password, referralCode) => {
     const subject = 'Welcome to Crypto Mining!';
     const html = `
-    <div style="font-family: Arial, sans-serif; font-size: 16px; color: #333;">
+    <div style="font-family: Arial, sans-serif; font-size: 16px; color: #ffffff; background-color: #000000; padding: 20px;">
       <h2 style="color: #007BFF;">Welcome to CRYPTO MINNING, ${name}!</h2>
       <p>Hello ${name},</p>
       <p>Your account has been created successfully.</p>
@@ -55,6 +55,7 @@ export const sendWelcomeEmail = async (to, name, email, password, referralCode) 
 
       <p><strong>Email:</strong> ${email}</p>
       <p><strong>Password:</strong> ${password}</p>
+      <p><strong>Your Referral Code:</strong> ${referralCode}</p>
       <p>Please keep your password secure and do not share it with anyone.</p>
       <br>
       <p>Best regards,</p>

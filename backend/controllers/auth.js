@@ -68,7 +68,7 @@ export const signup = async (req, res) => {
         await newUser.save();
 
         // Send welcome email
-        await sendWelcomeEmail(email, name, email, password);
+        await sendWelcomeEmail(email, name, email, password, newReferralCode);
 
         // Generate JWT token
         const expiresIn = rememberMe ? '7d' : '10h';
