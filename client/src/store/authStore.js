@@ -22,8 +22,9 @@ const useAuthStore = create((set) => ({
     signup: async (userData) => {
         set({ loading: true });
         try {
-            const response = await axios.post('/auth/signup', userData);
-            set({ user: response.data.result, isAuthenticated: true, loading: false });
+            await axios.post('/auth/signup', userData);
+            const { checkAuth } = useAuthStore.getState();
+            await checkAuth();
             toast.success('Signup successful!');
         } catch (error) {
             set({ loading: false });

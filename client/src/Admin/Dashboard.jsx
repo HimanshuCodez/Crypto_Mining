@@ -19,6 +19,7 @@ import WithdrawalsPage from "./Pages/WithdrawalsPage";
 import SettingsPage from "./Pages/SettingsPage";
 
 import MinningInvestmentApproval from "./Pages/MinningInvestmentApproval";
+import { toast } from "react-toastify";
 
 const AdminSystem = () => {
   const [currentPage, setCurrentPage] = useState("dashboard");
@@ -88,14 +89,14 @@ const AdminSystem = () => {
     try {
       const response = await axios.post(`/admin/payments/approve/${paymentId}`);
       if (response.status === 200) {
-        alert('Payment approved!');
+        toast.success('Payment approved!');
         fetchPendingPayments();
       } else {
-        alert('Failed to approve payment.');
+        toast.error('Failed to approve payment.');
       }
     } catch (error) {
       console.error('Failed to approve payment', error);
-      alert('An error occurred while approving the payment.');
+      toast.error('An error occurred while approving the payment.');
     }
   };
 
@@ -118,7 +119,7 @@ const AdminSystem = () => {
     try {
       const response = await axios.post('/admin/barcode', updatedBarcodeUrls);
       if (response.status === 200) {
-        alert('Barcode updated successfully!');
+        toast.success('Barcode updated successfully!');
         setBarcodeUrls(updatedBarcodeUrls);
       } else {
         alert('Failed to update barcode.');
