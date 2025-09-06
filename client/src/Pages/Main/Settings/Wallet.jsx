@@ -13,7 +13,7 @@ const Wallet = () => {
 
   const fetchWallets = async () => {
     try {
-      const response = await api.get('api/user/wallets', {
+      const response = await api.get('/user/wallets', {
         headers: { Authorization: `Bearer ${token}` },
       });
       setWallets(response.data);
@@ -30,7 +30,8 @@ const Wallet = () => {
 
   const handleSendOtp = async () => {
     try {
-      await api.post('api/user/send-otp', { email: user.email, password: transactionPassword }, {
+      await api.post('/user/send-otp', { email: user.email, password: transactionPassword }, {
+        headers: { Authorization: `Bearer ${token}` }
         headers: { Authorization: `Bearer ${token}` }
       });
       toast('OTP sent to your email');
@@ -43,7 +44,7 @@ const Wallet = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await api.post('api/user/wallet', { walletType, address, transactionPassword, otp }, {
+      await api.post('/user/wallet', { walletType, address, transactionPassword, otp }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       toast('Wallet address updated successfully');

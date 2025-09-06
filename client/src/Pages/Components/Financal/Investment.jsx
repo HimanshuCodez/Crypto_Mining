@@ -15,7 +15,7 @@ const Investment = () => {
 
   const fetchWithdrawals = async () => {
     try {
-      const response = await api.get("api/withdrawals/mining");
+      const response = await api.get("/withdrawals/mining");
       setWithdrawals(response.data);
     } catch (error) {
       toast.error("Failed to fetch withdrawals");
@@ -24,7 +24,7 @@ const Investment = () => {
 
   const fetchWallets = async () => {
     try {
-      const response = await api.get("/api/user/wallets", {
+      const response = await api.get("/user/wallets", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setWallets(response.data);
@@ -48,7 +48,7 @@ const Investment = () => {
     }
     setLoading(true);
     try {
-      const response = await api.post("/api/withdrawals/mining", {
+      const response = await api.post("/withdrawals/mining", {
         amount,
         walletAddress,
         password,
@@ -134,8 +134,6 @@ const Investment = () => {
                   onChange={(e) => setWalletAddress(e.target.value)}
                 >
                   <option value="">Select a wallet</option>
-                   <option value="">ja3u48ouqc3ewefwqeferwqeferoioip</option>
-                  <option value="">rq4rq445i58i6t32e2e2erq445i58i6t</option>
                   {wallets.map((wallet) => (
                     <option key={wallet._id} value={wallet.address}>
                       {wallet.walletType} - {wallet.address}
