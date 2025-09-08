@@ -234,7 +234,7 @@ const SignUp = () => {
                 <Turnstile
                   sitekey="0x4AAAAAABs1naScd1VDLrsX" // Replace with your site key
                   onVerify={(token) =>
-                    setFormData({ ...formData, turnstileToken: token })
+                    setFormData((prevData) => ({ ...prevData, turnstileToken: token }))
                   }
                 />
               </div>
