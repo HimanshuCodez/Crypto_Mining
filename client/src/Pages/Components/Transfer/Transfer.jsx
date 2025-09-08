@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from '../../../api/axios';
+import api from '../../../api/axios';
 import { toast } from 'react-toastify';
 
 const Transfer = () => {
@@ -10,7 +10,7 @@ const Transfer = () => {
         const fetchTransactions = async () => {
             setLoading(true);
             try {
-                const response = await axios.get('/user/all-transactions');
+                const response = await api.get('/user/all-transactions');
                 setTransactions(response.data);
             } catch (error) {
                 toast.error('Failed to fetch transactions.');

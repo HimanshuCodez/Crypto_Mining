@@ -12,6 +12,7 @@ const ToPackageWallet = () => {
     const [isOtpSent, setIsOtpSent] = useState(false);
     const [isOtpVerified, setIsOtpVerified] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [referredUserName, setReferredUserName] = useState(''); // New state for referred user name
 
     useEffect(() => {
         checkAuth();
@@ -102,9 +103,24 @@ const ToPackageWallet = () => {
                                 className='outline-none w-full border border-black rounded-lg placeholder:text-[#000000B2] placeholder:capitalize placeholder:text-sm placeholder:font-extralight p-2' 
                                 placeholder='Enter User Id' 
                                 value={recipientReferralId}
-                                onChange={(e) => setRecipientReferralId(e.target.value)}
+                                onChange={async (e) => { // Make onChange async
+                                    const value = e.target.value;
+                                    setRecipientReferralId(value);
+
+                                    if (value.trim() !== "") {
+                                        try {
+                                            const response = await api.get(`/auth/referrer/${value}`);
+                                            setReferredUserName(response.data.name);
+                                        } catch (error) {
+                                            setReferredUserName("");
+                                        }
+                                    } else {
+                                        setReferredUserName("");
+                                    }
+                                }}
                                 required
                             />
+                            {referredUserName && <span className="text-sm text-green-500">{referredUserName}</span>} {/* Display referred user name */}
                         </label>
                         <label htmlFor="mode" className='flex flex-col justify-start items-start gap-1'>
                             <span className='text-lg capitalize text-black font-light'>Investment Amount</span>

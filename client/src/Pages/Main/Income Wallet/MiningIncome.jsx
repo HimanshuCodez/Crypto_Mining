@@ -16,6 +16,7 @@ const MiningIncome = () => {
     });
     const [isOtpSent, setIsOtpSent] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [referredUserName, setReferredUserName] = useState(''); // New state for referred user name
 
     useEffect(() => {
         const toastId = 'activation-error';
@@ -27,8 +28,22 @@ const MiningIncome = () => {
         }
     }, [user, navigate]);
 
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+    const handleChange = async (e) => { // Make handleChange async
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+
+        if (name === "userId") {
+            if (value.trim() !== "") {
+                try {
+                    const response = await api.get(`/auth/referrer/${value}`);
+                    setReferredUserName(response.data.name);
+                } catch (error) {
+                    setReferredUserName("");
+                }
+            } else {
+                setReferredUserName("");
+            }
+        }
     };
 
     const handleSendOtp = async () => {
@@ -107,6 +122,7 @@ const MiningIncome = () => {
                           <label htmlFor="userId" className='flex flex-col justify-start items-start gap-1'>
                               <span className='text-lg capitalize text-black font-light'>User Id</span>
                               <input type="text" name="userId" value={formData.userId} onChange={handleChange} className='outline-none w-full border border-black rounded-lg placeholder:text-[#000000B2] placeholder:capitalize placeholder:text-sm placeholder:font-extralight p-2' placeholder='Enter User Id' id="userId" />
+                              {referredUserName && <span className="text-sm text-green-500">{referredUserName}</span>} {/* Display referred user name */}
                           </label>
                         
                       </span>
