@@ -6,7 +6,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://crypto-mining-95zt.onrender.com',
+        target: 'https://api.cryptominning.in/api',
         changeOrigin: true,
         secure: false,
       },
