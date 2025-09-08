@@ -27,6 +27,7 @@ import SignUp from "./Pages/SignUp";
 import DepositUsdtForm from "./Pages/Main/Deposit/Deposit";
 
 import AdminSystem from "./Admin/Dashboard";
+import Loader from "./Pages/Components/Loader";
 
 const App = () => {
   const { checkAuth, loading } = useAuthStore();
@@ -36,7 +37,7 @@ const App = () => {
   }, [checkAuth]);
 
   if (loading) {
-    return <div>Loading...</div>; // Or a spinner component
+    return <div><Loader/></div>; // Or a spinner component
   }
 
   return (
