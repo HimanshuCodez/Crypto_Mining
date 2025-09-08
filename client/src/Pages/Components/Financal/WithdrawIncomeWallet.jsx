@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import useAuthStore from '../../../store/authStore';
 import api from '../../../api/axios';
@@ -66,7 +65,6 @@ const WithdrawIncomeWallet = () => {
       setPassword('');
       setOtp('');
       setOtpSent(false);
-      // Optionally, you can re-fetch user data here to update the balance shown
     } catch (error) {
       toast.error(error.response?.data?.message || 'An error occurred');
     } finally {
@@ -80,11 +78,12 @@ const WithdrawIncomeWallet = () => {
 
   return (
     <div className="w-full flex flex-col gap-6 p-4 md:p-10 font-['Inter']">
-      <div className="flex flex-col justify-start items-start gap-2">
-        <h2 className="text-2xl md:text-4xl font-medium capitalize font-['Inter']">
+      {/* Header */}
+      <div className="flex flex-col gap-2">
+        <h2 className="text-xl md:text-3xl font-medium capitalize">
           Withdraw Income Wallet
         </h2>
-        <nav className="flex items-center gap-1 capitalize font-light text-sm font-['Inter']">
+        <nav className="flex items-center gap-1 text-sm md:text-base font-light">
           <a href="/Transfer">Financial</a>
           <span>/</span>
           <a href="/wallet" className="text-[#02AC8F] truncate">
@@ -92,116 +91,106 @@ const WithdrawIncomeWallet = () => {
           </a>
         </nav>
       </div>
-      <div className="bg-[#FFFFFF] w-full rounded-3xl px-4 md:px-5 py-10  flex flex-col gap-5">
-        <div className="grid grid-cols-1 md:grid-cols-2 justify-start items-center gap-10 w-full pt-8">
-          <div className="font-['Inter'] font-medium text-2xl flex flex-col gap-3 border rounded-lg p-3">
+
+      {/* Balance */}
+      <div className="bg-white rounded-3xl px-4 md:px-6 py-6 md:py-10 flex flex-col gap-5 shadow-sm">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
+          <div className="font-medium text-xl md:text-2xl border rounded-lg p-3 flex flex-col gap-2">
             <h2>Income Wallet Balance</h2>
-            <span className="text-[#2EB9A2]">
+            <span className="text-[#2EB9A2] text-lg md:text-2xl">
               ${user?.incomeWallet?.toFixed(2) ?? '0.00'}
             </span>
           </div>
         </div>
-        <h2 className=" text-xl md:text-2xl px-2 py-3 rounded-xl  capitalize font-medium font-['Inter'] bg-[#2EB9A2] text-white">
-          Add New USDT.BEP20 Address to Receive Profits
+
+        {/* Section Title */}
+        <h2 className="text-lg md:text-xl px-3 py-2 rounded-lg font-medium bg-[#2EB9A2] text-white">
+          Add New USDT.BEP20 Address
         </h2>
 
-        <form onSubmit={handleSubmit}>
-          <div className="flex flex-col gap-6 font-['Inter']">
-            <div className="grid grid-cols-1 md:grid-cols-2 w-full md:w-[45vw] justify-start gap-6 md:gap-10">
-              <label
-                htmlFor="walletAddress"
-                className="flex flex-col justify-start items-start gap-1"
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+          {/* Wallet + Amount */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <label className="flex flex-col gap-1">
+              <span className="text-base md:text-lg font-light">Select Wallet Address</span>
+              <select
+                className="outline-none w-full border border-gray-400 rounded-lg p-2"
+                value={walletAddress}
+                onChange={(e) => setWalletAddress(e.target.value)}
               >
-                <span className="text-lg capitalize text-black font-light">
-                  Select Wallet Address
-                </span>
-                <select
-                  className="outline-none w-full border border-black rounded-lg placeholder:text-[#000000B2] placeholder:capitalize placeholder:text-sm placeholder:font-extralight p-2"
-                  value={walletAddress}
-                  onChange={(e) => setWalletAddress(e.target.value)}
-                >
-                  <option value="">Select a wallet</option>
-                  {wallets.map((wallet) => (
-                    <option key={wallet._id} value={wallet.address}>
-                      {wallet.walletType} - {wallet.address}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label
-                htmlFor="amount"
-                className="flex flex-col justify-start items-start gap-1"
-              >
-                <span className="text-lg capitalize text-black font-light">
-                  Enter Amount
-                </span>
-                <input
-                  type="text"
-                  className="outline-none w-full border border-black rounded-lg placeholder:text-[#000000B2] placeholder:capitalize placeholder:text-sm placeholder:font-extralight p-2"
-                  placeholder="Enter Amount"
-                  name="amount"
-                  id="amount"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                />
-              </label>
-            </div>
-            <label
-              htmlFor="password"
-              className="flex flex-col justify-start items-start gap-1 w-full md:w-[20vw]"
-            >
-              <span className="text-lg capitalize text-black font-light">
-                Transaction Password
-              </span>
+                <option value="">Select a wallet</option>
+                {wallets.map((wallet) => (
+                  <option key={wallet._id} value={wallet.address}>
+                    {wallet.walletType} - {wallet.address}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label className="flex flex-col gap-1">
+              <span className="text-base md:text-lg font-light">Enter Amount</span>
               <input
-                type="password"
-                className="outline-none w-full border border-[#00000066] rounded-sm placeholder:text-[#000000B2]  p-2"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={otpSent}
+                type="text"
+                className="outline-none w-full border border-gray-400 rounded-lg p-2"
+                placeholder="Enter Amount"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
               />
             </label>
-            <label
-              htmlFor="otp"
-              className="flex flex-col justify-start items-start gap-1"
-            >
-              <span className="text-lg capitalize text-black font-light">
-                One Time Password
-              </span>
-              <span className="text-sm font-light flex w-full md:w-[20vw]">
-                <input
-                  type="password"
-                  className="outline-none w-full border border-[#00000066] rounded-l-sm placeholder:text-[#000000B2]  p-2"
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
-                  disabled={!otpSent}
-                />
-                <button
-                  type="button"
-                  onClick={handleSendOtp}
-                  disabled={isSendingOtp || otpSent}
-                  className="border rounded-r-sm border-l-[#00000066] w-auto px-4 flex items-center  justify-center"
-                >
-                  {isSendingOtp ? 'Sending...' : 'Send OTP'}
-                </button>
-              </span>
-            </label>
-            <div className="flex justify-start">
+          </div>
+
+          {/* Password */}
+          <label className="flex flex-col gap-1">
+            <span className="text-base md:text-lg font-light">Transaction Password</span>
+            <input
+              type="password"
+              className="outline-none w-full border border-gray-400 rounded-lg p-2"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              disabled={otpSent}
+            />
+          </label>
+
+          {/* OTP */}
+          <label className="flex flex-col gap-1">
+            <span className="text-base md:text-lg font-light">One Time Password</span>
+            <div className="flex w-full">
+              <input
+                type="password"
+                className="flex-1 border border-gray-400 rounded-l-lg p-2"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                disabled={!otpSent}
+              />
               <button
-                type="submit"
-                className="border-[#31B8A1]  rounded-lg capitalize border text-[#31B8A1] font-semibold  font-['Montserrat'] text-lg px-6 py-2 scale-100 hover:scale-105 transition-all ease-in"
-                disabled={loading || !otpSent}
+                type="button"
+                onClick={handleSendOtp}
+                disabled={isSendingOtp || otpSent}
+                className="px-4 border border-gray-400 rounded-r-lg bg-gray-50 hover:bg-gray-100"
               >
-                {loading ? 'Submitting...' : 'Submit'}
+                {isSendingOtp ? 'Sending...' : 'Send OTP'}
               </button>
             </div>
-          </div>
+          </label>
+
+          {/* Submit */}
+          <button
+            type="submit"
+            className="w-full md:w-auto border border-[#31B8A1] rounded-lg text-[#31B8A1] font-semibold text-lg px-6 py-2 hover:scale-105 transition"
+            disabled={loading || !otpSent}
+          >
+            {loading ? 'Submitting...' : 'Submit'}
+          </button>
         </form>
-        <h2 className=" text-xl md:text-2xl px-4 py-3 mt-6  capitalize font-medium font-['Montserrat'] bg-[#2EB9A2] text-white">
+
+        {/* Footer Note */}
+        <h2 className="text-base md:text-lg px-3 py-2 mt-4 rounded-lg font-medium bg-[#2EB9A2] text-white">
           Submit Your Wallet Address in Profile Section for Withdraw Amount.
         </h2>
       </div>
     </div>
+  );
 };
 
 export default WithdrawIncomeWallet;
