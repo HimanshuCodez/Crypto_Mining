@@ -101,10 +101,10 @@ const Investment = () => {
         </nav>
       </div>
 
-      <div className="bg-white rounded-3xl px-4 md:px-6 py-6 md:py-10 flex flex-col gap-5 shadow-sm">
+      <div className="bg-white rounded-3xl px-4 md:px-5 py-10 flex flex-col gap-5 shadow-sm">
         {/* Balance */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
-          <div className="font-medium text-lg md:text-2xl flex flex-col gap-2 border rounded-lg p-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 w-full">
+          <div className="font-medium text-lg md:text-2xl flex flex-col gap-3 border rounded-lg p-3">
             <h2>Mining Investment Balance</h2>
             <span className="text-[#2EB9A2] text-lg md:text-2xl">
               ${user?.miningInvestment?.toFixed(2) ?? "0.00"}
@@ -127,7 +127,7 @@ const Investment = () => {
         <h2 className="text-xl md:text-3xl font-medium py-3">Fill Details</h2>
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
           {/* Amount + Wallet */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 w-full">
             <label className="flex flex-col gap-1">
               <span className="text-base md:text-lg font-light">
                 Mining Amount
@@ -191,7 +191,7 @@ const Investment = () => {
                 type="button"
                 onClick={handleSendOtp}
                 disabled={isSendingOtp || otpSent}
-                className="px-4 border border-gray-400 rounded-r-lg bg-gray-50 hover:bg-gray-100"
+                className="w-auto px-4 border border-gray-400 rounded-r-lg bg-gray-50 hover:bg-gray-100"
               >
                 {isSendingOtp ? "Sending..." : "Send OTP"}
               </button>
