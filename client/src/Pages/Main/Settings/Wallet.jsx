@@ -63,10 +63,10 @@ const Wallet = () => {
   };
 
   return (
-    <div className=" flex w-[78vw] flex-col   gap-6 p-6 md:p-10">
+    <div className="w-full flex flex-col gap-6 p-4 md:p-10">
       {/* Page Header */}
       <div className="flex flex-col gap-2">
-        <h2 className="text-4xl font-medium capitalize font-['Inter']">
+        <h2 className="text-2xl md:text-4xl font-medium capitalize font-['Inter']">
           Wallet Address
         </h2>
         <nav className="flex items-center gap-1 capitalize font-light text-sm font-['Inter']">
@@ -114,7 +114,7 @@ const Wallet = () => {
           </label>
 
           {/* Transaction Password */}
-          <label className="flex flex-col gap-1 max-w-md">
+          <label className="flex flex-col gap-1 w-full md:max-w-md">
             <span className="text-lg capitalize text-black font-light">
               Transaction Password
             </span>
@@ -128,7 +128,7 @@ const Wallet = () => {
           </label>
 
           {/* OTP */}
-          <label className="flex flex-col gap-1 max-w-md">
+          <label className="flex flex-col gap-1 w-full md:max-w-md">
             <span className="text-lg capitalize text-black font-light">
               One time password
             </span>

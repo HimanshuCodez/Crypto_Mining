@@ -221,7 +221,7 @@ const Investment = () => {
         <div className="bg-[#F7F7F7] w-full rounded-3xl px-2 md:px-6 py-6 flex flex-col gap-5">
           <h2 className="text-lg md:text-xl font-medium font-['Inter']">Report</h2>
           <div className="bg-white py-3 px-2 md:px-6 rounded-sm w-full overflow-x-auto">
-            <div className="grid grid-cols-4 gap-6 text-sm md:text-base font-medium min-w-[600px]">
+            <div className="hidden md:grid grid-cols-4 gap-6 text-sm md:text-base font-medium min-w-[600px]">
               <div>#</div>
               <div>Amount</div>
               <div>Wallet Address</div>
@@ -230,12 +230,31 @@ const Investment = () => {
             {withdrawals.map((withdrawal, index) => (
               <div
                 key={withdrawal._id}
-                className="grid grid-cols-4 gap-4 py-3 text-gray-500 text-sm md:text-base min-w-[600px]"
+                className="flex flex-col md:grid md:grid-cols-4 gap-2 md:gap-4 py-3 text-gray-500 text-sm md:text-base border-b md:border-b-0"
               >
-                <div>{index + 1}</div>
-                <div>${withdrawal.amount}</div>
-                <div className="truncate">{withdrawal.walletAddress}</div>
-                <div className="text-center">
+                {/* Mobile view */}
+                <div className="md:hidden flex justify-between items-center">
+                    <span className="font-medium text-black">#</span>
+                    <span>{index + 1}</span>
+                </div>
+                <div className="md:hidden flex justify-between items-center">
+                    <span className="font-medium text-black">Amount:</span>
+                    <span>${withdrawal.amount}</span>
+                </div>
+                <div className="md:hidden flex justify-between items-center">
+                    <span className="font-medium text-black">Wallet Address:</span>
+                    <span className="truncate">{withdrawal.walletAddress}</span>
+                </div>
+                <div className="md:hidden flex justify-between items-center">
+                    <span className="font-medium text-black">Withdraw Date:</span>
+                    <span>{new Date(withdrawal.createdAt).toLocaleDateString()}</span>
+                </div>
+
+                {/* Desktop view */}
+                <div className="hidden md:block">{index + 1}</div>
+                <div className="hidden md:block">${withdrawal.amount}</div>
+                <div className="hidden md:block truncate">{withdrawal.walletAddress}</div>
+                <div className="hidden md:block text-center">
                   {new Date(withdrawal.createdAt).toLocaleDateString()}
                 </div>
               </div>
