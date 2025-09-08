@@ -86,7 +86,7 @@ const Investment = () => {
   };
 
   return (
-    <div className="w-full flex flex-col gap-6 p-4 md:p-10 font-['Inter']">
+    <div className="w-full flex flex-col gap-6 font-['Inter']">
       {/* Header */}
       <div className="flex flex-col gap-2">
         <h2 className="text-xl md:text-3xl font-medium capitalize">
