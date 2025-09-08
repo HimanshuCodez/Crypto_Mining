@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import useAuthStore from '../../../store/authStore';
-import axios from '../../../api/axios';
+import api from '../../../api/axios';
 import { toast } from 'react-toastify';
 
 const Account = () => {
@@ -21,7 +21,7 @@ const Account = () => {
         const fetchWalletData = async () => {
             if (!user) return;
             try {
-                const response = await axios.get(`/user/${user._id}/dashboard`);
+                const response = await api.get(`/user/${user._id}/dashboard`);
                 setWalletData(response.data);
             } catch (error) {
                 console.error('Failed to fetch wallet data', error);
@@ -39,7 +39,7 @@ const Account = () => {
         if (name === "userId") {
             if (value.trim() !== "") {
                 try {
-                    const response = await axios.get(`/auth/referrer/${value}`);
+                    const response = await api.get(`/auth/referrer/${value}`);
                     setReferredUserName(response.data.name);
                 } catch (error) {
                     setReferredUserName("");
@@ -76,7 +76,7 @@ const Account = () => {
 
         try {
             setLoading(true);
-            const response = await axios.post('/user/send-otp', { email: user.email, password: formData.password });
+            const response = await api.post('/user/send-otp', { email: user.email, password: formData.password });
             toast.success(response.data.message);
         } catch (error) {
             toast.error(error.response?.data?.message || 'Error sending OTP');
@@ -92,7 +92,7 @@ const Account = () => {
         }
         try {
             setIsActivating(true);
-            const response = await axios.post('/user/activate', formData);
+            const response = await api.post('/user/activate', formData);
             toast.success(response.data.message);
             await checkAuth();
         } catch (error) {
