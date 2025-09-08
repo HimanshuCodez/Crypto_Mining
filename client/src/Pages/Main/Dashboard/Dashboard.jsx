@@ -29,6 +29,13 @@ const Dashboard = () => {
     }
   };
 
+  const formatDate = (dateString) => {
+    if (!dateString) return 'Inactive';
+    const date = new Date(dateString);
+    if (isNaN(date)) return 'Invalid Date';
+    return date.toLocaleDateString();
+  };
+
   return (
     <div className='flex flex-col gap-6 p-4 md:p-10 w-full'>
       <h2 className='text-3xl md:text-4xl font-medium capitalize font-[Inter]'>Dashboard</h2>
@@ -73,8 +80,8 @@ const Dashboard = () => {
 
       <ul className='flex flex-col gap-2 bg-white px-5 py-6 rounded-2xl'>
         <li className='font-[Montserrat] font-semibold text-base md:text-xl'>Activation License - {dashboardData ? (dashboardData.activationLicense ? 'Active' : 'Inactive') : '...'}</li>
-        <li className='font-[Montserrat] font-semibold text-base md:text-xl'>Date Of Joining - {dashboardData ? new Date(dashboardData.dateOfJoining).toLocaleDateString() : '...'}</li>
-        <li className='font-[Montserrat] font-semibold text-base md:text-xl'>Date Of Activation - {dashboardData && dashboardData.dateOfActivation ? new Date(dashboardData.dateOfActivation).toLocaleDateString() : 'Inactive'}</li>
+        <li className='font-[Montserrat] font-semibold text-base md:text-xl'>Date Of Joining - {dashboardData ? formatDate(dashboardData.dateOfJoining) : '...'}</li>
+        <li className='font-[Montserrat] font-semibold text-base md:text-xl'>Date Of Activation - {dashboardData ? formatDate(dashboardData.dateOfActivation) : 'Inactive'}</li>
         <li className='font-[Montserrat] font-semibold text-base md:text-xl'>Mining Investment - ${dashboardData ? `${dashboardData.miningInvestment}` : '0'}</li>
         <li className='font-[Montserrat] font-semibold text-base md:text-xl'>Direct Referral - {dashboardData ? dashboardData.directReferral : '0'}</li>
         <li className='font-[Montserrat] font-semibold text-base md:text-xl'>Indirect Referral - {dashboardData ? dashboardData.indirectReferral : '0'}</li>
