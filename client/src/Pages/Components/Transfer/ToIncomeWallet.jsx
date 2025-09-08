@@ -81,27 +81,27 @@ const ToIncomeWallet = () => {
   }
 
   return (
-    <div className='w-full flex flex-col gap-6 p-10 font-[Inter]'>
+    <div className='w-full flex flex-col gap-6 p-4 md:p-6 font-[Inter]'>
 
       <div className='flex flex-col justify-start items-start gap-2'>
-        <h2 className='text-4xl font-medium capitalize font-[Inter]'>Transfer To Income Wallet</h2>
+        <h2 className='text-2xl md:text-4xl font-medium capitalize font-[Inter]'>Transfer To Income Wallet</h2>
         <nav className='flex items-center gap-1 capitalize font-light text-sm font-[Inter]'>
-          <a href="/Transfer">Transfer</a><span>/</span><a href="/wallet" className='text-[#02AC8F]'>Transfer To Income Wallet</a>
+          <a href="/Transfer">Transfer</a><span>/</span><a href="/wallet" className='text-[#02AC8F] truncate'>Transfer To Income Wallet</a>
         </nav>
       </div>
-      <div className='bg-[#FFFFFF] w-full rounded-3xl px-5 py-10 flex flex-col gap-5'>
+      <div className='bg-[#FFFFFF] w-full rounded-3xl px-4 md:px-5 py-10 flex flex-col gap-5'>
 
-        <div className='grid grid-cols-2 justify-start items-center gap-10 w-[60%]'>
+        <div className='grid grid-cols-1 md:grid-cols-2 justify-start items-center gap-10 w-full'>
           <div className='font-[Inter] font-medium text-2xl flex flex-col gap-3 border rounded-lg p-3'>
             <h2>Income Wallet</h2>
             <span className='text-[#2EB9A2]'>${user?.incomeWallet?.toFixed(2) ?? '0.00'}</span>
           </div>
 
         </div>
-        <h2 className='text-3xl font-[Inter] font-medium py-3'>Income Wallet Details</h2>
+        <h2 className='text-xl md:text-3xl font-[Inter] font-medium py-3'>Income Wallet Details</h2>
         <form onSubmit={handleSubmit}>
           <div className='flex flex-col gap-6 font-[Inter]'>
-            <span className='grid grid-cols-2 w-[45vw] justify-start gap-10'>
+            <div className='grid grid-cols-1 md:grid-cols-2 w-full md:w-[45vw] justify-start gap-6 md:gap-10'>
               <label htmlFor="userid" className='flex flex-col justify-start items-start gap-1'>
                 <span className='text-lg capitalize text-black font-light'>Recipient Referral ID</span>
                 <input
@@ -114,9 +114,6 @@ const ToIncomeWallet = () => {
                 />
               </label>
 
-            </span>
-            <span className='grid grid-cols-2 w-[45vw] justify-start gap-10'>
-
               <label htmlFor="amount" className='flex flex-col justify-start items-start gap-1'>
                 <span className='text-lg capitalize text-black font-light'>Amount to Transfer</span>
                 <input
@@ -128,8 +125,8 @@ const ToIncomeWallet = () => {
                   required
                 />
               </label>
-            </span>
-            <label htmlFor="transactionPassword" className='flex flex-col justify-start items-start gap-1 w-[20vw]'>
+            </div>
+            <label htmlFor="transactionPassword" className='flex flex-col justify-start items-start gap-1 w-full md:w-1/2'>
               <span className='text-lg capitalize text-black font-light'>Transaction Password</span>
               <input
                 type="password"
@@ -141,7 +138,7 @@ const ToIncomeWallet = () => {
             </label>
             <label htmlFor="otp" className='flex flex-col justify-start items-start gap-1'>
               <span className='text-lg capitalize text-black font-light'>One Time Password</span>
-              <span className='text-sm font-light flex w-[30vw]'>
+              <span className='text-sm font-light flex w-full md:w-1/2'>
                 <input
                   type="password"
                   className='outline-none w-full border border-[#00000066] rounded-l-sm placeholder:text-[#000000B2]  p-2'
@@ -154,7 +151,7 @@ const ToIncomeWallet = () => {
                         type="button"
                         onClick={handleSendOtp}
                         disabled={loading}
-                        className='border rounded-r-sm border-l-0 border-gray-400 w-[10vw] flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-colors'
+                        className='border rounded-r-sm border-l-0 border-gray-400 w-auto px-4 flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-colors'
                     >
                         {loading ? 'Sending...' : 'Send OTP'}
                     </button>
@@ -163,7 +160,7 @@ const ToIncomeWallet = () => {
                         type="button"
                         onClick={handleVerifyOtp}
                         disabled={loading || isOtpVerified}
-                        className='border rounded-r-sm border-l-0 border-gray-400 w-[10vw] flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-colors'
+                        className='border rounded-r-sm border-l-0 border-gray-400 w-auto px-4 flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-colors'
                     >
                         {isOtpVerified ? 'Verified' : (loading ? 'Verifying...' : 'Verify OTP')}
                     </button>
@@ -183,7 +180,6 @@ const ToIncomeWallet = () => {
         </form>
       </div>
     </div>
-  );
 };
 
 export default ToIncomeWallet;
