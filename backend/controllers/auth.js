@@ -75,7 +75,7 @@ export const signup = async (req, res) => {
         const token = jwt.sign({ email: newUser.email, id: newUser._id }, process.env.JWT_SECRET, { expiresIn });
 
         // Set cookie
-        res.cookie('token', token, { httpOnly: true,sameSite: "none", secure: process.env.NODE_ENV === 'production', maxAge: rememberMe ? 7 * 24 * 60 * 60 * 1000 : undefined }).status(201).json({ result: newUser });
+        res.cookie('token', token, { httpOnly: true,domain: '.cryptominning.in',sameSite: "none", secure: process.env.NODE_ENV === 'production', maxAge: rememberMe ? 7 * 24 * 60 * 60 * 1000 : undefined }).status(201).json({ result: newUser });
 
     } catch (error) {
         console.error(error);
@@ -110,7 +110,7 @@ export const login = async (req, res) => {
         const token = jwt.sign({ email: existingUser.email, id: existingUser._id }, process.env.JWT_SECRET, { expiresIn });
 
         // Set cookie
-        res.cookie('token', token, { httpOnly: true, sameSite: "none", secure: process.env.NODE_ENV === 'production', maxAge: rememberMe ? 7 * 24 * 60 * 60 * 1000 : undefined }).status(200).json({ result: existingUser });
+        res.cookie('token', token, { httpOnly: true,domain: '.cryptominning.in', sameSite: "none", secure: process.env.NODE_ENV === 'production', maxAge: rememberMe ? 7 * 24 * 60 * 60 * 1000 : undefined }).status(200).json({ result: existingUser });
 
     } catch (error) {
         console.error(error);

@@ -1,5 +1,5 @@
 import {create} from 'zustand';
-import axios from '../api/axios';
+import api from '../api/axios';
 import { toast } from 'react-toastify';
 
 const useAuthStore = create((set) => ({
@@ -22,7 +22,7 @@ const useAuthStore = create((set) => ({
     signup: async (userData) => {
         set({ loading: true });
         try {
-            await axios.post('/auth/signup', userData);
+            await api.post('/auth/signup', userData);
             const { checkAuth } = useAuthStore.getState();
             await checkAuth();
             toast.success('Signup successful!');
@@ -35,7 +35,7 @@ const useAuthStore = create((set) => ({
     login: async (userData) => {
         set({ loading: true });
         try {
-            const response = await axios.post('/auth/login', userData);
+            const response = await api.post('/auth/login', userData);
             set({ user: response.data.result, isAuthenticated: true, loading: false });
             toast.success('Login successful!');
         } catch (error) {
@@ -46,7 +46,7 @@ const useAuthStore = create((set) => ({
 
     logout: async () => {
         try {
-            await axios.post('/auth/logout');
+            await api.post('/auth/logout');
             set({ user: null, isAuthenticated: false });
             toast.success('Logged out successfully!');
         } catch (error) {
@@ -61,7 +61,7 @@ const useAuthStore = create((set) => ({
     checkAuth: async () => {
         set({ loading: true });
         try {
-            const response = await axios.get('/user/profile');
+            const response = await api.get('/user/profile');
             set({ user: response.data, isAuthenticated: true, loading: false });
         } catch (error) {
             set({ user: null, isAuthenticated: false, loading: false });

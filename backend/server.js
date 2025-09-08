@@ -29,7 +29,6 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use(cors({
   origin: [
-    process.env.CLIENT_URL, 
     'https://cryptominning.in'
   ],
   credentials: true,
