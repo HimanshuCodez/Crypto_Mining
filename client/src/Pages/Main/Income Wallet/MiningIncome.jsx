@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import useAuthStore from '../../../store/authStore';
-import axios from '../../../api/axios';
+import api from '../../../api/axios';
 
 const MiningIncome = () => {
     const { user, fetchUser } = useAuthStore();
@@ -41,7 +41,7 @@ const MiningIncome = () => {
 
         setIsLoading(true);
         try {
-            await axios.post('/investment/send-otp', { 
+            await api.post('/investment/send-otp', { 
                 userId: formData.userId, 
                 transactionPassword: formData.transactionPassword,
                 amount: formData.amount,
@@ -63,7 +63,7 @@ const MiningIncome = () => {
         }
         setIsLoading(true);
         try {
-            const response = await axios.post('/investment/invest-from-income', {
+            const response = await api.post('/investment/invest-from-income', {
                 userId: formData.userId,
                 amount: formData.amount,
                 otp: formData.otp
@@ -83,38 +83,41 @@ const MiningIncome = () => {
     }
 
   return (
-      <div className='w-full flex flex-col gap-6 p-10 '>
+      <div className='w-full flex flex-col gap-6 p-4 md:p-10'>
 
           <div className='flex flex-col justify-start items-start gap-2'>
-              <h2 className='text-4xl font-medium capitalize font-[Inter]'>Minning Investment Using Income Wallet</h2>
+              <h2 className='text-2xl md:text-4xl font-medium capitalize font-[Inter]'>Minning Investment Using Income Wallet</h2>
           </div>
           <div className='bg-[#FFFFFF] w-full rounded-3xl px-5 py-10 flex flex-col gap-5'>
-              <span className=' font-[Inter] flex justify-start items-start gap-2'><h2 className='text-[#2EB9A2] font-medium text-xl'> Notification :</h2><h2 className='w-[36vw] font-normal text-xl text-wrap  font-[Inter] text-[#494949] '>You can Invest and Reinvest  Using Income Wallet (Amount Should be In Multiples Of $20).</h2></span>
-              <div className='grid grid-cols-2 justify-start items-center gap-10 w-[60%] pt-8'>
+              <span className='font-[Inter] flex flex-col md:flex-row justify-start items-start gap-2'>
+                  <h2 className='text-[#2EB9A2] font-medium text-xl'> Notification :</h2>
+                  <h2 className='font-normal text-xl text-wrap font-[Inter] text-[#494949] '>You can Invest and Reinvest Using Income Wallet (Amount Should be In Multiples Of $20).</h2>
+              </span>
+              <div className='grid grid-cols-1 md:grid-cols-2 justify-start items-center gap-6 md:gap-10 pt-8'>
                   <div className='font-[Inter] font-medium text-2xl flex flex-col gap-3 border rounded-lg p-3'>
                       <h2>Income Wallet Balance</h2>
                       <span className='text-[#2EB9A2]'>${user?.incomeWallet?.toFixed(2) ?? '0.00'}</span>
                   </div>
               
               </div>
-              <h2 className='text-3xl font-[Inter] font-medium py-3'>Fill Investment Details</h2>
+              <h2 className='text-2xl md:text-3xl font-[Inter] font-medium py-3'>Fill Investment Details</h2>
               <form onSubmit={handleSubmit}>
                   <div className='flex flex-col gap-6 font-[Inter]'>
-                      <span className='grid grid-cols-2 w-[45vw] justify-start gap-10'>
+                      <span className='grid grid-cols-1 md:grid-cols-2 w-full md:w-[45vw] justify-start gap-6 md:gap-10'>
                           <label htmlFor="userId" className='flex flex-col justify-start items-start gap-1'>
                               <span className='text-lg capitalize text-black font-light'>User Id</span>
                               <input type="text" name="userId" value={formData.userId} onChange={handleChange} className='outline-none w-full border border-black rounded-lg placeholder:text-[#000000B2] placeholder:capitalize placeholder:text-sm placeholder:font-extralight p-2' placeholder='Enter User Id' id="userId" />
                           </label>
                         
                       </span>
-                      <span className='grid grid-cols-2 w-[45vw] justify-start gap-10'>
+                      <span className='grid grid-cols-1 md:grid-cols-2 w-full md:w-[45vw] justify-start gap-6 md:gap-10'>
                         
                           <label htmlFor="amount" className='flex flex-col justify-start items-start gap-1'>
                               <span className='text-lg capitalize text-black font-light'>Investment Amount</span>
                               <input type="text" name="amount" value={formData.amount} onChange={handleChange} className='outline-none w-full border border-black rounded-lg placeholder:text-[#000000B2] placeholder:capitalize placeholder:text-sm placeholder:font-extralight p-2' placeholder='Enter Amount' id="amount" />
                           </label>
                       </span>
-                      <label htmlFor="transactionPassword" className='flex flex-col justify-start items-start gap-1 w-[20vw]'>
+                      <label htmlFor="transactionPassword" className='flex flex-col justify-start items-start gap-1 w-full md:w-[20vw]'>
                           <span className='text-lg capitalize text-black font-light'>Transaction Password</span>
                           <input type="password" name="transactionPassword" value={formData.transactionPassword} onChange={handleChange} className='outline-none w-full border border-[#00000066] rounded-sm placeholder:text-[#000000B2]  p-2' id="transactionPassword" />
                       </label>
@@ -129,7 +132,7 @@ const MiningIncome = () => {
                         <>
                             <label htmlFor="otp" className='flex flex-col justify-start items-start gap-1'>
                                 <span className='text-lg capitalize text-black font-light'>One Time Password</span>
-                                <input type="password" name="otp" value={formData.otp} onChange={handleChange} className='outline-none w-[20vw] border border-[#00000066] rounded-sm placeholder:text-[#000000B2] p-2' id="otp" />
+                                <input type="password" name="otp" value={formData.otp} onChange={handleChange} className='outline-none w-full md:w-[20vw] border border-[#00000066] rounded-sm placeholder:text-[#000000B2] p-2' id="otp" />
                             </label>
                             <div className='flex justify-start'>
                                 <button type="submit" disabled={isLoading} className='border-[#31B8A1] rounded-lg capitalize border text-[#31B8A1] font-semibold font-[Montserrat] text-lg px-6 py-2 scale-100 hover:scale-105 transition-all ease-in disabled:opacity-50'>
