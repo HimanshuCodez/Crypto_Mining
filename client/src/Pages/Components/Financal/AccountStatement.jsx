@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from '../../../api/axios';
+import api from '../../../api/axios';
 import useAuthStore from '../../../store/authStore';
 
 const AccountStatement = () => {
@@ -10,7 +10,7 @@ const AccountStatement = () => {
         const fetchTransactions = async () => {
             if (!user) return;
             try {
-                const response = await axios.get('/user/transactions');
+                const response = await api.get('/user/transactions');
                 setTransactions(response.data);
             } catch (error) {
                 console.error('Failed to fetch transactions', error);

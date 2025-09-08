@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import useAuthStore from '../../../store/authStore';
-import axios from '../../../api/axios';
+import api from '../../../api/axios';
 import { toast } from 'react-toastify';
 
 const ToPackageWallet = () => {
@@ -24,7 +24,7 @@ const ToPackageWallet = () => {
         }
         setLoading(true);
         try {
-            await axios.post('/package-transfer/send-otp', { recipientReferralId, amount });
+            await api.post('/package-transfer/send-otp', { recipientReferralId, amount });
             setIsOtpSent(true);
             toast.success('OTP sent to your email.');
         } catch (error) {
@@ -40,7 +40,7 @@ const ToPackageWallet = () => {
         }
         setLoading(true);
         try {
-            await axios.post('/otp/verify-otp', { otp });
+            await api.post('/otp/verify-otp', { otp });
             setIsOtpVerified(true);
             toast.success('OTP verified successfully.');
         } catch (error) {
@@ -57,7 +57,7 @@ const ToPackageWallet = () => {
         }
         setLoading(true);
         try {
-            const response = await axios.post('/package-transfer/to-package-wallet', {
+            const response = await api.post('/package-transfer/to-package-wallet', {
                 recipientReferralId,
                 amount,
                 transactionPassword,

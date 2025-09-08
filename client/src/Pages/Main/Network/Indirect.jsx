@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import useAuthStore from '../../../store/authStore';
-import axios from '../../../api/axios';
+import api from '../../../api/axios';
 
 const Indirect = () => {
     const [indirectReferrals, setIndirectReferrals] = useState([]);
@@ -10,7 +10,7 @@ const Indirect = () => {
         const fetchIndirectReferrals = async () => {
             if (!user) return;
             try {
-                const response = await axios.get('/user/referrals/indirect');
+                const response = await api.get('/user/referrals/indirect');
                 setIndirectReferrals(response.data);
             } catch (error) {
                 console.error('Failed to fetch indirect referrals', error);
