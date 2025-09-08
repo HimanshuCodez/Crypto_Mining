@@ -61,8 +61,7 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
       <div
         className={`fixed top-0 left-0 h-screen w-72 bg-white shadow-2xl border-r border-gray-200 z-50 flex flex-col transform transition-transform duration-300 ease-in-out ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0 md:w-[22vw]`}
-      >
+        } md:translate-x-0 md:w-72`}
         {/* Logo and Close Button */}
         <div className="flex items-center justify-between py-2 border-b px-4">
           <Link to={"/login"} onClick={handleLinkClick}>

@@ -9,7 +9,7 @@ const Layout = () => {
   return (
     <div className='font-[Montserrat] bg-[#F7F7F7] flex min-h-screen'>
       <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
-      <div className="flex-1 flex flex-col md:ml-[22vw]">
+      <div className="flex-1 flex flex-col md:ml-72">
         <header className="p-4 bg-white shadow-md md:hidden">
           <button onClick={() => setIsSidebarOpen(true)}>
             <FaBars className="text-2xl" />
