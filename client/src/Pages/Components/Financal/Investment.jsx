@@ -86,13 +86,13 @@ const Investment = () => {
   };
 
   return (
-    <div className="w-full flex flex-col gap-6 font-['Inter']">
+    <div className="w-full flex flex-col gap-6 p-4 md:p-6 font-['Inter']">
       {/* Header */}
       <div className="flex flex-col gap-2">
-        <h2 className="text-xl md:text-3xl font-medium capitalize">
+        <h2 className="text-2xl md:text-4xl font-medium capitalize">
           Withdraw Mining Investment
         </h2>
-        <nav className="flex items-center gap-1 text-sm md:text-base font-light">
+        <nav className="flex items-center gap-1 text-sm font-light">
           <a href="/Transfer">Financial</a>
           <span>/</span>
           <a href="/wallet" className="text-[#02AC8F] truncate">
@@ -103,11 +103,13 @@ const Investment = () => {
 
       <div className="bg-white rounded-3xl px-4 md:px-6 py-6 md:py-10 flex flex-col gap-5 shadow-sm">
         {/* Balance */}
-        <div className="font-medium text-lg md:text-2xl flex flex-col gap-2 border rounded-lg p-3 w-full md:w-fit">
-          <h2>Mining Investment Balance</h2>
-          <span className="text-[#2EB9A2] text-lg md:text-2xl">
-            ${user?.miningInvestment?.toFixed(2) ?? "0.00"}
-          </span>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+          <div className="font-medium text-lg md:text-2xl flex flex-col gap-2 border rounded-lg p-3">
+            <h2>Mining Investment Balance</h2>
+            <span className="text-[#2EB9A2] text-lg md:text-2xl">
+              ${user?.miningInvestment?.toFixed(2) ?? "0.00"}
+            </span>
+          </div>
         </div>
 
         {/* Notification */}
@@ -122,7 +124,7 @@ const Investment = () => {
         </div>
 
         {/* Form */}
-        <h2 className="text-lg md:text-2xl font-medium py-3">Fill Details</h2>
+        <h2 className="text-xl md:text-3xl font-medium py-3">Fill Details</h2>
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
           {/* Amount + Wallet */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
@@ -159,7 +161,7 @@ const Investment = () => {
           </div>
 
           {/* Password */}
-          <label className="flex flex-col gap-1 w-full md:w-1/3">
+          <label className="flex flex-col gap-1 w-full md:w-1/2">
             <span className="text-base md:text-lg font-light">
               Transaction Password
             </span>
@@ -173,7 +175,7 @@ const Investment = () => {
           </label>
 
           {/* OTP */}
-          <label className="flex flex-col gap-1 w-full md:w-1/3">
+          <label className="flex flex-col gap-1 w-full md:w-1/2">
             <span className="text-base md:text-lg font-light">
               One Time Password
             </span>
