@@ -15,6 +15,7 @@ const Account = () => {
     });
     const [loading, setLoading] = useState(false);
     const [isActivating, setIsActivating] = useState(false);
+    const [referredUserName, setReferredUserName] = useState(''); // New state for referred user name
 
     useEffect(() => {
         const fetchWalletData = async () => {
@@ -31,8 +32,22 @@ const Account = () => {
         fetchWalletData();
     }, [user]);
 
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+    const handleChange = async (e) => { // Make handleChange async
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+
+        if (name === "userId") {
+            if (value.trim() !== "") {
+                try {
+                    const response = await axios.get(`/auth/referrer/${value}`);
+                    setReferredUserName(response.data.name);
+                } catch (error) {
+                    setReferredUserName("");
+                }
+            } else {
+                setReferredUserName("");
+            }
+        }
     };
 
     const handleSendOtp = async () => {
@@ -125,6 +140,7 @@ const Account = () => {
                             <label htmlFor="userid" className='flex flex-col justify-start items-start gap-1'>
                                 <span className='text-base md:text-lg capitalize text-black font-light'>User Id</span>
                                 <input type="text" name="userId" value={formData.userId} onChange={handleChange} className='outline-none w-full border border-black rounded-lg placeholder:text-[#000000B2] placeholder:capitalize placeholder:text-sm placeholder:font-extralight p-2' placeholder='Enter User Id' id="userid" />
+                                {referredUserName && <span className="text-sm text-green-500">Referred by: {referredUserName}</span>} {/* Display referred user name */}
                             </label>
                             <label htmlFor="mode" className='flex flex-col justify-start items-start gap-1'>
                                 <span className='text-base md:text-lg capitalize text-black font-light'>Mode</span>
