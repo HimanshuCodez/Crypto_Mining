@@ -85,70 +85,75 @@ const Investment = () => {
     }
   };
 
+  if (!user) {
+    return <div>Loading user data...</div>;
+  }
+
   return (
-    <div className="w-full flex flex-col gap-6 p-4 md:p-6 font-['Inter']">
-      {/* Header */}
-      <div className="flex flex-col gap-2">
-        <h2 className="text-2xl md:text-4xl font-medium capitalize">
+    <div className='w-full flex flex-col gap-6 p-4 md:p-6 font-[Inter]'>
+      <div className='flex flex-col justify-start items-start gap-2'>
+        <h2 className='text-2xl md:text-4xl font-medium capitalize font-[Inter]'>
           Withdraw Mining Investment
         </h2>
-        <nav className="flex items-center gap-1 text-sm font-light">
+        <nav className='flex items-center gap-1 capitalize font-light text-sm font-[Inter]'>
           <a href="/Transfer">Financial</a>
           <span>/</span>
-          <a href="/wallet" className="text-[#02AC8F] truncate">
+          <a href="/wallet" className='text-[#02AC8F] truncate'>
             Withdraw Mining Investment
           </a>
         </nav>
       </div>
-
-      <div className="bg-white rounded-3xl px-4 md:px-5 py-10 flex flex-col gap-5 shadow-sm">
-        {/* Balance */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 w-full">
-          <div className="font-medium text-lg md:text-2xl flex flex-col gap-3 border rounded-lg p-3">
+      <div className='bg-[#FFFFFF] w-full rounded-3xl px-4 md:px-5 py-10 flex flex-col gap-5'>
+        <div className='grid grid-cols-1 md:grid-cols-2 justify-start items-center gap-10 w-full'>
+          <div className='font-[Inter] font-medium text-2xl flex flex-col gap-3 border rounded-lg p-3'>
             <h2>Mining Investment Balance</h2>
-            <span className="text-[#2EB9A2] text-lg md:text-2xl">
+            <span className='text-[#2EB9A2]'>
               ${user?.miningInvestment?.toFixed(2) ?? "0.00"}
             </span>
           </div>
         </div>
-
-        {/* Notification */}
-        <div className="flex flex-col md:flex-row gap-2 items-start">
-          <h2 className="text-[#2EB9A2] font-medium text-base md:text-lg whitespace-nowrap">
-            Notification:
+        <span className='font-[Inter] flex flex-col md:flex-row justify-start items-start gap-2'>
+          <h2 className='text-[#2EB9A2] font-medium text-xl whitespace-nowrap'>
+            Notification :
           </h2>
-          <p className="text-sm md:text-base text-[#494949]">
+          <h2 className="w-full md:w-auto font-normal text-lg md:text-xl text-wrap font-[Inter] text-[#494949]">
             You may withdraw your trading investment at any time, subject to a
             20% transaction fee
-          </p>
-        </div>
-
-        {/* Form */}
-        <h2 className="text-xl md:text-3xl font-medium py-3">Fill Details</h2>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-          {/* Amount + Wallet */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 w-full">
-            <label className="flex flex-col gap-1">
-              <span className="text-base md:text-lg font-light">
-                Mining Amount
+          </h2>
+        </span>
+        <h2 className='text-xl md:text-3xl font-[Inter] font-medium py-3'>Withdrawal Details</h2>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-6 font-[Inter]">
+          <div className='grid grid-cols-1 md:grid-cols-2 w-full md:w-[45vw] justify-start gap-6 md:gap-10'>
+            <label
+              htmlFor="amount"
+              className="flex flex-col justify-start items-start gap-1"
+            >
+              <span className="text-lg capitalize text-black font-light">
+                Amount to Withdraw
               </span>
               <input
-                type="text"
-                className="w-full border border-gray-400 rounded-lg p-2"
+                type="number"
+                className="outline-none w-full border border-black rounded-lg placeholder:text-[#000000B2] placeholder:capitalize placeholder:text-sm placeholder:font-extralight p-2"
                 placeholder="Enter Amount"
+                name="amount"
+                id="amount"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
+                required
               />
             </label>
-
-            <label className="flex flex-col gap-1">
-              <span className="text-base md:text-lg font-light">
-                Wallet Address
+            <label
+              htmlFor="walletAddress"
+              className="flex flex-col justify-start items-start gap-1"
+            >
+              <span className="text-lg capitalize text-black font-light">
+                Select Wallet Address
               </span>
               <select
-                className="w-full border border-gray-400 rounded-lg p-2"
+                className="outline-none w-full border border-black rounded-lg placeholder:text-[#000000B2] placeholder:capitalize placeholder:text-sm placeholder:font-extralight p-2"
                 value={walletAddress}
                 onChange={(e) => setWalletAddress(e.target.value)}
+                required
               >
                 <option value="">Select a wallet</option>
                 {wallets.map((wallet) => (
@@ -159,30 +164,33 @@ const Investment = () => {
               </select>
             </label>
           </div>
-
-          {/* Password */}
-          <label className="flex flex-col gap-1 w-full md:w-1/2">
-            <span className="text-base md:text-lg font-light">
+          <label
+            htmlFor="password"
+            className="flex flex-col justify-start items-start gap-1 w-full md:w-1/2"
+          >
+            <span className="text-lg capitalize text-black font-light">
               Transaction Password
             </span>
             <input
               type="password"
-              className="w-full border border-gray-400 rounded-lg p-2"
+              className="outline-none w-full border border-[#00000066] rounded-sm placeholder:text-[#000000B2] p-2"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={otpSent}
+              required
             />
           </label>
-
-          {/* OTP */}
-          <label className="flex flex-col gap-1 w-full md:w-1/2">
-            <span className="text-base md:text-lg font-light">
+          <label
+            htmlFor="otp"
+            className="flex flex-col justify-start items-start gap-1"
+          >
+            <span className="text-lg capitalize text-black font-light">
               One Time Password
             </span>
-            <div className="flex w-full">
+            <span className="text-sm font-light flex w-full md:w-1/2">
               <input
                 type="password"
-                className="flex-1 border border-gray-400 rounded-l-lg p-2"
+                className="outline-none w-full border border-[#00000066] rounded-l-sm placeholder:text-[#000000B2] p-2"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
                 disabled={!otpSent}
@@ -191,26 +199,27 @@ const Investment = () => {
                 type="button"
                 onClick={handleSendOtp}
                 disabled={isSendingOtp || otpSent}
-                className="w-auto px-4 border border-gray-400 rounded-r-lg bg-gray-50 hover:bg-gray-100"
+                className="border rounded-r-sm border-l-0 border-gray-400 w-auto px-4 flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-colors"
               >
                 {isSendingOtp ? "Sending..." : "Send OTP"}
               </button>
-            </div>
+            </span>
           </label>
-
-          {/* Submit */}
-          <button
-            type="submit"
-            disabled={loading || !otpSent}
-            className="w-full md:w-auto border border-[#31B8A1] rounded-lg text-[#31B8A1] font-semibold text-lg px-6 py-2 hover:scale-105 transition"
-          >
-            {loading ? "Submitting..." : "Submit"}
-          </button>
+          <div className="flex justify-start">
+            <button
+              type="submit"
+              disabled={loading || !otpSent}
+              className="border-[#31B8A1] rounded-lg capitalize border text-[#31B8A1] font-semibold font-['Montserrat'] text-lg px-6 py-2 scale-100 hover:scale-105 transition-all ease-in"
+            >
+              {loading ? "Submitting..." : "Submit"}
+            </button>
+          </div>
         </form>
-
-        {/* Report */}
-        <div className="bg-[#F7F7F7] rounded-3xl px-2 md:px-6 py-6 flex flex-col gap-5">
-          <h2 className="text-lg md:text-xl font-medium">Report</h2>
+        <h2 className="text-xl md:text-2xl px-4 py-3 mt-6 capitalize font-medium font-['Montserrat'] bg-[#2EB9A2] text-white">
+          Submit Your Wallet Address in Profile Section for Withdraw Amount
+        </h2>
+        <div className="bg-[#F7F7F7] w-full rounded-3xl px-2 md:px-6 py-6 flex flex-col gap-5">
+          <h2 className="text-lg md:text-xl font-medium font-['Inter']">Report</h2>
           <div className="bg-white py-3 px-2 md:px-6 rounded-sm w-full overflow-x-auto">
             <div className="grid grid-cols-4 gap-6 text-sm md:text-base font-medium min-w-[600px]">
               <div>#</div>
