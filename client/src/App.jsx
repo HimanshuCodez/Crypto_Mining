@@ -29,11 +29,15 @@ import DepositUsdtForm from "./Pages/Main/Deposit/Deposit";
 import AdminSystem from "./Admin/Dashboard";
 
 const App = () => {
-  const { checkAuth } = useAuthStore();
+  const { checkAuth, loading } = useAuthStore();
 
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
+
+  if (loading) {
+    return <div>Loading...</div>; // Or a spinner component
+  }
 
   return (
     <div className="font-[Montserrat] bg-[#F7F7F7] flex">

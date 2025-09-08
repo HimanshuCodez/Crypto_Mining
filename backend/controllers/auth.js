@@ -121,6 +121,7 @@ export const login = async (req, res) => {
 export const logout = (req, res) => {
   res.cookie('token', '', {
     httpOnly: true,
+    domain: '.cryptominning.in',
     sameSite: "none", // must match login/signup
     secure: process.env.NODE_ENV === 'production',
     expires: new Date(0) // clears immediately
