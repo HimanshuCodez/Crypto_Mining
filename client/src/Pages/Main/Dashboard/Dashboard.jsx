@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import bg from '../../../assets/dash-bg.png';
 
-import axios from '../../../api/axios';
+import api from '../../../api/axios';
 import useAuthStore from '../../../store/authStore';
 
 const Dashboard = () => {
@@ -12,7 +12,7 @@ const Dashboard = () => {
     const fetchDashboardData = async () => {
       if (!user) return;
       try {
-        const response = await axios.get(`/user/${user._id}/dashboard`);
+        const response = await api.get(`/user/${user._id}/dashboard`);
         setDashboardData(response.data);
       } catch (error) {
         console.error('Failed to fetch dashboard data', error);
