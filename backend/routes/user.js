@@ -14,7 +14,7 @@ router.get('/all-transactions', auth, getAllTransactions);
 router.get('/received-transactions', auth, getReceivedTransactions);
 router.put('/profile', auth, updateProfile); 
 router.put('/avatar', auth, updateAvatar); 
-router.post('/user/send-otp', auth, sendOtp);
+router.post('/send-otp', auth, sendOtp);
 router.post('/send-transfer-otp', auth, sendTransferOtp);
 router.post('/activate', auth, activateAccount);
 router.post('/wallet', auth, updateWallet);
