@@ -140,7 +140,7 @@ const Account = () => {
                             <label htmlFor="userid" className='flex flex-col justify-start items-start gap-1'>
                                 <span className='text-base md:text-lg capitalize text-black font-light'>User Id</span>
                                 <input type="text" name="userId" value={formData.userId} onChange={handleChange} className='outline-none w-full border border-black rounded-lg placeholder:text-[#000000B2] placeholder:capitalize placeholder:text-sm placeholder:font-extralight p-2' placeholder='Enter User Id' id="userid" />
-                                {referredUserName && <span className="text-sm text-green-500">Referred by: {referredUserName}</span>} {/* Display referred user name */}
+                                {referredUserName && <span className="text-sm text-green-500">{referredUserName}</span>} {/* Display referred user name */}
                             </label>
                             <label htmlFor="mode" className='flex flex-col justify-start items-start gap-1'>
                                 <span className='text-base md:text-lg capitalize text-black font-light'>Mode</span>
