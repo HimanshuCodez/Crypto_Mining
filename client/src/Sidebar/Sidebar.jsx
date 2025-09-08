@@ -32,6 +32,11 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
   const [isFinancialOpen, setIsFinancialOpen] = useState(false);
   const [isTransferOpen, setIsTransferOpen] = useState(false);
 
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login");
+  };
+
   const handleLinkClick = () => {
     if (isSidebarOpen) {
       setIsSidebarOpen(false);
@@ -54,7 +59,10 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
       </AnimatePresence>
 
       <div
-        className={`fixed top-0 left-0 h-screen w-72 bg-white shadow-2xl border-r border-gray-200 z-50 flex flex-col transform transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 md:w-[22vw]`}>
+        className={`fixed top-0 left-0 h-screen w-72 bg-white shadow-2xl border-r border-gray-200 z-50 flex flex-col transform transition-transform duration-300 ease-in-out ${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } md:translate-x-0 md:w-[22vw]`}
+      >
         {/* Logo and Close Button */}
         <div className="flex items-center justify-between py-2 border-b px-4">
           <Link to={"/login"} onClick={handleLinkClick}>
@@ -238,7 +246,6 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
                   exit={{ opacity: 0, y: -10 }}
                   className="flex flex-col gap-2 pl-8 text-gray-700"
                 >
-                 
                   <Link
                     to="/Transfer/Package"
                     className="hover:text-blue-600 transition flex items-center gap-2"
@@ -253,7 +260,7 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
                   >
                     <FaUser /> Transfer To Income Wallet
                   </Link>
-                   <Link
+                  <Link
                     to="/Transfer/Receive_Report"
                     className="hover:text-blue-600 transition flex items-center gap-2"
                     onClick={handleLinkClick}
@@ -288,7 +295,7 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
                   exit={{ opacity: 0, y: -10 }}
                   className="flex flex-col gap-2 pl-8 text-gray-700"
                 >
-                    <Link
+                  <Link
                     to="/Financial/Income"
                     className="hover:text-blue-600 transition flex items-center gap-2"
                     onClick={handleLinkClick}
@@ -316,8 +323,6 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
                   >
                     <FaUser /> Withdraw Report
                   </Link>
-                 
-                 
                 </motion.ul>
               )}
             </AnimatePresence>
@@ -326,10 +331,16 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
             <li className="text-sm font-semibold text-gray-500 tracking-wide">
               Others
             </li>
-            <li className="flex items-center gap-2 text-lg hover:text-blue-600 transition">
+            <li
+              className="flex items-center gap-2 text-lg hover:text-blue-600 transition"
+              onClick={handleLinkClick}
+            >
               <FaInfoCircle /> About
             </li>
-            <li className="flex items-center gap-2 text-lg hover:text-blue-600 transition">
+            <li
+              className="flex items-center gap-2 text-lg hover:text-blue-600 transition"
+              onClick={handleLinkClick}
+            >
               <FaQuestionCircle /> Support
             </li>
 
