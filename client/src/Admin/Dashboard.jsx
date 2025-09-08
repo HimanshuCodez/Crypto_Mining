@@ -10,7 +10,7 @@ import {
   Menu,
   X,
 } from "lucide-react";
-import axios from "../api/axios";
+import api from "../api/axios";
 import useAuthStore from "../store/authStore";
 import DashboardPage from "./Pages/DashboardPage";
 import UserManagementPage from "./Pages/UserManagementPage";
@@ -36,7 +36,7 @@ const AdminSystem = () => {
 
   const fetchPendingPayments = async () => {
     try {
-      const response = await axios.get('/admin/payments/pending');
+      const response = await api.get('/admin/payments/pending');
       setPendingPayments(response.data);
     } catch (error) {
       console.error('Error fetching pending payments:', error);
