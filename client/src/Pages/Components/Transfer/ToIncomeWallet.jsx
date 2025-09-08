@@ -180,6 +180,6 @@ const ToIncomeWallet = () => {
         </form>
       </div>
     </div>
-};
+)};
 
 export default ToIncomeWallet;
