@@ -30,16 +30,13 @@ import AdminSystem from "./Admin/Dashboard";
 import Loader from "./Pages/Components/Loader";
 
 const App = () => {
-  const { checkAuth, loading } = useAuthStore();
+  const { checkAuth, } = useAuthStore();
 
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
 
-  if (loading) {
-    return <div><Loader/></div>; // Or a spinner component
-  }
-
+ 
   return (
     <div className="font-[Montserrat] bg-[#F7F7F7] flex">
       <BrowserRouter>

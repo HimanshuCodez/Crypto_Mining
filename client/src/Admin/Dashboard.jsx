@@ -69,7 +69,7 @@ const AdminSystem = () => {
     fetchBarcode();
     fetchPendingPayments();
     fetchAllUsers();
-  }, [fetchAllUsers]);
+  }, []);
 
   const dashboardStats = {
     activeUsers: 12453,
