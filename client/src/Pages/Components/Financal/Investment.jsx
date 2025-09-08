@@ -86,32 +86,32 @@ const Investment = () => {
   };
 
   return (
-    <div className="w-full flex flex-col gap-6 p-10 pr-20 font-['Inter']">
+    <div className="w-full flex flex-col gap-6 p-4 md:p-10 font-['Inter']">
       <div className="flex flex-col justify-start items-start gap-2">
-        <h2 className="text-4xl font-medium capitalize font-['Inter']">
+        <h2 className="text-2xl md:text-4xl font-medium capitalize font-['Inter']">
           Withdraw Minning Investment{" "}
         </h2>
         <nav className="flex items-center gap-1 capitalize font-light text-sm font-['Inter']">
           <a href="/Transfer">Financial</a>
           <span>/</span>
-          <a href="/wallet" className="text-[#02AC8F]">
+          <a href="/wallet" className="text-[#02AC8F] truncate">
             Withdraw Minning Investment<address></address>
           </a>
         </nav>
       </div>
-      <div className="bg-[#FFFFFF] w-full rounded-3xl px-5 py-10  flex flex-col gap-5">
+      <div className="bg-[#FFFFFF] w-full rounded-3xl px-4 md:px-5 py-10  flex flex-col gap-5">
         <div className="font-['Inter'] font-medium text-2xl flex flex-col gap-3 border rounded-lg p-3 w-fit">
           <h2>Mining Investment Balance</h2>
           <span className="text-[#2EB9A2]">
             ${user?.miningInvestment?.toFixed(2) ?? "0.00"}
           </span>
         </div>
-        <span className=" font-['Inter'] flex justify-start items-start gap-2">
-          <h2 className="text-[#2EB9A2] font-medium text-xl">
+        <span className=" font-['Inter'] flex flex-col md:flex-row justify-start items-start gap-2">
+          <h2 className="text-[#2EB9A2] font-medium text-xl whitespace-nowrap">
             {" "}
             Notification :
           </h2>
-          <h2 className="w-[36vw] font-normal text-xl text-wrap  font-['Inter'] text-[#494949] ">
+          <h2 className="w-full md:w-auto font-normal text-lg md:text-xl text-wrap  font-['Inter'] text-[#494949] ">
             You may withdraw your trading investment at any time, subject to a
             20% transaction fee
           </h2>
@@ -119,7 +119,7 @@ const Investment = () => {
         <h2 className="text-3xl font-['Inter'] font-medium py-3">Fill Details</h2>
         <form onSubmit={handleSubmit}>
           <div className="flex flex-col gap-6 font-['Inter']">
-            <span className="grid grid-cols-2 w-[45vw] justify-start gap-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 w-full md:w-[45vw] justify-start gap-6 md:gap-10">
               <label
                 htmlFor="amount"
                 className="flex flex-col justify-start items-start gap-1"
@@ -137,8 +137,6 @@ const Investment = () => {
                   onChange={(e) => setAmount(e.target.value)}
                 />
               </label>
-            </span>
-            <span className="grid grid-cols-2 w-[45vw] justify-start gap-10">
               <label
                 htmlFor="walletAddress"
                 className="flex flex-col justify-start items-start gap-1"
@@ -159,10 +157,10 @@ const Investment = () => {
                   ))}
                 </select>
               </label>
-            </span>
+            </div>
             <label
               htmlFor="password"
-              className="flex flex-col justify-start items-start gap-1 w-[20vw]"
+              className="flex flex-col justify-start items-start gap-1 w-full md:w-[20vw]"
             >
               <span className="text-lg capitalize text-black font-light">
                 Transaction Password
@@ -182,7 +180,7 @@ const Investment = () => {
               <span className="text-lg capitalize text-black font-light">
                 one time password
               </span>
-              <span className="text-sm font-light flex w-[20vw]">
+              <span className="text-sm font-light flex w-full md:w-[20vw]">
                 <input
                   type="password"
                   className="outline-none w-full border border-[#00000066] rounded-l-sm placeholder:text-[#000000B2]  p-2"
@@ -194,7 +192,7 @@ const Investment = () => {
                   type="button"
                   onClick={handleSendOtp}
                   disabled={isSendingOtp || otpSent}
-                  className="border rounded-r-sm border-l-[#00000066] w-[10vw] flex items-center justify-center"
+                  className="border rounded-r-sm border-l-[#00000066] w-auto px-4 flex items-center justify-center"
                 >
                   {isSendingOtp ? "Sending..." : "Send OTP"}
                 </button>
@@ -211,13 +209,13 @@ const Investment = () => {
             </div>
           </div>
         </form>
-        <h2 className=" text-2xl px-4 py-3 mt-6  capitalize font-medium font-['Montserrat'] bg-[#2EB9A2] text-white">
+        <h2 className=" text-xl md:text-2xl px-4 py-3 mt-6  capitalize font-medium font-['Montserrat'] bg-[#2EB9A2] text-white">
           Submit Your Wallet Address in Profile Section for Withdraw Amount.{" "}
         </h2>
-        <div className="bg-[#F7F7F7] w-full rounded-3xl px-5 py-10 flex flex-col gap-5 ">
+        <div className="bg-[#F7F7F7] w-full rounded-3xl px-2 md:px-5 py-10 flex flex-col gap-5 ">
           <h2 className="text-xl font-medium font-['Inter']"> Report</h2>
-          <div className="bg-[#Ffff]   py-3 px-8  pb-10 rounded-sm w-full">
-            <div className="grid grid-cols-4 gap-6 text-lg font-medium ">
+          <div className="bg-[#Ffff]   py-3 px-2 md:px-8  pb-10 rounded-sm w-full overflow-x-auto">
+            <div className="grid grid-cols-4 gap-6 text-lg font-medium min-w-[600px]">
               <div>#</div>
               <div>Amount</div>
               <div>Wallet Address</div>
@@ -226,11 +224,11 @@ const Investment = () => {
             {withdrawals.map((withdrawal, index) => (
               <div
                 key={withdrawal._id}
-                className="grid grid-cols-4 gap-4 py-3 text-gray-500"
+                className="grid grid-cols-4 gap-4 py-3 text-gray-500 min-w-[600px]"
               >
                 <div>{index + 1}</div>
                 <div>${withdrawal.amount}</div>
-                <div>{withdrawal.walletAddress}</div>
+                <div className="truncate">{withdrawal.walletAddress}</div>
                 <div className="text-center">
                   {new Date(withdrawal.createdAt).toLocaleDateString()}
                 </div>
