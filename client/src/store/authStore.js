@@ -11,7 +11,7 @@ const useAuthStore = create((set) => ({
     fetchAllUsers: async () => {
         set({ loading: true });
         try {
-            const response = await axios.get('/admin/users');
+            const response = await api.get('/admin/users');
             set({ users: response.data, loading: false });
         } catch (error) {
             set({ loading: false });
