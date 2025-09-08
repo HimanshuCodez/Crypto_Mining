@@ -32,9 +32,10 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
   const [isFinancialOpen, setIsFinancialOpen] = useState(false);
   const [isTransferOpen, setIsTransferOpen] = useState(false);
 
-  const handleLogout = async () => {
-    await logout();
-    navigate("/login");
+  const handleLinkClick = () => {
+    if (isSidebarOpen) {
+      setIsSidebarOpen(false);
+    }
   };
 
   return (
@@ -56,7 +57,7 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
         className={`fixed top-0 left-0 h-screen w-72 bg-white shadow-2xl border-r border-gray-200 z-50 flex flex-col transform transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 md:w-[22vw]`}>
         {/* Logo and Close Button */}
         <div className="flex items-center justify-between py-2 border-b px-4">
-          <Link to={"/login"}>
+          <Link to={"/login"} onClick={handleLinkClick}>
             <img className="w-[10rem]" src={logo} alt="Logo" />
           </Link>
           <button className="md:hidden" onClick={() => setIsSidebarOpen(false)}>
@@ -74,6 +75,7 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
             <Link
               to="/Dashboard"
               className="hover:text-blue-600 transition flex items-center gap-2 text-lg"
+              onClick={handleLinkClick}
             >
               <FaNetworkWired /> Dashboard
             </Link>
@@ -99,12 +101,14 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
                   <Link
                     to="/profile"
                     className="hover:text-blue-600 transition flex items-center gap-2"
+                    onClick={handleLinkClick}
                   >
                     <FaUser /> Profile
                   </Link>
                   <Link
                     to="/wallet"
                     className="hover:text-blue-600 transition flex items-center gap-2"
+                    onClick={handleLinkClick}
                   >
                     <FaWallet /> Wallet
                   </Link>
@@ -115,18 +119,21 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
             <Link
               to="/account_activation"
               className="hover:text-blue-600 transition flex items-center gap-2 text-lg"
+              onClick={handleLinkClick}
             >
               <FaUserCheck /> Account Activation
             </Link>
             <Link
               to="/MiningIncome"
               className="flex items-center gap-2 text-lg hover:text-blue-600 transition"
+              onClick={handleLinkClick}
             >
               <FaMoneyBillWave /> Mining Investment Using Income
             </Link>
             <Link
               to="/MiningPackage"
               className="flex items-center gap-2 text-lg hover:text-blue-600 transition"
+              onClick={handleLinkClick}
             >
               <FaBoxOpen /> Mining Investment Package Wallet
             </Link>
@@ -152,12 +159,14 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
                   <Link
                     to="/Network/Direct"
                     className="hover:text-blue-600 transition flex items-center gap-2"
+                    onClick={handleLinkClick}
                   >
                     <FaUser /> Direct Referral
                   </Link>
                   <Link
                     to="/Network/Indirect"
                     className="hover:text-blue-600 transition flex items-center gap-2"
+                    onClick={handleLinkClick}
                   >
                     <FaUser /> Indirect Referral
                   </Link>
@@ -190,12 +199,14 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
                   <Link
                     to="/Income/Direct"
                     className="hover:text-blue-600 transition flex items-center gap-2"
+                    onClick={handleLinkClick}
                   >
                     <FaUser /> Direct Income
                   </Link>
                   <Link
                     to="/Income/Indirect"
                     className="hover:text-blue-600 transition flex items-center gap-2"
+                    onClick={handleLinkClick}
                   >
                     <FaUser /> Indirect Income
                   </Link>
@@ -205,6 +216,7 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
             <Link
               to="/DepositUsdt"
               className="flex items-center gap-2 text-lg hover:text-blue-600 transition"
+              onClick={handleLinkClick}
             >
               <FaArrowDown /> Deposit
             </Link>
@@ -230,24 +242,28 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
                   <Link
                     to="/Transfer/Package"
                     className="hover:text-blue-600 transition flex items-center gap-2"
+                    onClick={handleLinkClick}
                   >
                     <FaUser /> Transfer To Package Wallet
                   </Link>
                   <Link
                     to="/Transfer/Income"
                     className="hover:text-blue-600 transition flex items-center gap-2"
+                    onClick={handleLinkClick}
                   >
                     <FaUser /> Transfer To Income Wallet
                   </Link>
                    <Link
                     to="/Transfer/Receive_Report"
                     className="hover:text-blue-600 transition flex items-center gap-2"
+                    onClick={handleLinkClick}
                   >
                     <FaUser /> Receive Report
                   </Link>
                   <Link
                     to="/Transfer/Transport_Report"
                     className="hover:text-blue-600 transition flex items-center gap-2"
+                    onClick={handleLinkClick}
                   >
                     <FaUser /> Transfer Report
                   </Link>
@@ -275,24 +291,28 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
                     <Link
                     to="/Financial/Income"
                     className="hover:text-blue-600 transition flex items-center gap-2"
+                    onClick={handleLinkClick}
                   >
                     <FaUser /> Withdraw Income Wallet
                   </Link>
                   <Link
                     to="/Financial/Withdraw_Investment"
                     className="hover:text-blue-600 transition flex items-center gap-2"
+                    onClick={handleLinkClick}
                   >
                     <FaUser /> Withdraw Minning Investment
                   </Link>
                   <Link
                     to="/Financial/Acc_Statement"
                     className="hover:text-blue-600 transition flex items-center gap-2"
+                    onClick={handleLinkClick}
                   >
                     <FaUser /> Account Statement
                   </Link>
                   <Link
                     to="/Financial/Withdraw_Report"
                     className="hover:text-blue-600 transition flex items-center gap-2"
+                    onClick={handleLinkClick}
                   >
                     <FaUser /> Withdraw Report
                   </Link>
