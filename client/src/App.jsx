@@ -27,7 +27,7 @@ import SignUp from "./Pages/SignUp";
 import DepositUsdtForm from "./Pages/Main/Deposit/Deposit";
 
 import AdminSystem from "./Admin/Dashboard";
-import Loader from "./Pages/Components/Loader";
+
 
 const App = () => {
   const { checkAuth, } = useAuthStore();
