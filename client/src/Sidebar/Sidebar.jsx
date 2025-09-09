@@ -135,14 +135,14 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
               className="flex items-center gap-2 text-lg hover:text-blue-600 transition"
               onClick={handleLinkClick}
             >
-              <FaMoneyBillWave /> Mining Investment Using Income
+              <FaMoneyBillWave /> Mining Investment Using Income Wallet
             </Link>
             <Link
               to="/MiningPackage"
               className="flex items-center gap-2 text-lg hover:text-blue-600 transition"
               onClick={handleLinkClick}
             >
-              <FaBoxOpen /> Mining Investment Package Wallet
+              <FaBoxOpen /> Mining Investment Using Package Wallet
             </Link>
 
             {/* Network Dropdown */}
