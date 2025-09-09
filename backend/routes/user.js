@@ -1,5 +1,5 @@
 import express from 'express';
-import { sendOtp, activateAccount, getDashboardData, getProfile, updateProfile, updateAvatar, getDirectReferrals, getIndirectReferrals, getTransactions, getAllTransactions, getReceivedTransactions, getUserCount, sendTransferOtp, updateWallet, getWallets } from '../controllers/user.js'; 
+import { sendOtp, activateAccount, getDashboardData, getProfile, updateProfile, updateAvatar, getDirectReferrals, getIndirectReferrals, getTransactions, getAllTransactions, getReceivedTransactions, getUserCount, sendTransferOtp, updateWallet, getWallets, getUserById } from '../controllers/user.js'; 
 import auth from '../middleware/auth.js';
 
 const router = express.Router();
@@ -19,5 +19,6 @@ router.post('/send-transfer-otp', auth, sendTransferOtp);
 router.post('/activate', auth, activateAccount);
 router.post('/wallet', auth, updateWallet);
 router.get('/wallets', auth, getWallets);
+router.get('/:userId', auth, getUserById); // New route
 
 export default router;

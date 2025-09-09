@@ -76,6 +76,7 @@ const PackageWallet = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    toast.dismiss(); // Dismiss all existing toasts before showing a new one
     if (!formData.otp) {
       return toast.error("Please enter the OTP.");
     }
