@@ -37,11 +37,7 @@ const Direct = () => {
             </div>
             <div className='grid grid-cols-5 gap-4 py-3 text-gray-500 mt-2 border-t'>
               {/* Example Row - This should be mapped from data */}
-              <div>1</div>
-              <div>user-123</div>
-              <div>John Doe</div>
-              <div className="text-center">$500</div>
-              <div className="text-center">$50</div>
+             
             </div>
             <div className='grid grid-cols-5 gap-4 py-3 text-gray-500 border-t'>
               <div>-</div>
