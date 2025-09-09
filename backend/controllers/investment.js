@@ -57,6 +57,16 @@ const processInvestment = async (req, res, walletType) => {
             return res.status(404).json({ message: 'Beneficiary user not found' });
         }
 
+        // --- DEBUG LOGGING ---
+        console.log('--- OTP Validation Debug ---');
+        console.log('Time:', new Date());
+        console.log('Payer OTP from DB:', payer.otp);
+        console.log('OTP from Request:', otp);
+        console.log('Payer OTP Expires At:', payer.otpExpires);
+        console.log('Is OTP expired?:', payer.otpExpires < Date.now());
+        console.log('--- End Debug ---');
+        // --- END DEBUG LOGGING ---
+
         // Security Check: Ensure beneficiary is the user themselves or a direct referral
         const isOwnUser = payer._id.equals(beneficiary._id);
         const isDirectReferral = payer.directReferrals.some(ref => ref._id.equals(beneficiary._id));
@@ -70,16 +80,10 @@ const processInvestment = async (req, res, walletType) => {
             return res.status(400).json({ message: 'Invalid or expired OTP' });
         }
 
-        const investmentAmount = parseFloat(amount);
-        const walletProperty = walletType === 'package' ? 'packageWallet' : 'incomeWallet';
-
-        // Validate wallet balance (of the payer)
-        if (payer[walletProperty] < investmentAmount) {
-            return res.status(400).json({ message: `Insufficient ${walletType} wallet balance` });
-        }
-
         // --- Perform Transaction ---
         // 1. Debit payer's wallet
+        const investmentAmount = parseFloat(amount);
+        const walletProperty = walletType === 'package' ? 'packageWallet' : 'incomeWallet';
         payer[walletProperty] -= investmentAmount;
         payer.otp = undefined;
         payer.otpExpires = undefined;
