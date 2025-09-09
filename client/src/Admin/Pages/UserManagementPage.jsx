@@ -50,8 +50,10 @@ const UserManagementPage = ({ users, searchQuery, setSearchQuery, filterStatus, 
                     </td>
                     <td className="px-6 py-4 text-gray-300 text-sm">${user.incomeWallet !== undefined ? user.incomeWallet.toFixed(2) : 'missing'}</td>
                     <td className="px-6 py-4">
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${user.accountactivation ? "bg-green-900 text-green-300" : "bg-red-900 text-red-300"}`}>
-                        {user.accountactivation ? 'Active' : 'Inactive'}
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${user.
+activationLicense ? "bg-green-900 text-green-300" : "bg-red-900 text-red-300"}`}>
+                        {user.
+activationLicense ? 'Active' : 'Inactive'}
                       </span>
                     </td>
                     <td className="px-6 py-4">
