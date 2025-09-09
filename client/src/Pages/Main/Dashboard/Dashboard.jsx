@@ -6,6 +6,7 @@ import useAuthStore from '../../../store/authStore';
 
 const Dashboard = () => {
   const [dashboardData, setDashboardData] = useState(null);
+  const [referrerReferralCode, setReferrerReferralCode] = useState(null); // New state
   const { user } = useAuthStore();
 
   useEffect(() => {
@@ -14,6 +15,24 @@ const Dashboard = () => {
       try {
         const response = await api.get(`/user/${user._id}/dashboard`);
         setDashboardData(response.data);
+
+        // New logic to fetch referrer's referral code
+        if (response.data.referredBy) {
+          try {
+            const referrerResponse = await api.get(`/user/${response.data.referredBy}`);
+            if (referrerResponse.data && referrerResponse.data.referralCode) {
+              setReferrerReferralCode(referrerResponse.data.referralCode);
+            } else {
+              setReferrerReferralCode('N/A'); // Referrer found but no referralCode
+            }
+          } catch (referrerError) {
+            console.error('Failed to fetch referrer details', referrerError);
+            setReferrerReferralCode('N/A'); // Handle error case
+          }
+        } else {
+          setReferrerReferralCode('N/A'); // No referrer
+        }
+
       } catch (error) {
         console.error('Failed to fetch dashboard data', error);
       }
@@ -85,7 +104,7 @@ const Dashboard = () => {
         <li className='font-[Montserrat] font-semibold text-base md:text-xl'>Mining Investment - ${dashboardData ? `${dashboardData.miningInvestment}` : '0'}</li>
         <li className='font-[Montserrat] font-semibold text-base md:text-xl'>Direct Referral - {dashboardData ? dashboardData.directReferral : '0'}</li>
         <li className='font-[Montserrat] font-semibold text-base md:text-xl'>Indirect Referral - {dashboardData ? dashboardData.indirectReferral : '0'}</li>
-        <li className='font-[Montserrat] font-semibold text-base md:text-xl'>Reffered By - {dashboardData ? dashboardData.referredBy : '0'}</li>
+        <li className='font-[Montserrat] font-semibold text-base md:text-xl'>Reffered By - {referrerReferralCode !== null ? referrerReferralCode : 'Loading...'}</li>
       </ul>
     </div>
   );
