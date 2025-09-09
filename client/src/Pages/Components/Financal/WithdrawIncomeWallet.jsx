@@ -173,7 +173,10 @@ const WithdrawIncomeWallet = () => {
               </button>
             </div>
           </label>
-
+ <label htmlFor="verify" className='flex justify-start items-center gap-2'>
+                            <input type="checkbox" name="" id="verify" className='h-4 w-4' required />
+                            <span className='text-[#31B8A1] font-semibold font-[Montserrat] text-sm'>Verify</span>
+                        </label>
           {/* Submit */}
           <button
             type="submit"

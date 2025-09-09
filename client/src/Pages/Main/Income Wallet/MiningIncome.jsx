@@ -150,6 +150,10 @@ const MiningIncome = () => {
                                 <span className='text-lg capitalize text-black font-light'>One Time Password</span>
                                 <input type="password" name="otp" value={formData.otp} onChange={handleChange} className='outline-none w-full md:w-[20vw] border border-[#00000066] rounded-sm placeholder:text-[#000000B2] p-2' id="otp" />
                             </label>
+                             <label htmlFor="verify" className='flex justify-start items-center gap-2'>
+                            <input type="checkbox" name="" id="verify" className='h-4 w-4' required />
+                            <span className='text-[#31B8A1] font-semibold font-[Montserrat] text-sm'>Verify</span>
+                        </label>
                             <div className='flex justify-start'>
                                 <button type="submit" disabled={isLoading} className='border-[#31B8A1] rounded-lg capitalize border text-[#31B8A1] font-semibold font-[Montserrat] text-lg px-6 py-2 scale-100 hover:scale-105 transition-all ease-in disabled:opacity-50'>
                                     {isLoading ? 'Submitting...' : 'Submit'}
