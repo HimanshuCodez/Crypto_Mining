@@ -85,7 +85,7 @@ const Dashboard = () => {
         <li className='font-[Montserrat] font-semibold text-base md:text-xl'>Mining Investment - ${dashboardData ? `${dashboardData.miningInvestment}` : '0'}</li>
         <li className='font-[Montserrat] font-semibold text-base md:text-xl'>Direct Referral - {dashboardData ? dashboardData.directReferral : '0'}</li>
         <li className='font-[Montserrat] font-semibold text-base md:text-xl'>Indirect Referral - {dashboardData ? dashboardData.indirectReferral : '0'}</li>
-        <li className='font-[Montserrat] font-semibold text-base md:text-xl'>Reffered By - {dashboardData ? dashboardData.indirectReferral : '0'}</li>
+        <li className='font-[Montserrat] font-semibold text-base md:text-xl'>Reffered By - {dashboardData ? dashboardData.referredBy : '0'}</li>
       </ul>
     </div>
   );
