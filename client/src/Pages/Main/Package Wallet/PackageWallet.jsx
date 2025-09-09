@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import useAuthStore from "../../../store/authStore";
@@ -74,16 +74,25 @@ const PackageWallet = () => {
     }
   };
 
+  const isSubmittingRef = useRef(false); // New ref
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isLoading) return; // Prevent multiple submissions if already loading
 
-    toast.dismiss(); // Dismiss all existing toasts before showing a new one
+    if (isSubmittingRef.current) { // Check ref
+      return; // Already submitting, prevent second call
+    }
+
+    isSubmittingRef.current = true; // Set ref to true at start of submission
+
+    toast.dismiss();
 
     if (!formData.otp) {
+      isSubmittingRef.current = false; // Reset ref if validation fails
       return toast.error("Please enter the OTP.");
     }
-    setIsLoading(true);
+    setIsLoading(true); // Keep isLoading for UI feedback
+
     try {
       const response = await api.post("/investment/invest-from-package", {
         userId: formData.userId,
@@ -97,6 +106,7 @@ const PackageWallet = () => {
       toast.error(error.response?.data?.message || "Investment failed.");
     } finally {
       setIsLoading(false);
+      isSubmittingRef.current = false; // Always reset ref in finally
     }
   };
 
