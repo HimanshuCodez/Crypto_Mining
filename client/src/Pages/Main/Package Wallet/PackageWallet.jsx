@@ -104,8 +104,9 @@ const PackageWallet = () => {
       toast.success(response.data.message || "Investment successful!");
       fetchUser();
       navigate("/dashboard");
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Investment failed.");
+    } 
+    catch (error) {
+      console.error(error.response?.data?.message || "Investment failed.");
     } finally {
       setIsLoading(false);
       isSubmittingRef.current = false; // Always reset ref in finally
