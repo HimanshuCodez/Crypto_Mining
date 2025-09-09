@@ -16,7 +16,7 @@ const PackageWallet = () => {
   });
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [referredUserName, setReferredUserName] = useState(''); // New state for referred user name
+  const [referredUserName, setReferredUserName] = useState(""); // New state for referred user name
 
   useEffect(() => {
     const toastId = "activation-error";
@@ -28,21 +28,22 @@ const PackageWallet = () => {
     }
   }, [user, navigate]);
 
-  const handleChange = async (e) => { // Make handleChange async
+  const handleChange = async (e) => {
+    // Make handleChange async
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
 
     if (name === "userId") {
-        if (value.trim() !== "") {
-            try {
-                const response = await api.get(`/auth/referrer/${value}`);
-                setReferredUserName(response.data.name);
-            } catch (error) {
-                setReferredUserName("");
-            }
-        } else {
-            setReferredUserName("");
+      if (value.trim() !== "") {
+        try {
+          const response = await api.get(`/auth/referrer/${value}`);
+          setReferredUserName(response.data.name);
+        } catch (error) {
+          setReferredUserName("");
         }
+      } else {
+        setReferredUserName("");
+      }
     }
   };
 
@@ -79,7 +80,8 @@ const PackageWallet = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (isSubmittingRef.current) { // Check ref
+    if (isSubmittingRef.current) {
+      // Check ref
       return; // Already submitting, prevent second call
     }
 
@@ -149,7 +151,7 @@ const PackageWallet = () => {
         <h2 className="text-2xl md:text-3xl font-[Inter] font-medium py-3">
           Fill Investment Details
         </h2>
-        <form onSubmit={handleSubmit}>
+        <form>
           <div className="flex flex-col gap-6 font-[Inter]">
             <span className="grid grid-cols-1 md:grid-cols-2 w-full md:w-[45vw] justify-start gap-6 md:gap-10">
               <label
@@ -168,7 +170,12 @@ const PackageWallet = () => {
                   placeholder="Enter User Id"
                   id="userId"
                 />
-                {referredUserName && <span className="text-sm text-green-500">{referredUserName}</span>} {/* Display referred user name */}
+                {referredUserName && (
+                  <span className="text-sm text-green-500">
+                    {referredUserName}
+                  </span>
+                )}{" "}
+                {/* Display referred user name */}
               </label>
             </span>
             <span className="grid grid-cols-1 md:grid-cols-2 w-full md:w-[45vw] justify-start gap-6 md:gap-10">
@@ -236,13 +243,25 @@ const PackageWallet = () => {
                     id="otp"
                   />
                 </label>
-                 <label htmlFor="verify" className='flex justify-start items-center gap-2'>
-                            <input type="checkbox" name="" id="verify" className='h-4 w-4' required />
-                            <span className='text-[#31B8A1] font-semibold font-[Montserrat] text-sm'>Verify</span>
-                        </label>
+                <label
+                  htmlFor="verify"
+                  className="flex justify-start items-center gap-2"
+                >
+                  <input
+                    type="checkbox"
+                    name=""
+                    id="verify"
+                    className="h-4 w-4"
+                    required
+                  />
+                  <span className="text-[#31B8A1] font-semibold font-[Montserrat] text-sm">
+                    Verify
+                  </span>
+                </label>
                 <div className="flex justify-start">
                   <button
-                    type="submit"
+                    type="button"
+                    onClick={handleSubmit}
                     disabled={isLoading}
                     className="border-[#31B8A1] rounded-lg capitalize border text-[#31B8A1] font-semibold font-[Montserrat] text-lg px-6 py-2 scale-100 hover:scale-105 transition-all ease-in disabled:opacity-50"
                   >
