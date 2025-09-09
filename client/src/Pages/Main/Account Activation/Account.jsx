@@ -17,31 +17,32 @@ const Account = () => {
     const [isActivating, setIsActivating] = useState(false);
     const [referredUserName, setReferredUserName] = useState('');
     const [directReferrals, setDirectReferrals] = useState([]);
+    const [isDataLoading, setIsDataLoading] = useState(true);
 
     useEffect(() => {
-        const fetchWalletData = async () => {
+        const fetchData = async () => {
+            if (!user) {
+                setIsDataLoading(false);
+                return;
+            };
+            setIsDataLoading(true);
             try {
-                const response = await api.get(`/user/${user._id}/dashboard`);
-                setWalletData(response.data);
+                const walletPromise = api.get(`/user/${user._id}/dashboard`);
+                const referralsPromise = api.get('/user/referrals/direct');
+                
+                const [walletResponse, referralsResponse] = await Promise.all([walletPromise, referralsPromise]);
+                
+                setWalletData(walletResponse.data);
+                setDirectReferrals(Array.isArray(referralsResponse.data) ? referralsResponse.data : []);
+
             } catch (error) {
-                console.error('Failed to fetch wallet data', error);
-                toast.error('Failed to fetch wallet data');
+                console.error('Failed to fetch initial data', error);
+                toast.error('Failed to load page data. Please refresh.');
+            } finally {
+                setIsDataLoading(false);
             }
         };
-
-        const fetchDirectReferrals = async () => {
-            try {
-                const response = await api.get('/user/referrals/direct');
-                setDirectReferrals(response.data);
-            } catch (error) {
-                console.error('Failed to fetch direct referrals', error);
-            }
-        };
-
-        if (user) {
-            fetchWalletData();
-            fetchDirectReferrals();
-        }
+        fetchData();
     }, [user]);
 
     const handleChange = async (e) => {
@@ -101,6 +102,15 @@ const Account = () => {
         e.preventDefault();
 
         const enteredUserId = formData.userId;
+        
+        // --- Start Debug Logging ---
+        console.log("--- Activation Attempt ---");
+        console.log("Entered User ID:", enteredUserId);
+        console.log("Logged-in user object:", user);
+        console.log("User's referral code from auth store (expected):", user?.referralCode);
+        console.log("Direct referrals list:", directReferrals);
+        // --- End Debug Logging ---
+
         if (enteredUserId.trim() === '') {
             return toast.error('Please enter a User ID to activate.');
         }
@@ -108,9 +118,21 @@ const Account = () => {
         const isOwnUser = user && enteredUserId === user.referralCode;
         const isDirectReferral = directReferrals.some(ref => ref.referralCode === enteredUserId);
 
+        // --- Start Debug Logging ---
+        console.log("Is this the user's own ID?", isOwnUser);
+        console.log("Is this ID in the direct referral list?", isDirectReferral);
+        // --- End Debug Logging ---
+
         if (!isOwnUser && !isDirectReferral) {
+            // --- Start Debug Logging ---
+            console.log("Validation FAILED. Blocking activation.");
+            // --- End Debug Logging ---
             return toast.error('User is not in your referral line.');
         }
+        
+        // --- Start Debug Logging ---
+        console.log("Validation PASSED. Proceeding with activation.");
+        // --- End Debug Logging ---
 
         if (!walletData || (walletData.incomeWallet < 111 && walletData.packageWallet < 111)) {
             return toast.error('You do not have enough balance to activate account.');
@@ -203,8 +225,8 @@ const Account = () => {
                         </label>
 
                         <div className='flex justify-start'>
-                            <button type="submit" disabled={loading || isActivating} className='border-[#31B8A1] rounded-lg capitalize border text-[#31B8A1] font-semibold font-[Montserrat] text-base md:text-lg px-6 py-2 hover:scale-105 transition-all ease-in'>
-                                {isActivating ? 'Activating...' : (loading ? 'Processing...' : 'Submit')}
+                            <button type="submit" disabled={isDataLoading || loading || isActivating} className='border-[#31B8A1] rounded-lg capitalize border text-[#31B8A1] font-semibold font-[Montserrat] text-base md:text-lg px-6 py-2 hover:scale-105 transition-all ease-in'>
+                                {isDataLoading ? 'Loading Data...' : (isActivating ? 'Activating...' : (loading ? 'Processing...' : 'Submit'))}
                             </button>
                         </div>
                     </div>
