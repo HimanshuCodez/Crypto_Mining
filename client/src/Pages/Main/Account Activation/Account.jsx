@@ -15,11 +15,11 @@ const Account = () => {
     });
     const [loading, setLoading] = useState(false);
     const [isActivating, setIsActivating] = useState(false);
-    const [referredUserName, setReferredUserName] = useState(''); // New state for referred user name
+    const [referredUserName, setReferredUserName] = useState('');
+    const [directReferrals, setDirectReferrals] = useState([]);
 
     useEffect(() => {
         const fetchWalletData = async () => {
-            if (!user) return;
             try {
                 const response = await api.get(`/user/${user._id}/dashboard`);
                 setWalletData(response.data);
@@ -29,10 +29,22 @@ const Account = () => {
             }
         };
 
-        fetchWalletData();
+        const fetchDirectReferrals = async () => {
+            try {
+                const response = await api.get('/user/referrals/direct');
+                setDirectReferrals(response.data);
+            } catch (error) {
+                console.error('Failed to fetch direct referrals', error);
+            }
+        };
+
+        if (user) {
+            fetchWalletData();
+            fetchDirectReferrals();
+        }
     }, [user]);
 
-    const handleChange = async (e) => { // Make handleChange async
+    const handleChange = async (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
 
@@ -87,7 +99,20 @@ const Account = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (walletData.incomeWallet < 111 && walletData.packageWallet < 111) {
+
+        const enteredUserId = formData.userId;
+        if (enteredUserId.trim() === '') {
+            return toast.error('Please enter a User ID to activate.');
+        }
+
+        const isOwnUser = user && enteredUserId === user.referralCode;
+        const isDirectReferral = directReferrals.some(ref => ref.referralCode === enteredUserId);
+
+        if (!isOwnUser && !isDirectReferral) {
+            return toast.error('User is not in your referral line.');
+        }
+
+        if (!walletData || (walletData.incomeWallet < 111 && walletData.packageWallet < 111)) {
             return toast.error('You do not have enough balance to activate account.');
         }
         try {
@@ -139,8 +164,8 @@ const Account = () => {
                         <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
                             <label htmlFor="userid" className='flex flex-col justify-start items-start gap-1'>
                                 <span className='text-base md:text-lg capitalize text-black font-light'>User Id</span>
-                                <input type="text" name="userId" value={formData.userId} onChange={handleChange} className='outline-none w-full border border-black rounded-lg placeholder:text-[#000000B2] placeholder:capitalize placeholder:text-sm placeholder:font-extralight p-2' placeholder='Enter User Id' id="userid" />
-                                {referredUserName && <span className="text-sm text-green-500">{referredUserName}</span>} {/* Display referred user name */}
+                                <input type="text" name="userId" value={formData.userId} onChange={handleChange} className='outline-none w-full border border-black rounded-lg placeholder:text-[#000000B2] placeholder:capitalize placeholder:text-sm placeholder:font-extralight p-2' placeholder='Enter User Id' id="userid" required />
+                                {referredUserName && <span className="text-sm text-green-500">{referredUserName}</span>}
                             </label>
                             <label htmlFor="mode" className='flex flex-col justify-start items-start gap-1'>
                                 <span className='text-base md:text-lg capitalize text-black font-light'>Mode</span>
@@ -178,8 +203,8 @@ const Account = () => {
                         </label>
 
                         <div className='flex justify-start'>
-                            <button type="submit" disabled={loading} className='border-[#31B8A1] rounded-lg capitalize border text-[#31B8A1] font-semibold font-[Montserrat] text-base md:text-lg px-6 py-2 hover:scale-105 transition-all ease-in'>
-                                {loading ? 'Processing...' : 'Submit'}
+                            <button type="submit" disabled={loading || isActivating} className='border-[#31B8A1] rounded-lg capitalize border text-[#31B8A1] font-semibold font-[Montserrat] text-base md:text-lg px-6 py-2 hover:scale-105 transition-all ease-in'>
+                                {isActivating ? 'Activating...' : (loading ? 'Processing...' : 'Submit')}
                             </button>
                         </div>
                     </div>
