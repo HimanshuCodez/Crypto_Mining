@@ -47,47 +47,59 @@ export const sendInvestmentOtp = async (req, res) => {
 const processInvestment = async (req, res, walletType) => {
     try {
         const { userId, amount, otp } = req.body;
-        const investingUser = await User.findOne({ referralCode: userId });
+        const payer = await User.findById(req.user.id).populate('directReferrals');
+        const beneficiary = await User.findOne({ referralCode: userId });
 
-        if (!investingUser) {
-            return res.status(404).json({ message: 'User not found' });
+        if (!payer) {
+            return res.status(404).json({ message: 'Payer not found' });
+        }
+        if (!beneficiary) {
+            return res.status(404).json({ message: 'Beneficiary user not found' });
         }
 
-        // Validate OTP
-        if (investingUser.otp !== otp || investingUser.otpExpires < Date.now()) {
+        // Security Check: Ensure beneficiary is the user themselves or a direct referral
+        const isOwnUser = payer._id.equals(beneficiary._id);
+        const isDirectReferral = payer.directReferrals.some(ref => ref._id.equals(beneficiary._id));
+
+        if (!isOwnUser && !isDirectReferral) {
+            return res.status(403).json({ message: 'You can only invest for yourself or your direct referrals.' });
+        }
+
+        // Validate OTP (against the payer)
+        if (payer.otp !== otp || payer.otpExpires < Date.now()) {
             return res.status(400).json({ message: 'Invalid or expired OTP' });
         }
 
         const investmentAmount = parseFloat(amount);
+        const walletProperty = walletType === 'package' ? 'packageWallet' : 'incomeWallet';
 
-        // Validate wallet balance again as a safeguard
-        const balance = walletType === 'package' ? investingUser.packageWallet : investingUser.incomeWallet;
-        if (balance < investmentAmount) {
+        // Validate wallet balance (of the payer)
+        if (payer[walletProperty] < investmentAmount) {
             return res.status(400).json({ message: `Insufficient ${walletType} wallet balance` });
         }
 
-        // Update wallet and create transaction
-        if (walletType === 'package') {
-            investingUser.packageWallet -= investmentAmount;
-        } else {
-            investingUser.incomeWallet -= investmentAmount;
-        }
-        investingUser.miningInvestment += investmentAmount;
+        // --- Perform Transaction ---
+        // 1. Debit payer's wallet
+        payer[walletProperty] -= investmentAmount;
+        payer.otp = undefined;
+        payer.otpExpires = undefined;
 
+        // 2. Credit beneficiary's investment
+        beneficiary.miningInvestment += investmentAmount;
+
+        // 3. Create transaction record for the beneficiary
         const transaction = new Transaction({
-            userId: investingUser._id,
+            userId: beneficiary._id,
             amount: investmentAmount,
             type: 'investment',
-            description: `Investment from ${walletType} wallet`,
+            description: `Investment from ${walletType} wallet by ${payer.name} (${payer.referralCode})`,
         });
 
-        investingUser.otp = undefined;
-        investingUser.otpExpires = undefined;
-
-        await investingUser.save();
+        await payer.save();
+        await beneficiary.save();
         await transaction.save();
 
-        res.status(200).json({ message: 'Investment successful', user: investingUser });
+        res.status(200).json({ message: 'Investment successful', user: payer }); // Return the updated payer object
     } catch (error) {
         console.error('Error processing investment:', error);
         res.status(500).json({ message: 'Investment failed due to server error.' });
