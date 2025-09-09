@@ -16,7 +16,9 @@ const MiningIncome = () => {
     });
     const [isOtpSent, setIsOtpSent] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [referredUserName, setReferredUserName] = useState(''); // New state for referred user name
+    const [referredUserName, setReferredUserName] = useState('');
+    const [directReferrals, setDirectReferrals] = useState([]);
+    const [isDataLoading, setIsDataLoading] = useState(true);
 
     useEffect(() => {
         const toastId = 'activation-error';
@@ -27,6 +29,26 @@ const MiningIncome = () => {
             navigate('/account_activation');
         }
     }, [user, navigate]);
+
+    useEffect(() => {
+        const fetchDirectReferrals = async () => {
+            if (!user) {
+                setIsDataLoading(false);
+                return;
+            }
+            setIsDataLoading(true);
+            try {
+                const response = await api.get('/user/referrals/direct');
+                setDirectReferrals(Array.isArray(response.data) ? response.data : []);
+            } catch (error) {
+                console.error('Failed to fetch direct referrals', error);
+                toast.error('Failed to load referral data.');
+            } finally {
+                setIsDataLoading(false);
+            }
+        };
+        fetchDirectReferrals();
+    }, [user]);
 
     const handleChange = async (e) => { // Make handleChange async
         const { name, value } = e.target;
@@ -73,6 +95,19 @@ const MiningIncome = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        const enteredUserId = formData.userId;
+        if (enteredUserId.trim() === '') {
+            return toast.error('Please enter a User ID to invest.');
+        }
+
+        const isOwnUser = user && enteredUserId === user.referralCode;
+        const isDirectReferral = directReferrals.some(ref => ref.referralCode === enteredUserId);
+
+        if (!isOwnUser && !isDirectReferral) {
+            return toast.error('User is not in your referral line.');
+        }
+
         if (!formData.otp) {
             return toast.error('Please enter the OTP.');
         }
@@ -121,7 +156,7 @@ const MiningIncome = () => {
                       <span className='grid grid-cols-1 md:grid-cols-2 w-full md:w-[45vw] justify-start gap-6 md:gap-10'>
                           <label htmlFor="userId" className='flex flex-col justify-start items-start gap-1'>
                               <span className='text-lg capitalize text-black font-light'>User Id</span>
-                              <input type="text" name="userId" value={formData.userId} onChange={handleChange} className='outline-none w-full border border-black rounded-lg placeholder:text-[#000000B2] placeholder:capitalize placeholder:text-sm placeholder:font-extralight p-2' placeholder='Enter User Id' id="userId" />
+                              <input type="text" name="userId" value={formData.userId} onChange={handleChange} className='outline-none w-full border border-black rounded-lg placeholder:text-[#000000B2] placeholder:capitalize placeholder:text-sm placeholder:font-extralight p-2' placeholder='Enter User Id' id="userId" required />
                               {referredUserName && <span className="text-sm text-green-500">{referredUserName}</span>} {/* Display referred user name */}
                           </label>
                         
@@ -140,8 +175,8 @@ const MiningIncome = () => {
 
                       {!isOtpSent ? (
                         <div className='flex justify-start'>
-                            <button type="button" onClick={handleSendOtp} disabled={isLoading} className='border-[#31B8A1] rounded-lg capitalize border text-[#31B8A1] font-semibold font-[Montserrat] text-lg px-6 py-2 scale-100 hover:scale-105 transition-all ease-in disabled:opacity-50'>
-                                {isLoading ? 'Validating...' : 'Validate & Send OTP'}
+                            <button type="button" onClick={handleSendOtp} disabled={isDataLoading || isLoading} className='border-[#31B8A1] rounded-lg capitalize border text-[#31B8A1] font-semibold font-[Montserrat] text-lg px-6 py-2 scale-100 hover:scale-105 transition-all ease-in disabled:opacity-50'>
+                                {isDataLoading ? 'Loading Data...' : (isLoading ? 'Validating...' : 'Validate & Send OTP')}
                             </button>
                         </div>
                       ) : (
@@ -155,8 +190,8 @@ const MiningIncome = () => {
                             <span className='text-[#31B8A1] font-semibold font-[Montserrat] text-sm'>Verify</span>
                         </label>
                             <div className='flex justify-start'>
-                                <button type="submit" disabled={isLoading} className='border-[#31B8A1] rounded-lg capitalize border text-[#31B8A1] font-semibold font-[Montserrat] text-lg px-6 py-2 scale-100 hover:scale-105 transition-all ease-in disabled:opacity-50'>
-                                    {isLoading ? 'Submitting...' : 'Submit'}
+                                <button type="submit" disabled={isDataLoading || isLoading} className='border-[#31B8A1] rounded-lg capitalize border text-[#31B8A1] font-semibold font-[Montserrat] text-lg px-6 py-2 scale-100 hover:scale-105 transition-all ease-in disabled:opacity-50'>
+                                    {isDataLoading ? 'Loading Data...' : (isLoading ? 'Submitting...' : 'Submit')}
                                 </button>
                             </div>
                         </>

@@ -16,7 +16,9 @@ const PackageWallet = () => {
   });
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [referredUserName, setReferredUserName] = useState(""); // New state for referred user name
+  const [referredUserName, setReferredUserName] = useState("");
+  const [directReferrals, setDirectReferrals] = useState([]);
+  const [isDataLoading, setIsDataLoading] = useState(true);
 
   useEffect(() => {
     const toastId = "activation-error";
@@ -28,8 +30,27 @@ const PackageWallet = () => {
     }
   }, [user, navigate]);
 
+  useEffect(() => {
+    const fetchDirectReferrals = async () => {
+        if (!user) {
+            setIsDataLoading(false);
+            return;
+        }
+        setIsDataLoading(true);
+        try {
+            const response = await api.get('/user/referrals/direct');
+            setDirectReferrals(Array.isArray(response.data) ? response.data : []);
+        } catch (error) {
+            console.error('Failed to fetch direct referrals', error);
+            toast.error('Failed to load referral data.');
+        } finally {
+            setIsDataLoading(false);
+        }
+    };
+    fetchDirectReferrals();
+  }, [user]);
+
   const handleChange = async (e) => {
-    // Make handleChange async
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
 
@@ -75,25 +96,36 @@ const PackageWallet = () => {
     }
   };
 
-  const isSubmittingRef = useRef(false); // New ref
+  const isSubmittingRef = useRef(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (isSubmittingRef.current) {
-      // Check ref
-      return; // Already submitting, prevent second call
+    const enteredUserId = formData.userId;
+    if (enteredUserId.trim() === '') {
+        return toast.error('Please enter a User ID to invest.');
     }
 
-    isSubmittingRef.current = true; // Set ref to true at start of submission
+    const isOwnUser = user && enteredUserId === user.referralCode;
+    const isDirectReferral = directReferrals.some(ref => ref.referralCode === enteredUserId);
+
+    if (!isOwnUser && !isDirectReferral) {
+        return toast.error('User is not in your referral line.');
+    }
+
+    if (isSubmittingRef.current) {
+      return;
+    }
+
+    isSubmittingRef.current = true;
 
     toast.dismiss();
 
     if (!formData.otp) {
-      isSubmittingRef.current = false; // Reset ref if validation fails
+      isSubmittingRef.current = false;
       return toast.error("Please enter the OTP.");
     }
-    setIsLoading(true); // Keep isLoading for UI feedback
+    setIsLoading(true);
 
     try {
       const response = await api.post("/investment/invest-from-package", {
@@ -109,7 +141,7 @@ const PackageWallet = () => {
       console.error(error.response?.data?.message || "Investment failed.");
     } finally {
       setIsLoading(false);
-      isSubmittingRef.current = false; // Always reset ref in finally
+      isSubmittingRef.current = false;
     }
   };
 
@@ -170,6 +202,7 @@ const PackageWallet = () => {
                   className="outline-none w-full border border-black rounded-lg placeholder:text-[#000000B2] placeholder:capitalize placeholder:text-sm placeholder:font-extralight p-2"
                   placeholder="Enter User Id"
                   id="userId"
+                  required
                 />
                 {referredUserName && (
                   <span className="text-sm text-green-500">
@@ -220,10 +253,10 @@ const PackageWallet = () => {
                 <button
                   type="button"
                   onClick={handleSendOtp}
-                  disabled={isLoading}
+                  disabled={isDataLoading || isLoading}
                   className="border-[#31B8A1] rounded-lg capitalize border text-[#31B8A1] font-semibold font-[Montserrat] text-lg px-6 py-2 scale-100 hover:scale-105 transition-all ease-in disabled:opacity-50"
                 >
-                  {isLoading ? "Validating..." : "Validate & Send OTP"}
+                  {isDataLoading ? 'Loading Data...' : (isLoading ? "Validating..." : "Validate & Send OTP")}
                 </button>
               </div>
             ) : (
@@ -263,10 +296,10 @@ const PackageWallet = () => {
                   <button
                     type="button"
                     onClick={handleSubmit}
-                    disabled={isLoading}
+                    disabled={isDataLoading || isLoading}
                     className="border-[#31B8A1] rounded-lg capitalize border text-[#31B8A1] font-semibold font-[Montserrat] text-lg px-6 py-2 scale-100 hover:scale-105 transition-all ease-in disabled:opacity-50"
                   >
-                    {isLoading ? "Submitting..." : "Submit"}
+                    {isDataLoading ? 'Loading Data...' : (isLoading ? "Submitting..." : "Submit")}
                   </button>
                 </div>
               </>
