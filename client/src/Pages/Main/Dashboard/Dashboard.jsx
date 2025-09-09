@@ -17,9 +17,9 @@ const Dashboard = () => {
         setDashboardData(response.data);
 
         // New logic to fetch referrer's referral code
-        if (response.data.referredBy) {
+        if (user.referredBy) {
           try {
-            const referrerResponse = await api.get(`/user/${response.data.referredBy}`);
+            const referrerResponse = await api.get(`/user/${user.referredBy}`);
             if (referrerResponse.data && referrerResponse.data.referralCode) {
               setReferrerReferralCode(referrerResponse.data.referralCode);
             } else {
