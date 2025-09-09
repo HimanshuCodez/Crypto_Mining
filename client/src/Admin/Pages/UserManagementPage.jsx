@@ -31,7 +31,7 @@ const UserManagementPage = ({ users, searchQuery, setSearchQuery, filterStatus, 
             <table className="w-full min-w-max">
               <thead className="bg-gray-900/70 sticky top-0">
                 <tr>
-                  {["User", "Country", "Mobile", "Role", "Income Wallet", "Actions"].map(h => <th key={h} className="px-6 py-4 text-left text-gray-400 font-semibold">{h}</th>)}
+                  {["User", "Country", "Mobile", "Role", "Income Wallet", "Activation", "Actions"].map(h => <th key={h} className="px-6 py-4 text-left text-gray-400 font-semibold">{h}</th>)}
                 </tr>
               </thead>
               <tbody>
@@ -49,6 +49,11 @@ const UserManagementPage = ({ users, searchQuery, setSearchQuery, filterStatus, 
                       <span className={`px-3 py-1 rounded-full text-xs font-medium ${user.role === "admin" ? "bg-green-900 text-green-300" : "bg-blue-900 text-blue-300"}`}>{user.role || 'missing'}</span>
                     </td>
                     <td className="px-6 py-4 text-gray-300 text-sm">${user.incomeWallet !== undefined ? user.incomeWallet.toFixed(2) : 'missing'}</td>
+                    <td className="px-6 py-4">
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${user.accountactivation ? "bg-green-900 text-green-300" : "bg-red-900 text-red-300"}`}>
+                        {user.accountactivation ? 'Active' : 'Inactive'}
+                      </span>
+                    </td>
                     <td className="px-6 py-4">
                       <div className="flex space-x-2">
                         <button className="p-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"><Eye size={16} className="text-gray-300" /></button>
