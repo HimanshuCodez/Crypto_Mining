@@ -122,7 +122,7 @@ const MiningIncome = () => {
             fetchUser();
             navigate('/dashboard');
         } catch (error) {
-            toast.error(error.response?.data?.message || 'Investment failed.');
+            console.error(error.response?.data?.message || 'Investment failed.');
         } finally {
             setIsLoading(false);
         }
