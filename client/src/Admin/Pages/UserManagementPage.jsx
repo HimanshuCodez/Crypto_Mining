@@ -8,6 +8,7 @@ const UserManagementPage = ({
   filterStatus,
   setFilterStatus,
 }) => {
+  console.log(users);
   return (
     <div className="flex flex-col h-full gap-6">
       <div className="flex flex-col md:flex-row items-center justify-between gap-4">
@@ -107,12 +108,12 @@ const UserManagementPage = ({
                   <td className="px-6 py-4">
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        user.activationLicense==="true"
+                        user.activationLicense
                           ? "bg-green-900 text-green-300"
                           : "bg-red-900 text-red-300"
                       }`}
                     >
-                      {user.activationLicense === "true" ? "Active" : "Inactive"}
+                      {user.activationLicense ? "Active" : "Inactive"}
                     </span>
                   </td>
                   <td className="px-6 py-4">
