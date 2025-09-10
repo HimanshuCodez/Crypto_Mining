@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 
 const DepositUsdt = () => {
   const { user } = useAuthStore();
-  const [usdtAddress, setUsdtAddress] = useState("");
+  const [selectedAddress, setSelectedAddress] = useState('');
   const [sendingAddress, setSendingAddress] = useState("");
   const [amount, setAmount] = useState("");
   const [password, setPassword] = useState("");
@@ -15,14 +15,25 @@ const DepositUsdt = () => {
   const [paymentAmount, setPaymentAmount] = useState('');
   const [submissionStatus, setSubmissionStatus] = useState('idle'); // 'idle', 'submitting', 'pending', 'approved', 'rejected'
 
+  const addressLabels = {
+    deposit: 'BEP20',
+    tre20: 'TRE20'
+  };
+
   useEffect(() => {
     const fetchBarcode = async () => {
       try {
         const response = await api.get('/admin/barcode');
-        setBarcodes({
+        const fetchedBarcodes = {
           deposit: response.data.depositBarcodeUrl,
           tre20: response.data.tre20BarcodeUrl
-        });
+        };
+        setBarcodes(fetchedBarcodes);
+        // Set a default selection if available
+        const firstAvailable = Object.keys(fetchedBarcodes).find(key => fetchedBarcodes[key]);
+        if (firstAvailable) {
+          setSelectedAddress(firstAvailable);
+        }
       } catch (error) {
         console.error('Failed to fetch barcode', error);
       }
@@ -100,53 +111,52 @@ const DepositUsdt = () => {
   };
 
   return (
-    <div className="min-h-screen w-[78vw] flex flex-col gap-6 md:p-10  bg-gray-50 p-6">
-      <h1 className="text-2xl font-bold mb-1">Deposite Usdt</h1>
-      <p className="text-sm text-gray-500 mb-2">
-        Deposite / <span className="text-cyan-600">Deposite Usdt</span>
-      </p>
+    <div className="min-h-screen w-full md:w-[78vw] flex flex-col gap-6 p-4 md:p-10 bg-gray-50">
+      <div className="flex flex-col justify-start items-start gap-2">
+        <h1 className="text-2xl md:text-4xl font-medium capitalize font-[Inter]">Deposit USDT</h1>
+        <nav className="flex items-center gap-1 capitalize font-light text-sm font-[Inter]">
+          <a href="/deposit">Deposit</a><span>/</span><a href="/deposit-usdt" className='text-[#02AC8F] truncate'>Deposit USDT</a>
+        </nav>
+      </div>
 
       <form
         onSubmit={handleSubmit}
-        className="space-y-6 w-full bg-white p-8 shadow rounded"
+        className="space-y-6 w-full bg-white p-6 md:p-8 shadow rounded-lg"
       >
-        <h2 className=" font-semibold text-2xl text-gray-800">Fill Details</h2>
+        <h2 className="font-semibold text-2xl text-gray-800">Fill Details</h2>
 
-        {/* USDT Address */}
+        {/* Address Dropdown */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="address-select" className="block text-sm font-medium text-gray-700 mb-1">
             Select Address
           </label>
-          <input
-            type="text"
-            placeholder="USDT ADDRESS"
-            value={usdtAddress}
-            onChange={(e) => setUsdtAddress(e.target.value)}
+          <select
+            id="address-select"
+            value={selectedAddress}
+            onChange={(e) => setSelectedAddress(e.target.value)}
             className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-cyan-500"
-          />
+          >
+            <option value="" disabled>Select an address type</option>
+            {Object.keys(barcodes).map(key => (
+              barcodes[key] && <option key={key} value={key}>{addressLabels[key] || key.toUpperCase()}</option>
+            ))}
+          </select>
         </div>
-        {/* Barcodes */}
-        <div className="flex gap-4">
-            {barcodes.deposit && (
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                        BEP20 Barcode
-                    </label>
-                    <img src={barcodes.deposit} alt="USDT Deposit Barcode" className="w-48 h-48" />
-                </div>
-            )}
-            {barcodes.tre20 && (
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                        TRE20 Barcode
-                    </label>
-                    <img src={barcodes.tre20} alt="TRE20 Deposit Barcode" className="w-48 h-48" />
-                </div>
-            )}
+
+        {/* Barcode Display */}
+        <div className="flex justify-center py-4">
+          {selectedAddress && barcodes[selectedAddress] && (
+              <div className="text-center">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {addressLabels[selectedAddress]} Barcode
+                  </label>
+                  <img src={barcodes[selectedAddress]} alt={`${addressLabels[selectedAddress]} Deposit Barcode`} className="w-48 h-48 mx-auto" />
+              </div>
+          )}
         </div>
 
         {/* Upload Payment Proof */}
-        <div className="space-y-4">
+        <div className="space-y-4 pt-4 border-t">
           <h3 className="text-xl font-semibold text-gray-800">Upload Payment Proof</h3>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -180,7 +190,7 @@ const DepositUsdt = () => {
         {/* Password */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Id Password
+            Transaction Password
           </label>
           <input
             type="password"
