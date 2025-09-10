@@ -1,33 +1,57 @@
 import React, { useState } from 'react';
 import { Home, HelpCircle, Plus, Lock, Eye, EyeOff } from 'lucide-react';
+import api from '../api/axios';
+import { toast } from 'react-toastify';
 
 export default function CryptoSupportForm() {
   const [category, setCategory] = useState('');
+  const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
   const [transactionPassword, setTransactionPassword] = useState('');
   const [otpPassword, setOtpPassword] = useState('');
   const [showTransactionPassword, setShowTransactionPassword] = useState(false);
   const [showOtpPassword, setShowOtpPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = () => {
-    if (!category || !message || !transactionPassword || !otpPassword) {
-      alert('Please fill in all fields');
+  const handleSubmit = async () => {
+    if (!category || !subject || !message || !transactionPassword || !otpPassword) {
+      toast.error('Please fill in all fields');
       return;
     }
     
-    console.log({
-      category,
-      message,
-      transactionPassword,
-      otpPassword
-    });
-    
-    alert('Support ticket submitted successfully!');
+    setLoading(true);
+    try {
+      const response = await api.post('/support/tickets', {
+        category,
+        subject,
+        message,
+        transactionPassword,
+        otp: otpPassword
+      });
+      toast.success('Support ticket submitted successfully!');
+      // Clear form
+      setCategory('');
+      setSubject('');
+      setMessage('');
+      setTransactionPassword('');
+      setOtpPassword('');
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to submit ticket.');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const sendOtp = () => {
-    console.log('Sending OTP...');
-    alert('OTP sent successfully!');
+  const sendOtp = async () => {
+    setLoading(true);
+    try {
+      await api.post('/support/send-otp');
+      toast.success('OTP sent successfully to your email!');
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to send OTP.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -69,6 +93,20 @@ export default function CryptoSupportForm() {
               <option value="deposit">Deposit</option>
               <option value="others">Others</option>
             </select>
+          </div>
+
+          {/* Subject */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Subject
+            </label>
+            <input
+              type="text"
+              value={subject}
+              onChange={(e) => setSubject(e.target.value)}
+              placeholder="Enter a brief subject"
+              className="w-full px-4 py-3 bg-[#CCFFF6] border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none text-gray-700 placeholder-gray-500"
+            />
           </div>
 
           {/* Message */}

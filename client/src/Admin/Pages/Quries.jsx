@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Search, 
   Filter, 
@@ -14,82 +14,39 @@ import {
   X,
   ArrowUpDown
 } from 'lucide-react';
+import api from '../../api/axios';
+import { toast } from 'react-toastify';
 
 export default function Quries() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedTicket, setSelectedTicket] = useState(null);
+  const [tickets, setTickets] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  // Dummy ticket data
-  const [tickets, setTickets] = useState([
-    {
-      id: '#TK001',
-      user: 'John Doe',
-      email: 'john@example.com',
-      category: 'withdrawal',
-      subject: 'Withdrawal Pending for 3 days',
-      message: 'My withdrawal request of 0.5 BTC has been pending for 3 days. Please help resolve this issue urgently.',
-      status: 'pending',
-      priority: 'high',
-      createdAt: '2024-01-15 09:30 AM',
-      lastUpdated: '2024-01-15 09:30 AM'
-    },
-    {
-      id: '#TK002',
-      user: 'Sarah Wilson',
-      email: 'sarah@example.com',
-      category: 'deposit',
-      subject: 'Deposit not reflected in account',
-      message: 'I transferred 1000 USDT to my wallet but it is not showing in my account balance. Transaction ID: 0x123abc...',
-      status: 'in-progress',
-      priority: 'medium',
-      createdAt: '2024-01-14 02:15 PM',
-      lastUpdated: '2024-01-15 10:45 AM'
-    },
-    {
-      id: '#TK003',
-      user: 'Mike Johnson',
-      email: 'mike@example.com',
-      category: 'others',
-      subject: 'Mining rewards calculation error',
-      message: 'The mining rewards for the past week seem incorrect. Expected around 0.02 BTC but only received 0.015 BTC.',
-      status: 'resolved',
-      priority: 'low',
-      createdAt: '2024-01-13 11:20 AM',
-      lastUpdated: '2024-01-14 04:30 PM'
-    },
-    {
-      id: '#TK004',
-      user: 'Emma Davis',
-      email: 'emma@example.com',
-      category: 'withdrawal',
-      subject: 'Unable to withdraw ETH',
-      message: 'Getting error message "Insufficient gas fees" when trying to withdraw 2 ETH. My balance shows sufficient funds.',
-      status: 'pending',
-      priority: 'high',
-      createdAt: '2024-01-15 01:45 PM',
-      lastUpdated: '2024-01-15 01:45 PM'
-    },
-    {
-      id: '#TK005',
-      user: 'Alex Brown',
-      email: 'alex@example.com',
-      category: 'deposit',
-      subject: 'Failed deposit transaction',
-      message: 'My deposit transaction failed but the amount was deducted from my bank account. Please help recover the funds.',
-      status: 'in-progress',
-      priority: 'medium',
-      createdAt: '2024-01-14 08:30 AM',
-      lastUpdated: '2024-01-15 09:15 AM'
+  const fetchTickets = async () => {
+    setLoading(true);
+    try {
+      const response = await api.get('/support/tickets');
+      setTickets(response.data);
+    } catch (error) {
+      toast.error('Failed to fetch support tickets.');
+      console.error('Error fetching tickets:', error);
+    } finally {
+      setLoading(false);
     }
-  ]);
+  };
+
+  useEffect(() => {
+    fetchTickets();
+  }, []);
 
   const getStatusColor = (status) => {
     switch (status) {
       case 'pending': return 'text-yellow-600 bg-yellow-100';
       case 'in-progress': return 'text-blue-600 bg-blue-100';
       case 'resolved': return 'text-green-600 bg-green-100';
-      default: return 'text-black-600 bg-gray-100';
+      default: return 'text-gray-600 bg-gray-100';
     }
   };
 
@@ -111,19 +68,25 @@ export default function Quries() {
     }
   };
 
-  const updateTicketStatus = (ticketId, newStatus) => {
-    setTickets(tickets.map(ticket => 
-      ticket.id === ticketId 
-        ? { ...ticket, status: newStatus, lastUpdated: new Date().toLocaleString() }
-        : ticket
-    ));
+  const updateTicketStatus = async (ticketId, newStatus) => {
+    setLoading(true);
+    try {
+      await api.patch(`/support/tickets/${ticketId}/status`, { status: newStatus });
+      toast.success(`Ticket marked as ${newStatus.replace('-', ' ')}`);
+      fetchTickets(); // Refresh the ticket list
+    } catch (error) {
+      toast.error('Failed to update ticket status.');
+      console.error('Error updating ticket status:', error);
+    }
     setSelectedTicket(null);
+    setLoading(false);
   };
 
   const filteredTickets = tickets.filter(ticket => {
-    const matchesSearch = ticket.user.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         ticket.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         ticket.id.toLowerCase().includes(searchQuery.toLowerCase());
+    const searchLower = searchQuery.toLowerCase();
+    const matchesSearch = (ticket.userId?.name.toLowerCase().includes(searchLower)) ||
+                         (ticket.subject.toLowerCase().includes(searchLower)) ||
+                         (ticket.ticketId.toLowerCase().includes(searchLower));
     const matchesStatus = statusFilter === 'all' || ticket.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
@@ -241,11 +204,11 @@ export default function Quries() {
               </thead>
               <tbody className="divide-y divide-gray-200">
                 {filteredTickets.map((ticket) => (
-                  <tr key={ticket.id} className="hover:bg-gray-50">
+                  <tr key={ticket._id} className="hover:bg-gray-50">
                     <td className="px-4 py-4 whitespace-nowrap">
                       <div className="flex flex-col">
-                        <span className="text-sm font-medium text-black-900">{ticket.id}</span>
-                        <span className="text-xs text-black-500 sm:hidden">{ticket.user}</span>
+                        <span className="text-sm font-medium text-black-900">{ticket.ticketId}</span>
+                        <span className="text-xs text-black-500 sm:hidden">{ticket.userId?.name}</span>
                       </div>
                     </td>
                     <td className="px-4 py-4 whitespace-nowrap hidden sm:table-cell">
@@ -254,8 +217,8 @@ export default function Quries() {
                           <User size={16} className="text-black-600" />
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-black-900">{ticket.user}</p>
-                          <p className="text-xs text-black-500">{ticket.email}</p>
+                          <p className="text-sm font-medium text-black-900">{ticket.userId?.name}</p>
+                          <p className="text-xs text-black-500">{ticket.userId?.email}</p>
                         </div>
                       </div>
                     </td>
@@ -307,7 +270,7 @@ export default function Quries() {
                   </button>
                 </div>
                 <div className="flex flex-wrap items-center gap-4">
-                  <span className="text-lg font-medium text-black-900">{selectedTicket.id}</span>
+                  <span className="text-lg font-medium text-black-900">{selectedTicket.ticketId}</span>
                   <span className={`inline-flex items-center gap-1 px-3 py-1 text-sm font-medium rounded-full ${getStatusColor(selectedTicket.status)}`}>
                     {getStatusIcon(selectedTicket.status)}
                     <span className="capitalize">{selectedTicket.status.replace('-', ' ')}</span>
@@ -320,8 +283,8 @@ export default function Quries() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-black-700 mb-1">User</label>
-                    <p className="text-black-900">{selectedTicket.user}</p>
-                    <p className="text-sm text-black-500">{selectedTicket.email}</p>
+                    <p className="text-black-900">{selectedTicket.userId?.name}</p>
+                    <p className="text-sm text-black-500">{selectedTicket.userId?.email}</p>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-black-700 mb-1">Category</label>
@@ -331,14 +294,14 @@ export default function Quries() {
                     <label className="block text-sm font-medium text-black-700 mb-1">Created</label>
                     <p className="text-black-900 flex items-center gap-1">
                       <Calendar size={16} />
-                      {selectedTicket.createdAt}
+                      {new Date(selectedTicket.createdAt).toLocaleString()}
                     </p>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-black-700 mb-1">Last Updated</label>
                     <p className="text-black-900 flex items-center gap-1">
                       <Clock size={16} />
-                      {selectedTicket.lastUpdated}
+                      {new Date(selectedTicket.updatedAt).toLocaleString()}
                     </p>
                   </div>
                 </div>
@@ -363,7 +326,7 @@ export default function Quries() {
                   <div className="flex flex-wrap gap-3 pt-4 border-t border-gray-200">
                     {selectedTicket.status === 'pending' && (
                       <button
-                        onClick={() => updateTicketStatus(selectedTicket.id, 'in-progress')}
+                        onClick={() => updateTicketStatus(selectedTicket._id, 'in-progress')}
                         className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                       >
                         <AlertCircle size={16} />
@@ -371,7 +334,7 @@ export default function Quries() {
                       </button>
                     )}
                     <button
-                      onClick={() => updateTicketStatus(selectedTicket.id, 'resolved')}
+                      onClick={() => updateTicketStatus(selectedTicket._id, 'resolved')}
                       className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
                     >
                       <Check size={16} />
@@ -385,5 +348,3 @@ export default function Quries() {
         )}
       </div>
     </div>
-  );
-}

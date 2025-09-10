@@ -11,6 +11,7 @@ import withdrawalRoutes from './routes/withdrawal.js';
 import transferRoutes from './routes/transfer.js';
 import packageTransferRoutes from './routes/packageTransfer.js';
 import otpRoutes from './routes/otp.js';
+import supportRoutes from './routes/support.js';
 import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -45,6 +46,7 @@ app.use('/api/withdrawals', withdrawalRoutes);
 app.use('/api/transfer', transferRoutes);
 app.use('/api/package-transfer', packageTransferRoutes);
 app.use('/api/otp', otpRoutes);
+app.use('/api/support', supportRoutes);
 
 app.get('/', (req, res) => {
     res.send('Express server is running!');
