@@ -28,6 +28,7 @@ const AdminSystem = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [userCount, setUserCount] = useState(0);
   const [activatedUsersCount, setActivatedUsersCount] = useState(0);
+  const [totalMiningInvestment, setTotalMiningInvestment] = useState(0);
   const [barcodeUrls, setBarcodeUrls] = useState({
     deposit: 'https://imgs.search.brave.com/0TrKgTjetNkLgx2lktMkwwI1Y0nqOZaiKFaWrzhti60/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly91cy4x/MjNyb2ludC5jb20vNDUw/d20vbWFjbWFja3lr/eS9tYWNtYWNreWt5/MTYwOS9tYWNtYWNreWt5MTYwOTAwMjM3LzYzMTQ1Njg4LWJh/cmNvZUtc2Nhbm5l/ci5qcGc_dmVyPTY',
     tre20: ''
@@ -76,13 +77,17 @@ const AdminSystem = () => {
     if (users && users.length > 0) {
       const activatedCount = users.filter(user => user.activationLicense).length;
       setActivatedUsersCount(activatedCount);
+
+      const totalInvestment = users.reduce((sum, user) => sum + (user.miningInvestment || 0), 0);
+      setTotalMiningInvestment(totalInvestment);
     }
   }, [users]);
 
   const dashboardStats = {
+    activeUsers: 0, // This is still hardcoded
     activatedUsers: activatedUsersCount,
     totalDeposits: 84,
-    usdtBalance: 12500,
+    totalMiningInvestment: totalMiningInvestment,
   };
 
   const usdtWithdrawals = [

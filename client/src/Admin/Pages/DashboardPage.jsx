@@ -39,30 +39,30 @@ const DashboardPage = ({ userCount, dashboardStats, setCurrentPage }) => {
         <h2 className="text-3xl font-bold text-white">Admin Dashboard</h2>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard
+                <StatCard
           title="Total Users"
-          value={userCount.toLocaleString()}
-          subtitle={`${dashboardStats.activeUsers.toLocaleString()} active`}
+          value={(userCount || 0).toLocaleString()}
+          subtitle={`${(dashboardStats.activeUsers || 0).toLocaleString()} active`}
           icon={Users}
      
         />
         <StatCard
           title="Activated Users"
-          value={dashboardStats.activatedUsers}
+          value={dashboardStats.activatedUsers || 0}
           subtitle="Users with active license"
           icon={UserCheck}
         />
         <StatCard
           title="Total Deposits"
-          value={`${dashboardStats.totalDeposits.toLocaleString()}`}
+          value={`${(dashboardStats.totalDeposits || 0).toLocaleString()}`}
           subtitle="All time deposits"
           icon={ArrowDownRight}
        
         />
         <StatCard
-          title="USDT Balance"
-          value={`$${dashboardStats.usdtBalance.toLocaleString()}`}
-          subtitle="Available for withdrawals"
+          title="Total Mining Investment"
+          value={`${(dashboardStats.totalMiningInvestment || 0).toLocaleString()}`}
+          subtitle="Sum of all investments"
           icon={Wallet}
         />
       </div>
