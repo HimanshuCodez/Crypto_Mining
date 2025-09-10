@@ -336,12 +336,13 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
             >
               <FaInfoCircle /> About
             </li>
-            <li
-              className="flex items-center gap-2 text-lg hover:text-blue-600 transition"
+           <Link
+                    to="/Support"
+              className="flex items-center gap-2 cursor-pointer text-lg hover:text-blue-600 transition"
               onClick={handleLinkClick}
             >
               <FaQuestionCircle /> Support
-            </li>
+            </Link>
 
             {/* Logout */}
             <li
