@@ -44,12 +44,12 @@ const DashboardPage = ({ userCount, dashboardStats, setCurrentPage }) => {
           value={userCount.toLocaleString()}
           subtitle={`${dashboardStats.activeUsers.toLocaleString()} active`}
           icon={Users}
-          trend="8.2"
+     
         />
         <StatCard
-          title="Pending Activations"
-          value={dashboardStats.pendingKYC}
-          subtitle="Awaiting Activations"
+          title="Activated Users"
+          value={dashboardStats.activatedUsers}
+          subtitle="Users with active license"
           icon={UserCheck}
         />
         <StatCard
@@ -57,7 +57,7 @@ const DashboardPage = ({ userCount, dashboardStats, setCurrentPage }) => {
           value={`${dashboardStats.totalDeposits.toLocaleString()}`}
           subtitle="All time deposits"
           icon={ArrowDownRight}
-          trend="12.5"
+       
         />
         <StatCard
           title="USDT Balance"
