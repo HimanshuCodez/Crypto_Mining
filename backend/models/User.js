@@ -76,6 +76,10 @@ const userSchema = new mongoose.Schema({
     otpExpires: {
         type: Date,
     },
+    firstInvestmentCommissionPaid: {
+        type: Boolean,
+        default: false,
+    },
 }, { timestamps: true });
 
 // Hash password before saving

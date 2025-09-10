@@ -231,7 +231,21 @@ export const getDirectReferrals = async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
-        res.status(200).json(user.directReferrals);
+
+        const referralsWithCommission = await Promise.all(user.directReferrals.map(async (referral) => {
+            const commissionTx = await Transaction.findOne({
+                userId: req.user._id,
+                type: 'commission',
+                fromUser: referral._id
+            });
+
+            return {
+                ...referral.toObject(),
+                commissionReceived: commissionTx ? commissionTx.amount : 0,
+            };
+        }));
+
+        res.status(200).json(referralsWithCommission);
     } catch (error) {
         res.status(500).json({ message: "Server error", error });
     }

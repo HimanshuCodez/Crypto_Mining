@@ -13,7 +13,7 @@ const transactionSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ['deposit', 'withdrawal', 'investment', 'income', 'activation', 'transfer_in', 'transfer_out'],
+    enum: ['deposit', 'withdrawal', 'investment', 'income', 'activation', 'transfer_in', 'transfer_out', 'commission'],
     required: true,
   },
   status: {
@@ -41,6 +41,13 @@ const transactionSchema = new mongoose.Schema({
   },
   lastProfitDistributionDate: {
     type: Date,
+  },
+  description: {
+    type: String,
+  },
+  fromUser: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
   },
 }, { timestamps: true });
 

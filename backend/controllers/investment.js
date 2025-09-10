@@ -88,8 +88,29 @@ const processInvestment = async (req, res, walletType) => {
         payer.otp = undefined;
         payer.otpExpires = undefined;
 
-        // 2. Credit beneficiary's investment
+        // 2. Credit beneficiary's investment & Handle Commission
+        const isFirstInvestment = beneficiary.miningInvestment === 0 && !beneficiary.firstInvestmentCommissionPaid;
         beneficiary.miningInvestment += investmentAmount;
+
+        if (isFirstInvestment && beneficiary.referredBy) {
+            const referrer = await User.findById(beneficiary.referredBy);
+            if (referrer) {
+                const commissionAmount = investmentAmount * 0.01;
+                referrer.incomeWallet += commissionAmount;
+                
+                const commissionTransaction = new Transaction({
+                    userId: referrer._id,
+                    amount: commissionAmount,
+                    type: 'commission',
+                    description: `1% commission from ${beneficiary.name}'s first investment`,
+                    fromUser: beneficiary._id
+                });
+                
+                await referrer.save();
+                await commissionTransaction.save();
+            }
+            beneficiary.firstInvestmentCommissionPaid = true;
+        }
 
         // 3. Create transaction record for the beneficiary
         const transaction = new Transaction({
