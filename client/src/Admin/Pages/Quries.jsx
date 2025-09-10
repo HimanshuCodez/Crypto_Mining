@@ -89,7 +89,7 @@ export default function Quries() {
       case 'pending': return 'text-yellow-600 bg-yellow-100';
       case 'in-progress': return 'text-blue-600 bg-blue-100';
       case 'resolved': return 'text-green-600 bg-green-100';
-      default: return 'text-gray-600 bg-gray-100';
+      default: return 'text-black-600 bg-gray-100';
     }
   };
 
@@ -98,7 +98,7 @@ export default function Quries() {
       case 'high': return 'text-red-600 bg-red-100';
       case 'medium': return 'text-orange-600 bg-orange-100';
       case 'low': return 'text-green-600 bg-green-100';
-      default: return 'text-gray-600 bg-gray-100';
+      default: return 'text-black-600 bg-gray-100';
     }
   };
 
@@ -139,8 +139,8 @@ export default function Quries() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">Support Tickets</h1>
-          <p className="text-gray-600">Manage and resolve customer support tickets</p>
+          <h1 className="text-2xl lg:text-3xl bg-gray-800 font-bold text-black-900 mb-2">Support Tickets</h1>
+          <p className="text-black-600">Manage and resolve customer support tickets</p>
         </div>
 
         {/* Stats Cards */}
@@ -151,8 +151,8 @@ export default function Quries() {
                 <Clock className="text-yellow-600" size={20} />
               </div>
               <div>
-                <p className="text-sm text-gray-600">Pending</p>
-                <p className="text-xl font-bold text-gray-900">{statusCounts.pending}</p>
+                <p className="text-sm text-black-600">Pending</p>
+                <p className="text-xl font-bold text-black-900">{statusCounts.pending}</p>
               </div>
             </div>
           </div>
@@ -162,8 +162,8 @@ export default function Quries() {
                 <AlertCircle className="text-blue-600" size={20} />
               </div>
               <div>
-                <p className="text-sm text-gray-600">In Progress</p>
-                <p className="text-xl font-bold text-gray-900">{statusCounts['in-progress']}</p>
+                <p className="text-sm text-black-600">In Progress</p>
+                <p className="text-xl font-bold text-black-900">{statusCounts['in-progress']}</p>
               </div>
             </div>
           </div>
@@ -173,8 +173,8 @@ export default function Quries() {
                 <CheckCircle className="text-green-600" size={20} />
               </div>
               <div>
-                <p className="text-sm text-gray-600">Resolved</p>
-                <p className="text-xl font-bold text-gray-900">{statusCounts.resolved}</p>
+                <p className="text-sm text-black-600">Resolved</p>
+                <p className="text-xl font-bold text-black-900">{statusCounts.resolved}</p>
               </div>
             </div>
           </div>
@@ -184,7 +184,7 @@ export default function Quries() {
         <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200 mb-6">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-black-400" size={18} />
               <input
                 type="text"
                 placeholder="Search tickets..."
@@ -194,7 +194,7 @@ export default function Quries() {
               />
             </div>
             <div className="relative">
-              <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+              <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-black-400" size={18} />
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
@@ -215,26 +215,26 @@ export default function Quries() {
             <table className="w-full">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-black-500 uppercase tracking-wider">
                     <div className="flex items-center gap-1">
                       Ticket ID
                       <ArrowUpDown size={12} />
                     </div>
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-black-500 uppercase tracking-wider hidden sm:table-cell">
                     User
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-black-500 uppercase tracking-wider">
                     Subject
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-black-500 uppercase tracking-wider hidden md:table-cell">
                     Category
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-black-500 uppercase tracking-wider">
                     Status
                   </th>
                   
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-black-500 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
@@ -244,29 +244,29 @@ export default function Quries() {
                   <tr key={ticket.id} className="hover:bg-gray-50">
                     <td className="px-4 py-4 whitespace-nowrap">
                       <div className="flex flex-col">
-                        <span className="text-sm font-medium text-gray-900">{ticket.id}</span>
-                        <span className="text-xs text-gray-500 sm:hidden">{ticket.user}</span>
+                        <span className="text-sm font-medium text-black-900">{ticket.id}</span>
+                        <span className="text-xs text-black-500 sm:hidden">{ticket.user}</span>
                       </div>
                     </td>
                     <td className="px-4 py-4 whitespace-nowrap hidden sm:table-cell">
                       <div className="flex items-center gap-2">
                         <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-                          <User size={16} className="text-gray-600" />
+                          <User size={16} className="text-black-600" />
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-gray-900">{ticket.user}</p>
-                          <p className="text-xs text-gray-500">{ticket.email}</p>
+                          <p className="text-sm font-medium text-black-900">{ticket.user}</p>
+                          <p className="text-xs text-black-500">{ticket.email}</p>
                         </div>
                       </div>
                     </td>
                     <td className="px-4 py-4">
                       <div className="max-w-xs">
-                        <p className="text-sm font-medium text-gray-900 truncate">{ticket.subject}</p>
-                        <p className="text-xs text-gray-500 md:hidden capitalize">{ticket.category}</p>
+                        <p className="text-sm font-medium text-black-900 truncate">{ticket.subject}</p>
+                        <p className="text-xs text-black-500 md:hidden capitalize">{ticket.category}</p>
                       </div>
                     </td>
                     <td className="px-4 py-4 whitespace-nowrap hidden md:table-cell">
-                      <span className="inline-flex px-2 py-1 text-xs font-medium bg-gray-100 text-gray-700 rounded-full capitalize">
+                      <span className="inline-flex px-2 py-1 text-xs font-medium bg-gray-100 text-black-700 rounded-full capitalize">
                         {ticket.category}
                       </span>
                     </td>
@@ -298,16 +298,16 @@ export default function Quries() {
             <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
               <div className="p-6 border-b border-gray-200">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-bold text-gray-900">Ticket Details</h2>
+                  <h2 className="text-xl font-bold text-black-900">Ticket Details</h2>
                   <button
                     onClick={() => setSelectedTicket(null)}
-                    className="text-gray-400 hover:text-gray-600"
+                    className="text-black-400 hover:text-black-600"
                   >
                     <X size={24} />
                   </button>
                 </div>
                 <div className="flex flex-wrap items-center gap-4">
-                  <span className="text-lg font-medium text-gray-900">{selectedTicket.id}</span>
+                  <span className="text-lg font-medium text-black-900">{selectedTicket.id}</span>
                   <span className={`inline-flex items-center gap-1 px-3 py-1 text-sm font-medium rounded-full ${getStatusColor(selectedTicket.status)}`}>
                     {getStatusIcon(selectedTicket.status)}
                     <span className="capitalize">{selectedTicket.status.replace('-', ' ')}</span>
@@ -319,24 +319,24 @@ export default function Quries() {
               <div className="p-6 space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">User</label>
-                    <p className="text-gray-900">{selectedTicket.user}</p>
-                    <p className="text-sm text-gray-500">{selectedTicket.email}</p>
+                    <label className="block text-sm font-medium text-black-700 mb-1">User</label>
+                    <p className="text-black-900">{selectedTicket.user}</p>
+                    <p className="text-sm text-black-500">{selectedTicket.email}</p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                    <p className="text-gray-900 capitalize">{selectedTicket.category}</p>
+                    <label className="block text-sm font-medium text-black-700 mb-1">Category</label>
+                    <p className="text-black-900 capitalize">{selectedTicket.category}</p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Created</label>
-                    <p className="text-gray-900 flex items-center gap-1">
+                    <label className="block text-sm font-medium text-black-700 mb-1">Created</label>
+                    <p className="text-black-900 flex items-center gap-1">
                       <Calendar size={16} />
                       {selectedTicket.createdAt}
                     </p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Last Updated</label>
-                    <p className="text-gray-900 flex items-center gap-1">
+                    <label className="block text-sm font-medium text-black-700 mb-1">Last Updated</label>
+                    <p className="text-black-900 flex items-center gap-1">
                       <Clock size={16} />
                       {selectedTicket.lastUpdated}
                     </p>
@@ -344,17 +344,17 @@ export default function Quries() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Subject</label>
-                  <p className="text-gray-900 font-medium">{selectedTicket.subject}</p>
+                  <label className="block text-sm font-medium text-black-700 mb-2">Subject</label>
+                  <p className="text-black-900 font-medium">{selectedTicket.subject}</p>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-1">
+                  <label className="block text-sm font-medium text-black-700 mb-2 flex items-center gap-1">
                     <MessageSquare size={16} />
                     Message
                   </label>
                   <div className="bg-gray-50 rounded-lg p-4">
-                    <p className="text-gray-700 leading-relaxed">{selectedTicket.message}</p>
+                    <p className="text-black-700 leading-relaxed">{selectedTicket.message}</p>
                   </div>
                 </div>
 
