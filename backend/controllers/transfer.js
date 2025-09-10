@@ -41,7 +41,7 @@ export const transferToIncomeWallet = async (req, res) => {
   const senderId = req.user._id;
 
   try {
-    const sender = await User.findById(senderId);
+    const sender = await User.findById(senderId).populate('directReferrals');
 
     if (!sender) {
       return res.status(404).json({ message: 'Sender not found' });
@@ -64,9 +64,13 @@ export const transferToIncomeWallet = async (req, res) => {
       return res.status(404).json({ message: 'Recipient not found with this referral ID' });
     }
 
-    // Prevent transfer to self
+    // Security Check: Ensure recipient is a direct referral
     if (sender._id.equals(recipient._id)) {
-      return res.status(400).json({ message: 'Cannot transfer to your own wallet' });
+        return res.status(400).json({ message: 'Cannot transfer to your own wallet' });
+    }
+    const isDirectReferral = sender.directReferrals.some(ref => ref._id.equals(recipient._id));
+    if (!isDirectReferral) {
+        return res.status(403).json({ message: 'You can only transfer to users in your direct referral list.' });
     }
 
     // 4. Validate sender's income wallet balance

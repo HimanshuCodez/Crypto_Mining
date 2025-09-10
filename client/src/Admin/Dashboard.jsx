@@ -20,6 +20,7 @@ import SettingsPage from "./Pages/SettingsPage";
 
 import MinningInvestmentApproval from "./Pages/MinningInvestmentApproval";
 import { toast } from "react-toastify";
+import Maintenance from "./Pages/Maintenance";
 
 const AdminSystem = () => {
   const [currentPage, setCurrentPage] = useState("dashboard");
@@ -170,6 +171,9 @@ const AdminSystem = () => {
       case 'MinningInvestmentApproval':
 
          return <MinningInvestmentApproval  />;
+      case 'Maintenance':
+
+         return <Maintenance />;
       default:
         return <DashboardPage userCount={userCount} dashboardStats={dashboardStats} setCurrentPage={setCurrentPage} />;
    

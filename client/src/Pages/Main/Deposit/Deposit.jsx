@@ -125,21 +125,6 @@ const DepositUsdt = () => {
             className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-cyan-500"
           />
         </div>
-
-        {/* Sending Address */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Address to Sending USDT:
-          </label>
-          <input
-            type="text"
-            placeholder="Select Address"
-            value={sendingAddress}
-            onChange={(e) => setSendingAddress(e.target.value)}
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-cyan-500"
-          />
-        </div>
-
         {/* Barcodes */}
         <div className="flex gap-4">
             {barcodes.deposit && (
