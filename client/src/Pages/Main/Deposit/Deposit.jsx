@@ -2,18 +2,17 @@ import React, { useState, useEffect } from "react";
 import api from "../../../api/axios";
 import useAuthStore from '../../../store/authStore';
 import { toast } from 'react-toastify';
+import { Copy } from 'lucide-react';
 
 const DepositUsdt = () => {
   const { user } = useAuthStore();
   const [selectedAddress, setSelectedAddress] = useState('');
-  const [sendingAddress, setSendingAddress] = useState("");
-  const [amount, setAmount] = useState("");
   const [password, setPassword] = useState("");
   const [verify, setVerify] = useState(false);
-  const [barcodes, setBarcodes] = useState({ deposit: '', tre20: '' });
+  const [depositInfo, setDepositInfo] = useState({});
   const [paymentScreenshot, setPaymentScreenshot] = useState(null);
   const [paymentAmount, setPaymentAmount] = useState('');
-  const [submissionStatus, setSubmissionStatus] = useState('idle'); // 'idle', 'submitting', 'pending', 'approved', 'rejected'
+  const [submissionStatus, setSubmissionStatus] = useState('idle');
 
   const addressLabels = {
     deposit: 'BEP20',
@@ -21,21 +20,21 @@ const DepositUsdt = () => {
   };
 
   useEffect(() => {
-    const fetchBarcode = async () => {
+    const fetchDepositInfo = async () => {
       try {
         const response = await api.get('/admin/barcode');
-        const fetchedBarcodes = {
-          deposit: response.data.depositBarcodeUrl,
-          tre20: response.data.tre20BarcodeUrl
-        };
-        setBarcodes(fetchedBarcodes);
-        // Set a default selection if available
-        const firstAvailable = Object.keys(fetchedBarcodes).find(key => fetchedBarcodes[key]);
-        if (firstAvailable) {
-          setSelectedAddress(firstAvailable);
-        }
+        setDepositInfo({
+          deposit: {
+            url: response.data.depositBarcodeUrl,
+            address: response.data.depositWalletAddress
+          },
+          tre20: {
+            url: response.data.tre20BarcodeUrl,
+            address: response.data.tre20WalletAddress
+          }
+        });
       } catch (error) {
-        console.error('Failed to fetch barcode', error);
+        console.error('Failed to fetch deposit info', error);
       }
     };
 
@@ -50,12 +49,21 @@ const DepositUsdt = () => {
         }
     };
 
-    fetchBarcode();
+    fetchDepositInfo();
     fetchPaymentStatus();
   }, [user]);
 
   const handleFileChange = (e) => {
     setPaymentScreenshot(e.target.files[0]);
+  };
+
+  const handleCopyToClipboard = (text) => {
+    navigator.clipboard.writeText(text).then(() => {
+      toast.success('Address copied to clipboard!');
+    }, (err) => {
+      toast.error('Failed to copy address.');
+      console.error('Could not copy text: ', err);
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -136,27 +144,38 @@ const DepositUsdt = () => {
             onChange={(e) => setSelectedAddress(e.target.value)}
             className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-cyan-500"
           >
-            <option value="" disabled>Select an address type</option>
-            {Object.keys(barcodes).map(key => (
-              barcodes[key] && <option key={key} value={key}>{addressLabels[key] || key.toUpperCase()}</option>
+            <option value="">-- Select an Address Type --</option>
+            {Object.keys(depositInfo).map(key => (
+              depositInfo[key]?.url && <option key={key} value={key}>{addressLabels[key] || key.toUpperCase()}</option>
             ))}
           </select>
         </div>
 
-        {/* Barcode Display */}
-        <div className="flex justify-center py-4">
-          {selectedAddress && barcodes[selectedAddress] && (
-              <div className="text-center">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                      {addressLabels[selectedAddress]} Barcode
-                  </label>
-                  <img src={barcodes[selectedAddress]} alt={`${addressLabels[selectedAddress]} Deposit Barcode`} className="w-48 h-48 mx-auto" />
+        {/* Barcode and Address Display */}
+        {selectedAddress && depositInfo[selectedAddress]?.url && (
+          <div className="text-center py-4 border-t border-b">
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                  {addressLabels[selectedAddress]} Deposit Information
+              </h3>
+              <div className="flex flex-col md:flex-row items-center justify-center gap-8">
+                <img src={depositInfo[selectedAddress].url} alt={`${addressLabels[selectedAddress]} Deposit Barcode`} className="w-48 h-48 mx-auto" />
+                {depositInfo[selectedAddress].address && (
+                  <div className="w-full md:w-auto text-center md:text-left">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Wallet Address</label>
+                    <div className="flex items-center justify-center bg-gray-100 p-2 rounded-md">
+                      <p className="text-gray-800 text-sm break-all mr-2">{depositInfo[selectedAddress].address}</p>
+                      <button type="button" onClick={() => handleCopyToClipboard(depositInfo[selectedAddress].address)} className="p-2 text-gray-500 hover:text-gray-800">
+                        <Copy size={18} />
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* Upload Payment Proof */}
-        <div className="space-y-4 pt-4 border-t">
+        <div className="space-y-4 pt-4">
           <h3 className="text-xl font-semibold text-gray-800">Upload Payment Proof</h3>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">

@@ -11,6 +11,10 @@ const SettingsPage = ({ barcodeUrls, setBarcodeUrls, handleUpdateBarcode }) => {
             <label className="block text-sm font-medium text-gray-300 mb-1">Barcode Image URL</label>
             <input type="text" placeholder="Enter barcode image URL" value={barcodeUrls.deposit} onChange={(e) => setBarcodeUrls({ ...barcodeUrls, deposit: e.target.value })} className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-cyan-500" />
           </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">BEP20 Wallet Address</label>
+            <input type="text" placeholder="Enter BEP20 wallet address" value={barcodeUrls.depositAddress || ''} onChange={(e) => setBarcodeUrls({ ...barcodeUrls, depositAddress: e.target.value })} className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-cyan-500" />
+          </div>
           {barcodeUrls.deposit && (
             <div>
               <p className="block text-sm font-medium text-gray-300 mb-1">Current Deposit Barcode:</p>
@@ -26,6 +30,10 @@ const SettingsPage = ({ barcodeUrls, setBarcodeUrls, handleUpdateBarcode }) => {
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1">Barcode Image URL</label>
             <input type="text" placeholder="Enter TRE20 barcode image URL" value={barcodeUrls.tre20} onChange={(e) => setBarcodeUrls({ ...barcodeUrls, tre20: e.target.value })} className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-cyan-500" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">TRC20 Wallet Address</label>
+            <input type="text" placeholder="Enter TRC20 wallet address" value={barcodeUrls.tre20Address || ''} onChange={(e) => setBarcodeUrls({ ...barcodeUrls, tre20Address: e.target.value })} className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-cyan-500" />
           </div>
           {barcodeUrls.tre20 && (
             <div>

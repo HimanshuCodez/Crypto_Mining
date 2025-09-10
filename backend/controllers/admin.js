@@ -28,12 +28,17 @@ export const upload = multer({ storage: storage });
 
 export const getBarcode = async (req, res) => {
   try {
-    const depositBarcodeSetting = await Setting.findOne({ key: 'depositBarcodeUrl' });
-    const tre20BarcodeSetting = await Setting.findOne({ key: 'tre20BarcodeUrl' });
+    const settings = await Setting.find({});
+    const depositBarcodeUrl = settings.find(s => s.key === 'depositBarcodeUrl')?.value || '';
+    const tre20BarcodeUrl = settings.find(s => s.key === 'tre20BarcodeUrl')?.value || '';
+    const depositWalletAddress = settings.find(s => s.key === 'depositWalletAddress')?.value || '';
+    const tre20WalletAddress = settings.find(s => s.key === 'tre20WalletAddress')?.value || '';
 
     res.status(200).json({
-      depositBarcodeUrl: depositBarcodeSetting ? depositBarcodeSetting.value : '',
-      tre20BarcodeUrl: tre20BarcodeSetting ? tre20BarcodeSetting.value : ''
+      depositBarcodeUrl,
+      tre20BarcodeUrl,
+      depositWalletAddress,
+      tre20WalletAddress
     });
   } catch (error) {
     console.error('Error getting barcode:', error);
@@ -43,12 +48,14 @@ export const getBarcode = async (req, res) => {
 
 export const updateBarcode = async (req, res) => {
   try {
-    const { deposit, tre20 } = req.body;
+    const { deposit, tre20, depositAddress, tre20Address } = req.body;
 
     await Setting.findOneAndUpdate({ key: 'depositBarcodeUrl' }, { value: deposit }, { upsert: true });
     await Setting.findOneAndUpdate({ key: 'tre20BarcodeUrl' }, { value: tre20 }, { upsert: true });
+    await Setting.findOneAndUpdate({ key: 'depositWalletAddress' }, { value: depositAddress }, { upsert: true });
+    await Setting.findOneAndUpdate({ key: 'tre20WalletAddress' }, { value: tre20Address }, { upsert: true });
 
-    res.status(200).json({ message: 'Barcodes updated successfully' });
+    res.status(200).json({ message: 'Barcodes and addresses updated successfully' });
   } catch (error) {
     console.error('Error updating barcode:', error);
     res.status(500).json({ message: 'Server error', error: error.message });

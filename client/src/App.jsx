@@ -27,6 +27,7 @@ import SignUp from "./Pages/SignUp";
 import DepositUsdtForm from "./Pages/Main/Deposit/Deposit";
 
 import AdminSystem from "./Admin/Dashboard";
+import CryptoSupportForm from "./Sidebar/Support";
 
 
 const App = () => {
@@ -94,6 +95,7 @@ const App = () => {
             <Route path="/DepositUsdt" element={<DepositUsdtForm />} />
             {/* done */}
             <Route path="/wallet" element={<Wallet />} />
+            <Route path="/Support" element={<CryptoSupportForm />} />
           </Route>
             <Route path="/Admin/Dashboard" element={<AdminSystem />} />
         </Routes>
