@@ -108,7 +108,7 @@ export default function Quries() {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-          <div className="bg-white rounded-xl p-4 shadow-sm border bg-gray-800 border-gray-200">
+          <div className=" rounded-xl p-4 shadow-sm border bg-gray-800 border-gray-200">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-yellow-100 rounded-lg">
                 <Clock className="text-yellow-600" size={20} />
@@ -119,7 +119,7 @@ export default function Quries() {
               </div>
             </div>
           </div>
-          <div className="bg-white bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-200">
+          <div className=" bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-200">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-blue-100 rounded-lg">
                 <AlertCircle className="text-blue-600" size={20} />
@@ -130,7 +130,7 @@ export default function Quries() {
               </div>
             </div>
           </div>
-          <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
+          <div className="b rounded-xl p-4 shadow-sm border border-gray-200">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-green-100 rounded-lg">
                 <CheckCircle className="text-green-600" size={20} />
@@ -144,7 +144,7 @@ export default function Quries() {
         </div>
 
         {/* Filters */}
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200 mb-6">
+        <div className=" rounded-xl p-4 shadow-sm border border-gray-200 mb-6">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-black-400" size={18} />
@@ -173,7 +173,7 @@ export default function Quries() {
         </div>
 
         {/* Tickets List */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-gray-50 border-b border-gray-200">
