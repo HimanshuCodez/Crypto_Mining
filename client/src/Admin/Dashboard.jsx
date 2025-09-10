@@ -23,6 +23,7 @@ import SettingsPage from "./Pages/SettingsPage";
 import MinningInvestmentApproval from "./Pages/MinningInvestmentApproval";
 import { toast } from "react-toastify";
 import Maintenance from "./Pages/Maintenance";
+import Quries from "./Pages/Quries";
 
 const AdminSystem = () => {
   const [currentPage, setCurrentPage] = useState("dashboard");
@@ -176,6 +177,9 @@ const AdminSystem = () => {
       case 'Maintenance':
 
          return <Maintenance />;
+      case 'Quries':
+
+         return <Quries />;
       default:
         return <DashboardPage userCount={userCount} dashboardStats={dashboardStats} setCurrentPage={setCurrentPage} />;
    
