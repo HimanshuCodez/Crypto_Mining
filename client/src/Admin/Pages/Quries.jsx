@@ -135,11 +135,11 @@ export default function Quries() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 lg:p-6">
+    <div className="min-h-screen  bg-gray-800 p-4 lg:p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-2xl lg:text-3xl bg-gray-800 font-bold text-black-900 mb-2">Support Tickets</h1>
+          <h1 className="text-2xl lg:text-3xl  font-bold text-black-900 mb-2">Support Tickets</h1>
           <p className="text-black-600">Manage and resolve customer support tickets</p>
         </div>
 
