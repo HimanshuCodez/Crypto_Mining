@@ -80,7 +80,6 @@ const AdminSystem = () => {
   }, [users]);
 
   const dashboardStats = {
-    activeUsers: 12453, // This is still hardcoded
     activatedUsers: activatedUsersCount,
     totalDeposits: 84,
     usdtBalance: 12500,
@@ -176,16 +175,21 @@ const AdminSystem = () => {
   return (
     <div className="flex w-screen h-screen bg-gray-900 text-white font-sans">
       {/* Sidebar */}
-      <aside className={`bg-gray-800 border-r border-gray-700 transition-all duration-300 ${isSidebarOpen ? "w-64" : "w-0"} overflow-hidden md:w-64`}>
+      <aside className={`bg-gray-800 border-r border-gray-700 transition-transform duration-300 transform ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} absolute inset-y-0 left-0 z-30 w-64 md:relative md:translate-x-0 md:w-64`}>
         <div className="p-6 flex flex-col h-full">
-          <div className="flex items-center space-x-3 mb-10">
-            <div className="w-12 h-12 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-xl flex items-center justify-center">
-              <Shield className="text-white" size={24} />
+          <div className="flex items-center justify-between mb-10">
+            <div className="flex items-center space-x-3">
+              <div className="w-12 h-12 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-xl flex items-center justify-center">
+                <Shield className="text-white" size={24} />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-white">CryptoMine</h1>
+                <p className="text-gray-400 text-sm">Admin Panel</p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-xl font-bold text-white">CryptoMine</h1>
-              <p className="text-gray-400 text-sm">Admin Panel</p>
-            </div>
+            <button onClick={() => setSidebarOpen(false)} className="md:hidden p-2 rounded-md hover:bg-gray-700">
+              <X size={20} />
+            </button>
           </div>
           <nav className="flex-1 space-y-2">
             {[
@@ -200,14 +204,21 @@ const AdminSystem = () => {
         </div>
       </aside>
 
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black opacity-50 z-20 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        ></div>
+      )}
+
       {/* Main Content */}
       <div className="flex-1 w-full flex flex-col overflow-hidden">
         {/* Header */}
         <header className="bg-gray-800/50 backdrop-blur-sm border-b border-gray-700">
           <div className="px-6 py-4">
             <div className="flex items-center justify-between">
-              <button onClick={() => setSidebarOpen(!isSidebarOpen)} className="md:hidden p-2 rounded-md hover:bg-gray-700">
-                {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
+              <button onClick={() => setSidebarOpen(true)} className="md:hidden p-2 rounded-md hover:bg-gray-700">
+                <Menu size={20} />
               </button>
               <div className="hidden md:block"></div>
               <div className="flex items-center space-x-4">
