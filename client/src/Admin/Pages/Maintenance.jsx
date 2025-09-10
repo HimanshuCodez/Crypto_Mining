@@ -32,9 +32,9 @@ export default function Maintenance() {
             <div className="p-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl">
               <Activity className="text-white" size={32} />
             </div>
-            <h1 className="text-4xl font-bold text-white">Crypto Mining</h1>
+            <h1 className="text-4xl font-bold text-white">Crypto Minning</h1>
           </div>
-          <p className="text-gray-400 text-lg">Advanced Mining Control System</p>
+     
         </div>
 
         {/* Status Display */}
