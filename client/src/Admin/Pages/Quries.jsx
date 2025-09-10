@@ -145,18 +145,18 @@ export default function Quries() {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-          <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
+          <div className="bg-white rounded-xl p-4 shadow-sm border bg-gray-800 border-gray-200">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-yellow-100 rounded-lg">
                 <Clock className="text-yellow-600" size={20} />
               </div>
               <div>
-                <p className="text-sm text-black-600">Pending</p>
+                <p className="text-sm bg-gray-800  text-black-600">Pending</p>
                 <p className="text-xl font-bold text-black-900">{statusCounts.pending}</p>
               </div>
             </div>
           </div>
-          <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
+          <div className="bg-white bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-200">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-blue-100 rounded-lg">
                 <AlertCircle className="text-blue-600" size={20} />
