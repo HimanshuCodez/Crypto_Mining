@@ -125,7 +125,7 @@ const ToIncomeWallet = () => {
           <div className='flex flex-col gap-6 font-[Inter]'>
             <div className='grid grid-cols-1 md:grid-cols-2 w-full md:w-[45vw] justify-start gap-6 md:gap-10'>
               <label htmlFor="userid" className='flex flex-col justify-start items-start gap-1'>
-                <span className='text-lg capitalize text-black font-light'>Recipient Referral ID</span>
+                <span className='text-lg capitalize text-black font-light'>User Id</span>
                 <input
                   type="text"
                   className='outline-none w-full border border-black rounded-lg placeholder:text-[#000000B2] placeholder:capitalize placeholder:text-sm placeholder:font-extralight p-2'
@@ -152,7 +152,7 @@ const ToIncomeWallet = () => {
               </label>
 
               <label htmlFor="amount" className='flex flex-col justify-start items-start gap-1'>
-                <span className='text-lg capitalize text-black font-light'>Amount to Transfer</span>
+                <span className='text-lg capitalize text-black font-light'>Transfer Amount</span>
                 <input
                   type="number"
                   className='outline-none w-full border border-black rounded-lg placeholder:text-[#000000B2] placeholder:capitalize placeholder:text-sm placeholder:font-extralight p-2'

@@ -140,7 +140,7 @@ const ToPackageWallet = () => {
                             {referredUserName && <span className="text-sm text-green-500">{referredUserName}</span>} {/* Display referred user name */}
                         </label>
                         <label htmlFor="mode" className='flex flex-col justify-start items-start gap-1'>
-                            <span className='text-lg capitalize text-black font-light'>Investment Amount</span>
+                            <span className='text-lg capitalize text-black font-light'>Transfer Amount</span>
                             <input 
                                 type="number" 
                                 className='outline-none w-full border border-black rounded-lg placeholder:text-[#000000B2] placeholder:capitalize placeholder:text-sm placeholder:font-extralight p-2' 
