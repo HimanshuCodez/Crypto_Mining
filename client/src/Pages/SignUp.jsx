@@ -90,7 +90,7 @@ const SignUp = () => {
         </div>
         <div className="flex flex-col gap-6 bg-white rounded-b-lg md:rounded-bl-none md:rounded-r-lg px-5 py-10">
           <h1 className="font-medium text-3xl sm:text-4xl capitalize text-center md:text-left">
-            create account
+            Create account
           </h1>
           <form onSubmit={handleSubmit} className="w-full">
             <div className="flex flex-col gap-5">
@@ -99,7 +99,7 @@ const SignUp = () => {
                 className="flex flex-col justify-start items-start gap-1"
               >
                 <span className="text-sm capitalize text-black font-medium">
-                  name
+                  Name
                 </span>
                 <input
                   type="text"
@@ -154,7 +154,7 @@ const SignUp = () => {
                 className="flex flex-col justify-start items-start gap-1"
               >
                 <span className="text-sm capitalize text-black font-medium">
-                  email
+                  Email
                 </span>
                 <input
                   type="email"
@@ -171,7 +171,7 @@ const SignUp = () => {
                   className="flex flex-col justify-start items-start gap-1 w-full"
                 >
                   <span className="text-sm capitalize text-black font-medium">
-                    password
+                    Password
                   </span>
                   <input
                     type="password"

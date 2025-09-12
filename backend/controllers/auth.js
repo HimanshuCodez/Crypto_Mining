@@ -68,7 +68,7 @@ export const signup = async (req, res) => {
         await newUser.save();
 
         // Send welcome email
-        // await sendWelcomeEmail(email, name, email, password, newReferralCode);
+        await sendWelcomeEmail(email, name, email, password, newReferralCode);
 
         // Generate JWT token
         const expiresIn = rememberMe ? '7d' : '10h';
@@ -96,7 +96,7 @@ export const login = async (req, res) => {
         // Verify Turnstile token
         const turnstileResponse = await verifyTurnstile(turnstileToken);
         if (!turnstileResponse.success) {
-            return res.status(400).json({ message: 'CAPTCHA verification failed' });
+            return res.status(400).json({ message: 'Refresh and Try Again' });
         }
 
         // Check if user exists

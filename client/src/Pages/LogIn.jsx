@@ -45,12 +45,12 @@ const Login = () => {
                     <form onSubmit={handleSubmit} className="w-full">
                         <div className='flex flex-col gap-5'>
                             <label htmlFor="email" className='flex flex-col justify-start items-start gap-1'>
-                                <span className='text-sm capitalize text-black font-medium'>email</span>
+                                <span className='text-sm capitalize text-black font-medium'>Email</span>
                                 <input type="email" onChange={handleChange} value={formData.email} name="email" className='outline-none w-full border rounded-2xl placeholder:text-[#000000B2] placeholder:capitalize placeholder:text-sm p-2' placeholder='enter your email' />
                             </label>
                             <div className='flex items-center justify-between w-full'>
                                 <label htmlFor="password" className='flex flex-col justify-start items-start gap-1 w-full'>
-                                    <span className='flex justify-between items-center w-full'><span className='text-sm capitalize text-black font-medium'>password</span><span className='text-[#2EB9A2] text-sm font-medium hover:underline'>password?</span></span>
+                                    <span className='flex justify-between items-center w-full'><span className='text-sm capitalize text-black font-medium'>Password</span><span className='text-[#2EB9A2] text-sm font-medium hover:underline'>password?</span></span>
                                     <input type="password" onChange={handleChange} value={formData.password} name="password" className='outline-none w-full border rounded-2xl placeholder:text-[#000000B2] placeholder:capitalize placeholder:text-sm p-2' placeholder='Enter Password' />
                                 </label>
                             </div>
