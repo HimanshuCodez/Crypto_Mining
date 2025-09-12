@@ -307,7 +307,7 @@ const AdminSystem = () => {
               {
                 id: "DepositHistory",
                 label: "Payment History",
-                icon: LockManager,
+                icon: History,
               },
               {
                 id: "WithdrawHistory",
@@ -363,3 +363,4 @@ const AdminSystem = () => {
 };
 
 export default AdminSystem;
+
