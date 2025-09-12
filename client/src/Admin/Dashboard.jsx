@@ -307,7 +307,7 @@ const AdminSystem = () => {
               {
                 id: "DepositHistory",
                 label: "Payment History",
-                icon: History,
+                icon: Shield,
               },
               {
                 id: "WithdrawHistory",
