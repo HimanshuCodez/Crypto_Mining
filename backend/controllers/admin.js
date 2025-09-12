@@ -160,6 +160,16 @@ export const getPendingPayments = async (req, res) => {
   }
 };
 
+export const getPaymentHistory = async (req, res) => {
+  try {
+    const payments = await Transaction.find({ type: 'deposit' }).populate('userId');
+    res.status(200).json(payments);
+  } catch (error) {
+    console.error('Error fetching payment history:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
 export const getPendingMiningInvestments = async (req, res) => {
   try {
     const pendingInvestments = await Transaction.find({ status: 'pending', type: 'investment' }).populate('userId');

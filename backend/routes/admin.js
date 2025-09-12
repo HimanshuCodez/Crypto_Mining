@@ -1,5 +1,5 @@
 import auth, { isAdmin } from '../middleware/auth.js';
-import { getBarcode,  upload,updateBarcode, submitPayment, approvePayment, rejectPayment, getPendingPayments, getAllUsers, approveMiningInvestment, getPendingMiningInvestments, getMiningInvestments, payAllInvestmentsProfit, getPaymentStatus } from '../controllers/admin.js';
+import { getBarcode,  upload,updateBarcode, submitPayment, approvePayment, rejectPayment, getPendingPayments, getAllUsers, approveMiningInvestment, getPendingMiningInvestments, getMiningInvestments, payAllInvestmentsProfit, getPaymentStatus, getPaymentHistory } from '../controllers/admin.js';
 import express from 'express';
 
 const router = express.Router();
@@ -9,6 +9,7 @@ router.get('/barcode', auth, getBarcode);
 router.post('/barcode', auth, isAdmin, updateBarcode);
 router.post('/payments/submit', auth, upload.single('screenshot'), submitPayment);
 router.get('/payments/pending', auth, isAdmin,  getPendingPayments);
+router.get('/payments/history', auth, isAdmin, getPaymentHistory);
 router.get('/payments/status/:userId', auth, isAdmin, getPaymentStatus);
 router.get('/mining-investments/pending', auth, isAdmin, getPendingMiningInvestments);
 router.get('/mining-investments', auth, isAdmin, getMiningInvestments);

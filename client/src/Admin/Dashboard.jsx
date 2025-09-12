@@ -11,6 +11,7 @@ import {
   X,
   MailQuestionMarkIcon,
   MSquareIcon,
+  WrapTextIcon,
 } from "lucide-react";
 import api from "../api/axios";
 import useAuthStore from "../store/authStore";
@@ -25,6 +26,8 @@ import { toast } from "react-toastify";
 import Maintenance from "./Pages/Maintenance";
 import Quries from "./Pages/Quries";
 import PendingApproval from "./Pages/PendingApproval";
+import DepositHistory from "./Pages/DepositHistory";
+import WithdrawHistory from "./Pages/WithdrawHistory";
 
 const AdminSystem = () => {
   const [currentPage, setCurrentPage] = useState("dashboard");
@@ -35,18 +38,19 @@ const AdminSystem = () => {
   const [activatedUsersCount, setActivatedUsersCount] = useState(0);
   const [totalMiningInvestment, setTotalMiningInvestment] = useState(0);
   const [barcodeUrls, setBarcodeUrls] = useState({
-    deposit: 'https://imgs.search.brave.com/0TrKgTjetNkLgx2lktMkwwI1Y0nqOZaiKFaWrzhti60/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly91cy4x/MjNyb2ludC5jb20vNDUw/d20vbWFjbWFja3lr/eS9tYWNtYWNreWt5/MTYwOS9tYWNtYWNreWt5MTYwOTAwMjM3LzYzMTQ1Njg4LWJh/cmNvZUtc2Nhbm5l/ci5qcGc_dmVyPTY',
-    tre20: ''
+    deposit:
+      "https://imgs.search.brave.com/0TrKgTjetNkLgx2lktMkwwI1Y0nqOZaiKFaWrzhti60/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly91cy4x/MjNyb2ludC5jb20vNDUw/d20vbWFjbWFja3lr/eS9tYWNtYWNreWt5/MTYwOS9tYWNtYWNreWt5MTYwOTAwMjM3LzYzMTQ1Njg4LWJh/cmNvZUtc2Nhbm5l/ci5qcGc_dmVyPTY",
+    tre20: "",
   });
   const [pendingPayments, setPendingPayments] = useState([]);
   const { users, fetchAllUsers } = useAuthStore();
 
   const fetchPendingPayments = async () => {
     try {
-      const response = await api.get('/admin/payments/pending');
+      const response = await api.get("/admin/payments/pending");
       setPendingPayments(response.data);
     } catch (error) {
-      console.error('Error fetching pending payments:', error);
+      console.error("Error fetching pending payments:", error);
     }
   };
 
@@ -62,13 +66,13 @@ const AdminSystem = () => {
 
     const fetchBarcode = async () => {
       try {
-        const response = await api.get('/admin/barcode');
+        const response = await api.get("/admin/barcode");
         setBarcodeUrls({
           deposit: response.data.depositBarcodeUrl,
-          tre20: response.data.tre20BarcodeUrl || ''
+          tre20: response.data.tre20BarcodeUrl || "",
         });
       } catch (error) {
-        console.error('Failed to fetch barcode', error);
+        console.error("Failed to fetch barcode", error);
       }
     };
 
@@ -80,10 +84,15 @@ const AdminSystem = () => {
 
   useEffect(() => {
     if (users && users.length > 0) {
-      const activatedCount = users.filter(user => user.activationLicense).length;
+      const activatedCount = users.filter(
+        (user) => user.activationLicense
+      ).length;
       setActivatedUsersCount(activatedCount);
 
-      const totalInvestment = users.reduce((sum, user) => sum + (user.miningInvestment || 0), 0);
+      const totalInvestment = users.reduce(
+        (sum, user) => sum + (user.miningInvestment || 0),
+        0
+      );
       setTotalMiningInvestment(totalInvestment);
     }
   }, [users]);
@@ -96,24 +105,53 @@ const AdminSystem = () => {
   };
 
   const usdtWithdrawals = [
-    { id: 1, username: "alex_crypto", amount: 500.0, wallet: "0x742d...9f2a", status: "pending", date: "2024-08-21 10:30" },
-    { id: 2, username: "crypto_whale", amount: 1200.5, wallet: "0x8b1c...7e4d", txHash: "0x9f2a...8c1b", status: "completed", date: "2024-08-20 15:45" },
-    { id: 3, username: "mine_lord", amount: 750.25, wallet: "0x3e9f...2b8a", status: "processing", date: "2024-08-21 09:15" },
-    { id: 4, username: "hash_king", amount: 300.0, wallet: "0x7c4a...5d9e", status: "pending", date: "2024-08-21 11:20" },
+    {
+      id: 1,
+      username: "alex_crypto",
+      amount: 500.0,
+      wallet: "0x742d...9f2a",
+      status: "pending",
+      date: "2024-08-21 10:30",
+    },
+    {
+      id: 2,
+      username: "crypto_whale",
+      amount: 1200.5,
+      wallet: "0x8b1c...7e4d",
+      txHash: "0x9f2a...8c1b",
+      status: "completed",
+      date: "2024-08-20 15:45",
+    },
+    {
+      id: 3,
+      username: "mine_lord",
+      amount: 750.25,
+      wallet: "0x3e9f...2b8a",
+      status: "processing",
+      date: "2024-08-21 09:15",
+    },
+    {
+      id: 4,
+      username: "hash_king",
+      amount: 300.0,
+      wallet: "0x7c4a...5d9e",
+      status: "pending",
+      date: "2024-08-21 11:20",
+    },
   ];
 
   const handleApprovePayment = async (paymentId) => {
     try {
       const response = await api.post(`/admin/payments/approve/${paymentId}`);
       if (response.status === 200) {
-        toast.success('Payment approved!');
+        toast.success("Payment approved!");
         fetchPendingPayments();
       } else {
-        toast.error('Failed to approve payment.');
+        toast.error("Failed to approve payment.");
       }
     } catch (error) {
-      console.error('Failed to approve payment', error);
-      toast.error('An error occurred while approving the payment.');
+      console.error("Failed to approve payment", error);
+      toast.error("An error occurred while approving the payment.");
     }
   };
 
@@ -121,38 +159,40 @@ const AdminSystem = () => {
     try {
       const response = await api.post(`/admin/payments/reject/${paymentId}`);
       if (response.status === 200) {
-        alert('Payment rejected!');
+        alert("Payment rejected!");
         fetchPendingPayments();
       } else {
-        alert('Failed to reject payment.');
+        alert("Failed to reject payment.");
       }
     } catch (error) {
-      console.error('Failed to reject payment', error);
-      alert('An error occurred while rejecting the payment.');
+      console.error("Failed to reject payment", error);
+      alert("An error occurred while rejecting the payment.");
     }
   };
 
   const handleUpdateBarcode = async (updatedBarcodeUrls) => {
     try {
-      const response = await api.post('/admin/barcode', updatedBarcodeUrls);
+      const response = await api.post("/admin/barcode", updatedBarcodeUrls);
       if (response.status === 200) {
-        toast.success('Barcode updated successfully!');
+        toast.success("Barcode updated successfully!");
         setBarcodeUrls(updatedBarcodeUrls);
       } else {
-        alert('Failed to update barcode.');
+        alert("Failed to update barcode.");
       }
     } catch (error) {
-      console.error('Failed to update barcode', error);
-      alert('An error occurred while updating the barcode.');
+      console.error("Failed to update barcode", error);
+      alert("An error occurred while updating the barcode.");
     }
   };
-
- 
 
   const NavItem = ({ id, label, icon: Icon }) => (
     <button
       onClick={() => setCurrentPage(id)}
-      className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${currentPage === id ? "bg-cyan-500/20 text-cyan-300" : "text-gray-400 hover:bg-gray-700 hover:text-white"}`}
+      className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
+        currentPage === id
+          ? "bg-cyan-500/20 text-cyan-300"
+          : "text-gray-400 hover:bg-gray-700 hover:text-white"
+      }`}
     >
       <Icon size={20} />
       <span className="font-medium">{label}</span>
@@ -161,36 +201,74 @@ const AdminSystem = () => {
 
   const renderPage = () => {
     switch (currentPage) {
-      case 'dashboard':
-        return <DashboardPage userCount={userCount} dashboardStats={dashboardStats} setCurrentPage={setCurrentPage} />;
-      case 'users':
-        return <UserManagementPage users={users} searchQuery={searchQuery} setSearchQuery={setSearchQuery} filterStatus={filterStatus} setFilterStatus={setFilterStatus} />;
-      case 'payments':
-        return <PaymentApprovalsPage pendingPayments={pendingPayments} fetchPendingPayments={fetchPendingPayments} handleApprovePayment={handleApprovePayment} handleRejectPayment={handleRejectPayment} />;
-      case 'withdrawals':
+      case "dashboard":
+        return (
+          <DashboardPage
+            userCount={userCount}
+            dashboardStats={dashboardStats}
+            setCurrentPage={setCurrentPage}
+          />
+        );
+      case "users":
+        return (
+          <UserManagementPage
+            users={users}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            filterStatus={filterStatus}
+            setFilterStatus={setFilterStatus}
+          />
+        );
+      case "payments":
+        return (
+          <PaymentApprovalsPage
+            pendingPayments={pendingPayments}
+            fetchPendingPayments={fetchPendingPayments}
+            handleApprovePayment={handleApprovePayment}
+            handleRejectPayment={handleRejectPayment}
+          />
+        );
+      case "withdrawals":
         return <WithdrawalsPage usdtWithdrawals={usdtWithdrawals} />;
-      case 'settings':
-        return <SettingsPage barcodeUrls={barcodeUrls} setBarcodeUrls={setBarcodeUrls} handleUpdateBarcode={handleUpdateBarcode} />;
-     
-      case 'MinningInvestmentApproval':
-         return <MinningInvestmentApproval  />;
-      case 'PendingApproval':
-         return <PendingApproval  />;
-    
-      case 'Quries':
+      case "settings":
+        return (
+          <SettingsPage
+            barcodeUrls={barcodeUrls}
+            setBarcodeUrls={setBarcodeUrls}
+            handleUpdateBarcode={handleUpdateBarcode}
+          />
+        );
 
-         return <Quries />;
+      case "MinningInvestmentApproval":
+        return <MinningInvestmentApproval />;
+      case "PendingApproval":
+        return <PendingApproval />;
+
+      case "Quries":
+        return <Quries />;
+      case "DepositHistory":
+        return <DepositHistory/>;
+      case "WithdrawHistory":
+        return <WithdrawHistory />;
       default:
-        return <DashboardPage userCount={userCount} dashboardStats={dashboardStats} setCurrentPage={setCurrentPage} />;
-   
-       
+        return (
+          <DashboardPage
+            userCount={userCount}
+            dashboardStats={dashboardStats}
+            setCurrentPage={setCurrentPage}
+          />
+        );
     }
-  }
+  };
 
   return (
     <div className="flex w-screen h-screen bg-gray-900 text-white font-sans">
       {/* Sidebar */}
-      <aside className={`bg-gray-800 border-r border-gray-700 transition-transform duration-300 transform ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} absolute inset-y-0 left-0 z-30 w-64 md:relative md:translate-x-0 md:w-64`}>
+      <aside
+        className={`bg-gray-800 border-r border-gray-700 transition-transform duration-300 transform ${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } absolute inset-y-0 left-0 z-30 w-64 md:relative md:translate-x-0 md:w-64`}
+      >
         <div className="p-6 flex flex-col h-full">
           <div className="flex items-center justify-between mb-10">
             <div className="flex items-center space-x-3">
@@ -202,7 +280,10 @@ const AdminSystem = () => {
                 <p className="text-gray-400 text-sm">Admin Panel</p>
               </div>
             </div>
-            <button onClick={() => setSidebarOpen(false)} className="md:hidden p-2 rounded-md hover:bg-gray-700">
+            <button
+              onClick={() => setSidebarOpen(false)}
+              className="md:hidden p-2 rounded-md hover:bg-gray-700"
+            >
               <X size={20} />
             </button>
           </div>
@@ -213,11 +294,30 @@ const AdminSystem = () => {
               { id: "payments", label: "Payments", icon: CreditCard },
               { id: "withdrawals", label: "Withdrawals", icon: Wallet },
               { id: "settings", label: "Settings", icon: Settings },
-              { id: "MinningInvestmentApproval", label: "Minning Approval", icon:  Shield },
-              { id: "PendingApproval", label: "Pending Approval", icon:  Shield },
-              
+              {
+                id: "MinningInvestmentApproval",
+                label: "Minning Approval",
+                icon: Shield,
+              },
+              {
+                id: "PendingApproval",
+                label: "Pending Approval",
+                icon: Shield,
+              },
+              {
+                id: "DepositHistory",
+                label: "Payment History",
+                icon: LockManager,
+              },
+              {
+                id: "WithdrawHistory",
+                label: "Withdraw History",
+                icon: WrapTextIcon,
+              },
               { id: "Quries", label: "Quries", icon: MailQuestionMarkIcon },
-            ].map(item => <NavItem key={item.id} {...item} />)}
+            ].map((item) => (
+              <NavItem key={item.id} {...item} />
+            ))}
           </nav>
         </div>
       </aside>
@@ -235,7 +335,10 @@ const AdminSystem = () => {
         <header className="bg-gray-800/50 backdrop-blur-sm border-b border-gray-700">
           <div className="px-6 py-4">
             <div className="flex items-center justify-between">
-              <button onClick={() => setSidebarOpen(true)} className="md:hidden p-2 rounded-md hover:bg-gray-700">
+              <button
+                onClick={() => setSidebarOpen(true)}
+                className="md:hidden p-2 rounded-md hover:bg-gray-700"
+              >
                 <Menu size={20} />
               </button>
               <div className="hidden md:block"></div>
