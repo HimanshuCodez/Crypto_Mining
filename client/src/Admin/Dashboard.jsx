@@ -174,9 +174,7 @@ const AdminSystem = () => {
       case 'MinningInvestmentApproval':
 
          return <MinningInvestmentApproval  />;
-      case 'Maintenance':
-
-         return <Maintenance />;
+    
       case 'Quries':
 
          return <Quries />;
@@ -214,7 +212,7 @@ const AdminSystem = () => {
               { id: "withdrawals", label: "Withdrawals", icon: Wallet },
               { id: "settings", label: "Settings", icon: Settings },
               { id: "MinningInvestmentApproval", label: "Minning Approval", icon:  Shield },
-              { id: "Maintenance", label: "Maintenance Mode", icon:  MSquareIcon },
+              
               { id: "Quries", label: "Quries", icon: MailQuestionMarkIcon },
             ].map(item => <NavItem key={item.id} {...item} />)}
           </nav>
