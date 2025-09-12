@@ -54,7 +54,7 @@ const WithdrawHistory = () => {
                     <td className="px-6 py-4">
                       <span className={`px-3 py-1 rounded-full text-xs font-medium ${withdrawal.status === "completed" ? "bg-green-900 text-green-300" : "bg-red-900 text-red-300"}`}>{withdrawal.status}</span>
                     </td>
-                    <td className="px-6 py-4 text-gray-400 text-sm">{new Date(withdrawal.createdAt).toLocaleDateString()}</td>
+                    <td className="px-6 py-4 text-gray-400 text-sm">{withdrawal.createdAt}</td>
                   </tr>
                 ))}
               </tbody>

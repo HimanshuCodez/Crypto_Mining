@@ -49,7 +49,7 @@ const DepositHistory = () => {
                 <td className="py-2 px-4 border-b">{payment.userId?.name || 'N/A'}</td>
                 <td className="py-2 px-4 border-b">{payment.userId?.email || 'N/A'}</td>
                 <td className="py-2 px-4 border-b">{payment.amount}</td>
-                <td className="py-2 px-4 border-b">{new Date(payment.createdAt).toLocaleDateString()}</td>
+                <td className="py-2 px-4 border-b">{payment.createdAt}</td>
                 <td className="py-2 px-4 border-b">{payment.status}</td>
               </tr>
             ))}
