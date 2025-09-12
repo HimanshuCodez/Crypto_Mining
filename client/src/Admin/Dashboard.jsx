@@ -24,6 +24,7 @@ import MinningInvestmentApproval from "./Pages/MinningInvestmentApproval";
 import { toast } from "react-toastify";
 import Maintenance from "./Pages/Maintenance";
 import Quries from "./Pages/Quries";
+import PendingApproval from "./Pages/PendingApproval";
 
 const AdminSystem = () => {
   const [currentPage, setCurrentPage] = useState("dashboard");
@@ -172,8 +173,9 @@ const AdminSystem = () => {
         return <SettingsPage barcodeUrls={barcodeUrls} setBarcodeUrls={setBarcodeUrls} handleUpdateBarcode={handleUpdateBarcode} />;
      
       case 'MinningInvestmentApproval':
-
          return <MinningInvestmentApproval  />;
+      case 'PendingApproval':
+         return <PendingApproval  />;
     
       case 'Quries':
 
@@ -212,6 +214,7 @@ const AdminSystem = () => {
               { id: "withdrawals", label: "Withdrawals", icon: Wallet },
               { id: "settings", label: "Settings", icon: Settings },
               { id: "MinningInvestmentApproval", label: "Minning Approval", icon:  Shield },
+              { id: "PendingApproval", label: "Pending Approval", icon:  Shield },
               
               { id: "Quries", label: "Quries", icon: MailQuestionMarkIcon },
             ].map(item => <NavItem key={item.id} {...item} />)}
