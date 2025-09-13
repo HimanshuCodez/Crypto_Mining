@@ -288,12 +288,13 @@ export const approveMiningInvestment = async (req, res) => {
 
     await transaction.save();
 
-    // Update user's mining investment
-    const user = await User.findById(transaction.userId);
-    if (user) {
-      user.miningInvestment += transaction.amount;
-      await user.save();
-    }
+    // User's mining investment is already updated at the time of investment.
+    // This approval step only changes the status.
+    // const user = await User.findById(transaction.userId);
+    // if (user) {
+    //   user.miningInvestment += transaction.amount;
+    //   await user.save();
+    // }
 
     res.status(200).json({ message: 'Mining investment approved successfully' });
   } catch (error) {
