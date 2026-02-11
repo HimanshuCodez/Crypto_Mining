@@ -1,16 +1,9 @@
-import nodemailer from "nodemailer";
 import dotenv from 'dotenv';
 dotenv.config();
 
+import { Resend } from 'resend';
 
-// transporter for Gmail (use App Password if Gmail)
-const transporter = nodemailer.createTransport({
-  service: "gmail", // or "hotmail", "yahoo", etc.
-  auth: {
-    user: process.env.EMAIL_USER, // your email
-    pass: process.env.EMAIL_PASS, // your app password (not real password)
-  },
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // send mail function
 export const sendMail = async (to, subject, text) => {
@@ -29,11 +22,10 @@ export const sendMail = async (to, subject, text) => {
       </div>
     `;
 
-    await transporter.sendMail({
-      from: `"Crypto Minning" <${process.env.EMAIL_USER}>`,
-      to,
+    await resend.emails.send({
+      from: `Crypto Minning <${process.env.EMAIL_FROM}>`,
+      to: [to],
       subject,
-      text: `Your OTP is: ${text}`,
       html,
     });
     console.log("✅ Mail sent successfully");
@@ -77,12 +69,11 @@ Best regards,
 Crypto Mining Team`;
 
     try {
-        await transporter.sendMail({
-            from: `"Crypto Minning" <${process.env.EMAIL_USER}>`,
-            to,
+        await resend.emails.send({
+            from: `Crypto Minning <${process.env.EMAIL_FROM}>`,
+            to: [to],
             subject,
             html,
-            text,
         });
         console.log("✅ Welcome mail sent successfully");
     } catch (error) {
