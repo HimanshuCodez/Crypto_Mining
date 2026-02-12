@@ -147,7 +147,7 @@ const MiningIncome = () => {
                       </span>
                       <label htmlFor="transactionPassword" className='flex flex-col justify-start items-start gap-1 w-full md:w-[20vw]'>
                           <span className='text-lg capitalize text-black font-light'>Transaction Password</span>
-                          <input type="password" name="transactionPassword" value={formData.transactionPassword} onChange={handleChange} className='outline-none w-full border border-[#00000066] rounded-sm placeholder:text-[#000000B2]  p-2' id="transactionPassword" />
+                          <input type="password" name="transactionPassword" value={formData.transactionPassword} onChange={handleChange} className='outline-none w-full border border-[#00000066] rounded-sm placeholder:text-[#000000B2]  p-2' id="transactionPassword" autocomplete="current-password" />
                       </label>
 
                       {!isOtpSent ? (
