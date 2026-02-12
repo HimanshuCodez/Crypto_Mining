@@ -101,25 +101,9 @@ const Account = () => {
 
         const enteredUserId = formData.userId;
         
-        // --- Start Debug Logging ---
-        console.log("--- Activation Attempt ---");
-        console.log("Entered User ID:", enteredUserId);
-
-        // --- End Debug Logging ---
-
         if (enteredUserId.trim() === '') {
             return toast.error('Please enter a User ID to activate.');
         }
-
-
-        const isDirectReferral = directReferrals.some(ref => ref.referralCode === enteredUserId);
-
-        // --- Start Debug Logging ---
-
-        // --- End Debug Logging ---
-
-
-
         if (!walletData || (walletData.incomeWallet < 111 && walletData.packageWallet < 111)) {
             return toast.error('You do not have enough balance to activate account.');
         }
@@ -186,7 +170,7 @@ const Account = () => {
                         <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
                             <label htmlFor="password" className='flex flex-col justify-start items-start gap-1'>
                                 <span className='text-base md:text-lg capitalize text-black font-light'>Transaction Password</span>
-                                <input type="password" name="password" value={formData.password} onChange={handleChange} className='outline-none w-full border border-black rounded-lg placeholder:text-[#000000B2] p-2' />
+                                <input type="password" name="password" value={formData.password} onChange={handleChange} className='outline-none w-full border border-black rounded-lg placeholder:text-[#000000B2] p-2' autoComplete="new-password" />
                             </label>
                             <label htmlFor="paymentMode" className='flex flex-col justify-start items-start gap-1'>
                                 <span className='text-base md:text-lg capitalize text-black font-light'>Payment Mode</span>
@@ -200,7 +184,7 @@ const Account = () => {
                         <label htmlFor="otp" className='flex flex-col justify-start items-start gap-1'>
                             <span className='text-base md:text-lg capitalize text-black font-light'>One Time Password</span>
                             <div className='flex w-full md:w-1/2'>
-                                <input type="password" id="otp" name="otp" value={formData.otp} onChange={handleChange} className='outline-none w-full border border-[#00000066] rounded-l-md p-2' />
+                                <input type="password" id="otp" name="otp" value={formData.otp} onChange={handleChange} className='outline-none w-full border border-[#00000066] rounded-l-md p-2' autoComplete="one-time-code" />
                                 <div onClick={handleSendOtp} className='border rounded-r-md border-l-0 w-auto px-4 flex items-center justify-center cursor-pointer text-sm md:text-base'>Send OTP</div>
                             </div>
                         </label>
