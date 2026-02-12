@@ -24,7 +24,7 @@ const PaymentApprovalsPage = ({ pendingPayments, fetchPendingPayments, handleApp
                     <td className="px-6 py-4 text-white font-medium">{payment.userId ? payment.userId.name : 'N/A'}</td>
                     <td className="px-6 py-4 text-green-400 font-bold">${payment.amount}</td>
                     <td className="px-6 py-4 text-gray-300">
-                      {payment.screenshotUrl ? <a href={`http://localhost:4000${payment.screenshotUrl}`} target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline">View Screenshot</a> : 'No Screenshot'}
+                      {payment.screenshotUrl ? <a href={payment.screenshotUrl} target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline">View Screenshot</a> : 'No Screenshot'}
                     </td>
                     <td className="px-6 py-4 text-gray-300">{new Date(payment.createdAt).toLocaleDateString()}</td>
                     <td className="px-6 py-4">

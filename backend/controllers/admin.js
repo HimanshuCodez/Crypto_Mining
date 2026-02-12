@@ -7,24 +7,10 @@ import Setting from '../models/Setting.js';
 import Transaction from '../models/Transaction.js';
 import User from '../models/User.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+
 
 // Set up storage for uploaded files
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadDir = path.join(__dirname, '../uploads');
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-    cb(null, uploadDir); // Uploads will be stored in the 'uploads' directory
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); // Append timestamp to original file name
-  },
-});
-
-export const upload = multer({ storage: storage });
+export const upload = multer({ storage: multer.memoryStorage() });
 
 export const getBarcode = async (req, res) => {
   try {
@@ -65,9 +51,9 @@ export const updateBarcode = async (req, res) => {
 export const submitPayment = async (req, res) => {
   try {
     const { amount, userId, password } = req.body;
-    const screenshot = req.file ? `/uploads/${req.file.filename}` : null;
+    const screenshotFile = req.file;
 
-    if (!amount || !userId || !screenshot || !password) {
+    if (!amount || !userId || !screenshotFile || !password) {
       return res.status(400).json({ message: 'Amount, user ID, screenshot, and password are required.' });
     }
 
@@ -81,12 +67,20 @@ export const submitPayment = async (req, res) => {
         return res.status(400).json({ message: "Invalid transaction password" });
     }
 
+    const b64 = Buffer.from(screenshotFile.buffer).toString("base64");
+    let dataURI = "data:" + screenshotFile.mimetype + ";base64," + b64;
+    const cloudinaryResponse = await cloudinary.uploader.upload(dataURI, {
+      folder: "payment_screenshots",
+    });
+
+    const screenshotUrl = cloudinaryResponse.secure_url;
+
     const newTransaction = new Transaction({
       userId,
       amount,
       type: 'deposit',
       status: 'pending',
-      screenshotUrl: screenshot,
+      screenshotUrl,
     });
 
     await newTransaction.save();
