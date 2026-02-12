@@ -13,21 +13,9 @@ const ToPackageWallet = () => {
     const [isOtpVerified, setIsOtpVerified] = useState(false);
     const [loading, setLoading] = useState(false);
     const [referredUserName, setReferredUserName] = useState(''); // New state for referred user name
-    const [directReferrals, setDirectReferrals] = useState([]);
 
-    useEffect(() => {
-        const fetchDirectReferrals = async () => {
-            if (!user) return;
-            try {
-                const response = await api.get('/user/referrals/direct');
-                setDirectReferrals(Array.isArray(response.data) ? response.data : []);
-            } catch (error) {
-                console.error('Failed to fetch direct referrals', error);
-                toast.error('Failed to load referral data.');
-            }
-        };
-        fetchDirectReferrals();
-    }, [user]);
+
+
 
     const handleSendOtp = async () => {
         if (!recipientReferralId || !amount) {
@@ -64,10 +52,7 @@ const ToPackageWallet = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const isDirectReferral = directReferrals.some(ref => ref.referralCode === recipientReferralId);
-        if (!isDirectReferral) {
-            return toast.error('You can only transfer to users in your direct referral list.');
-        }
+
 
         if (!isOtpVerified) {
             toast.error('Please verify the OTP first.');

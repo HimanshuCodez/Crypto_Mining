@@ -17,7 +17,7 @@ const PackageWallet = () => {
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [referredUserName, setReferredUserName] = useState("");
-  const [directReferrals, setDirectReferrals] = useState([]);
+
   const [isDataLoading, setIsDataLoading] = useState(true);
 
   useEffect(() => {
@@ -30,25 +30,7 @@ const PackageWallet = () => {
     }
   }, [user, navigate]);
 
-  useEffect(() => {
-    const fetchDirectReferrals = async () => {
-        if (!user) {
-            setIsDataLoading(false);
-            return;
-        }
-        setIsDataLoading(true);
-        try {
-            const response = await api.get('/user/referrals/direct');
-            setDirectReferrals(Array.isArray(response.data) ? response.data : []);
-        } catch (error) {
-            console.error('Failed to fetch direct referrals', error);
-            toast.error('Failed to load referral data.');
-        } finally {
-            setIsDataLoading(false);
-        }
-    };
-    fetchDirectReferrals();
-  }, [user]);
+
 
   const handleChange = async (e) => {
     const { name, value } = e.target;
@@ -106,12 +88,7 @@ const PackageWallet = () => {
         return toast.error('Please enter a User ID to invest.');
     }
 
-    const isOwnUser = user && enteredUserId === user.referralCode;
-    const isDirectReferral = directReferrals.some(ref => ref.referralCode === enteredUserId);
 
-    if (!isOwnUser && !isDirectReferral) {
-        return toast.error('User is not in your referral line.');
-    }
 
     if (isSubmittingRef.current) {
       return;
@@ -294,8 +271,7 @@ const PackageWallet = () => {
                 </label>
                 <div className="flex justify-start">
                   <button
-                    type="button"
-                    onClick={handleSubmit}
+                    type="submit"
                     disabled={isDataLoading || isLoading}
                     className="border-[#31B8A1] rounded-lg capitalize border text-[#31B8A1] font-semibold font-[Montserrat] text-lg px-6 py-2 scale-100 hover:scale-105 transition-all ease-in disabled:opacity-50"
                   >

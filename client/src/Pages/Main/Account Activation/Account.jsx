@@ -16,7 +16,7 @@ const Account = () => {
     const [loading, setLoading] = useState(false);
     const [isActivating, setIsActivating] = useState(false);
     const [referredUserName, setReferredUserName] = useState('');
-    const [directReferrals, setDirectReferrals] = useState([]);
+
     const [isDataLoading, setIsDataLoading] = useState(true);
 
     useEffect(() => {
@@ -28,12 +28,10 @@ const Account = () => {
             setIsDataLoading(true);
             try {
                 const walletPromise = api.get(`/user/${user._id}/dashboard`);
-                const referralsPromise = api.get('/user/referrals/direct');
                 
-                const [walletResponse, referralsResponse] = await Promise.all([walletPromise, referralsPromise]);
+                const [walletResponse] = await Promise.all([walletPromise]);
                 
                 setWalletData(walletResponse.data);
-                setDirectReferrals(Array.isArray(referralsResponse.data) ? referralsResponse.data : []);
 
             } catch (error) {
                 console.error('Failed to fetch initial data', error);
@@ -106,33 +104,21 @@ const Account = () => {
         // --- Start Debug Logging ---
         console.log("--- Activation Attempt ---");
         console.log("Entered User ID:", enteredUserId);
-        console.log("Logged-in user object:", user);
-        console.log("User's referral code from auth store (expected):", user?.referralCode);
-        console.log("Direct referrals list:", directReferrals);
+
         // --- End Debug Logging ---
 
         if (enteredUserId.trim() === '') {
             return toast.error('Please enter a User ID to activate.');
         }
 
-        const isOwnUser = user && enteredUserId === user.referralCode;
+
         const isDirectReferral = directReferrals.some(ref => ref.referralCode === enteredUserId);
 
         // --- Start Debug Logging ---
-        console.log("Is this the user's own ID?", isOwnUser);
-        console.log("Is this ID in the direct referral list?", isDirectReferral);
+
         // --- End Debug Logging ---
 
-        if (!isOwnUser && !isDirectReferral) {
-            // --- Start Debug Logging ---
-            console.log("Validation FAILED. Blocking activation.");
-            // --- End Debug Logging ---
-            return toast.error('User is not in your referral line.');
-        }
-        
-        // --- Start Debug Logging ---
-        console.log("Validation PASSED. Proceeding with activation.");
-        // --- End Debug Logging ---
+
 
         if (!walletData || (walletData.incomeWallet < 111 && walletData.packageWallet < 111)) {
             return toast.error('You do not have enough balance to activate account.');

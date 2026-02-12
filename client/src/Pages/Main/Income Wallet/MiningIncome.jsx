@@ -17,7 +17,7 @@ const MiningIncome = () => {
     const [isOtpSent, setIsOtpSent] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [referredUserName, setReferredUserName] = useState('');
-    const [directReferrals, setDirectReferrals] = useState([]);
+
     const [isDataLoading, setIsDataLoading] = useState(true);
 
     useEffect(() => {
@@ -30,25 +30,7 @@ const MiningIncome = () => {
         }
     }, [user, navigate]);
 
-    useEffect(() => {
-        const fetchDirectReferrals = async () => {
-            if (!user) {
-                setIsDataLoading(false);
-                return;
-            }
-            setIsDataLoading(true);
-            try {
-                const response = await api.get('/user/referrals/direct');
-                setDirectReferrals(Array.isArray(response.data) ? response.data : []);
-            } catch (error) {
-                console.error('Failed to fetch direct referrals', error);
-                toast.error('Failed to load referral data.');
-            } finally {
-                setIsDataLoading(false);
-            }
-        };
-        fetchDirectReferrals();
-    }, [user]);
+
 
     const handleChange = async (e) => { // Make handleChange async
         const { name, value } = e.target;
@@ -101,12 +83,7 @@ const MiningIncome = () => {
             return toast.error('Please enter a User ID to invest.');
         }
 
-        const isOwnUser = user && enteredUserId === user.referralCode;
-        const isDirectReferral = directReferrals.some(ref => ref.referralCode === enteredUserId);
 
-        if (!isOwnUser && !isDirectReferral) {
-            return toast.error('User is not in your referral line.');
-        }
 
         if (!formData.otp) {
             return toast.error('Please enter the OTP.');
