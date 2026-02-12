@@ -21,12 +21,15 @@ const PackageWallet = () => {
   const [isDataLoading, setIsDataLoading] = useState(true);
 
   useEffect(() => {
-    const toastId = "activation-error";
-    if (user && user.activationLicense === false) {
-      if (!toast.isActive(toastId)) {
-        toast.error("Activate your account first", { toastId });
+    if (user) {
+      setIsDataLoading(false);
+      const toastId = "activation-error";
+      if (user.activationLicense === false) {
+        if (!toast.isActive(toastId)) {
+          toast.error("Activate your account first", { toastId });
+        }
+        navigate("/account_activation");
       }
-      navigate("/account_activation");
     }
   }, [user, navigate]);
 
