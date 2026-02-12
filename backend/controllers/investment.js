@@ -47,7 +47,7 @@ export const sendInvestmentOtp = async (req, res) => {
 const processInvestment = async (req, res, walletType) => {
     try {
         const { userId, amount, otp } = req.body;
-        const payer = await User.findById(req.user.id).populate('directReferrals');
+        const payer = await User.findById(req.user.id);
         const beneficiary = await User.findOne({ referralCode: userId });
 
         if (!payer) {
@@ -67,13 +67,7 @@ const processInvestment = async (req, res, walletType) => {
         console.log('--- End Debug ---');
         // --- END DEBUG LOGGING ---
 
-        // Security Check: Ensure beneficiary is the user themselves or a direct referral
-        const isOwnUser = payer._id.equals(beneficiary._id);
-        const isDirectReferral = payer.directReferrals.some(ref => ref._id.equals(beneficiary._id));
 
-        if (!isOwnUser && !isDirectReferral) {
-            return res.status(403).json({ message: 'You can only invest for yourself or your direct referrals.' });
-        }
 
         // Validate OTP (against the payer)
         if (payer.otp !== otp || payer.otpExpires < Date.now()) {
