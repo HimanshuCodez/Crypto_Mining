@@ -1,11 +1,9 @@
 import multer from 'multer';
-import path from 'path';
-import fs from 'fs';
 import bcrypt from 'bcryptjs';
-import { fileURLToPath } from 'url';
 import Setting from '../models/Setting.js';
 import Transaction from '../models/Transaction.js';
 import User from '../models/User.js';
+import cloudinary from '../utils/cloudinary.js';
 
 
 
@@ -67,13 +65,21 @@ export const submitPayment = async (req, res) => {
         return res.status(400).json({ message: "Invalid transaction password" });
     }
 
-    const b64 = Buffer.from(screenshotFile.buffer).toString("base64");
-    let dataURI = "data:" + screenshotFile.mimetype + ";base64," + b64;
-    const cloudinaryResponse = await cloudinary.uploader.upload(dataURI, {
-      folder: "payment_screenshots",
-    });
-
-    const screenshotUrl = cloudinaryResponse.secure_url;
+    let screenshotUrl;
+    try {
+      console.log('Attempting Cloudinary upload for file:', screenshotFile.originalname);
+      const b64 = Buffer.from(screenshotFile.buffer).toString("base64");
+      let dataURI = "data:" + screenshotFile.mimetype + ";base64," + b64;
+      
+      const cloudinaryResponse = await cloudinary.uploader.upload(dataURI, {
+        folder: "payment_screenshots",
+      });
+      screenshotUrl = cloudinaryResponse.secure_url;
+      console.log('Cloudinary upload successful. URL:', screenshotUrl);
+    } catch (cloudinaryError) {
+      console.error('Cloudinary upload error:', cloudinaryError);
+      return res.status(500).json({ message: 'Failed to upload screenshot to Cloudinary', error: cloudinaryError.message });
+    }
 
     const newTransaction = new Transaction({
       userId,
