@@ -5,7 +5,7 @@ import useAuthStore from "../../../store/authStore";
 import api from "../../../api/axios";
 
 const PackageWallet = () => {
-  const { user, fetchUser } = useAuthStore();
+  const { user, setUser } = useAuthStore();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -102,7 +102,7 @@ const PackageWallet = () => {
         otp: formData.otp,
       });
       toast.success(response.data.message || "Investment successful!");
-      fetchUser();
+      setUser(response.data.user);
       navigate("/dashboard");
     } 
     catch (error) {
