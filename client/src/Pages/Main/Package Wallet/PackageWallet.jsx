@@ -81,7 +81,6 @@ const PackageWallet = () => {
     }
   };
 
-  const isSubmittingRef = useRef(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -91,18 +90,7 @@ const PackageWallet = () => {
         return toast.error('Please enter a User ID to invest.');
     }
 
-
-
-    if (isSubmittingRef.current) {
-      return;
-    }
-
-    isSubmittingRef.current = true;
-
-    toast.dismiss();
-
     if (!formData.otp) {
-      isSubmittingRef.current = false;
       return toast.error("Please enter the OTP.");
     }
     setIsLoading(true);
@@ -118,10 +106,9 @@ const PackageWallet = () => {
       navigate("/dashboard");
     } 
     catch (error) {
-      console.error(error.response?.data?.message || "Investment failed.");
+      toast.error(error.response?.data?.message || "Investment failed.");
     } finally {
       setIsLoading(false);
-      isSubmittingRef.current = false;
     }
   };
 
@@ -164,7 +151,7 @@ const PackageWallet = () => {
         <h2 className="text-2xl md:text-3xl font-[Inter] font-medium py-3">
           Fill Investment Details
         </h2>
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="flex flex-col gap-6 font-[Inter]">
             <span className="grid grid-cols-1 md:grid-cols-2 w-full md:w-[45vw] justify-start gap-6 md:gap-10">
               <label
