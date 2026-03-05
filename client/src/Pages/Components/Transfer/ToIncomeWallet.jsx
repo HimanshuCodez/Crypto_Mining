@@ -62,7 +62,7 @@ const ToIncomeWallet = () => {
     }
     setLoading(true);
     try {
-      const response = await api.post('/api/transfer/to-income-wallet', {
+      const response = await api.post('/transfer/to-income-wallet', {
         recipientReferralId,
         amount: parseFloat(amount),
         transactionPassword,
